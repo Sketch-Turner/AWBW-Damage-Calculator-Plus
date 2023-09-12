@@ -147,6 +147,18 @@
     height: 100%;
 }
 
+.calc-plus-locked:hover,
+.calc-plus-locked div:hover,
+.calc-plus-locked img:hover {
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+#calc-plus-blue-border {
+    border-color: #29B5E9 !important;
+    transform: scale(1.2) !important;
+}
+
 #calc-plus-options {
     margin-right: 4px;
     margin-top: 4px;

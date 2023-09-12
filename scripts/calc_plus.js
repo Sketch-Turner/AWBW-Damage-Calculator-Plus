@@ -8,9 +8,7 @@ const CO_LIST = {
     "andy":{"co_name":"Andy","co_id":"1"},
     "grit":{"co_name":"Grit","co_id":"2"},
     "kanbei":{"co_name":"Kanbei","co_id":"3"},
-
     "drake":{"co_name":"Drake","co_id":"5"},
-
     "max":{"co_name":"Max","co_id":"7"},
     "sami":{"co_name":"Sami","co_id":"8"},
     "olaf":{"co_name":"Olaf","co_id":"9"},
@@ -194,11 +192,6 @@ class CalcNode {
     }
 
     size() {
-        // if (this.level === 0) {
-        //     this.width = SIZE_X*2;
-        // } else {
-        //     this.width = SIZE_X;
-        // }
         this.width = SIZE_X;
         this.height = (this.children.length-1)*OFFSET;
         this.children.forEach(child => {
@@ -313,8 +306,7 @@ class CalcNode {
             defenderCountry = this.defender['country']['name'].toLowerCase();
         }
 
-
-
+        const atRoot = this.id === this.getRoot().id;
         let resultsHtml = '';
         let displayHtml = '';
         if (this.isFocused) {
@@ -322,7 +314,7 @@ class CalcNode {
             <div class="calculator-attack" style="justify-content: flex-start; align-content: flex-start;">
                 <div class="co-options" id="calc-plus-options">
                     <div class="co option">
-                        <div class="selected-co">
+                        <div class="selected-co ${atRoot ? '' : 'calc-plus-locked'}">
                             <img src="terrain/aw2/ds${this.attacker['co']['co_name'].toLowerCase()}.png?v=1" class="border co_portrait">
                         </div>
                     </div>
@@ -344,14 +336,14 @@ class CalcNode {
                         <img src="terrain/aw2/${attackerCountry+this.attacker['terrain']['terrain_name'].toLowerCase().replace('?', '')}.gif" class="selected-terrain">
                         <div class="terrain-stars">
                             <img src="terrain/terrainstar.gif">
-                            <p>${this.attacker['terrain']['terrain_defense']}</p>
+                            <p>${(this.attacker.co.co_name === 'Lash' && this.attacker.power === 'S') ? this.attacker['terrain']['terrain_defense'] * 2 : this.attacker['terrain']['terrain_defense']}</p>
                         </div>
                     </div>
                 </div> 
-                <div class="power-options" id="calc-plus-options" style="flex-direction: column; width: 57px">
+                <div class="power-options ${!atRoot && this.parent.attacker['power'] !== 'N' ? 'calc-plus-locked' : ''}" id="calc-plus-options" style="flex-direction: column; width: 57px">
                     <div class="option" style="margin: 0px 0px;">
-                        <img src="terrain/aw2/redstar.gif" ${(this.attacker.power === 'Y') ? 'class="green-border toggle-cop"' : 'class="toggle-cop"'}> 
-                        <img src="terrain/aw2/bluestar.gif" ${(this.attacker.power === 'S') ? 'class="green-border toggle-scop"' : 'class="toggle-scop"'}>
+                        <img src="terrain/aw2/redstar.gif" ${((this.attacker['power'] === 'Y') ? 'id="calc-plus-blue-border"' : '') + 'class="toggle-cop"'}> 
+                        <img src="terrain/aw2/bluestar.gif" ${((this.attacker['power'] === 'S') ? 'id="calc-plus-blue-border"' : '') + 'class="toggle-scop"'}>
                     </div>
                 </div> 
                 <div class="misc-options" id="calc-plus-options" style="width: 98px;">
@@ -374,14 +366,14 @@ class CalcNode {
             <div class="calculator-defend" style="justify-content: flex-start; align-content: flex-start;">
                 <div class="co-options" id="calc-plus-options">
                     <div class="co option">
-                        <div class="selected-co">
+                        <div class="selected-co ${atRoot ? '' : 'calc-plus-locked'}">
                             <img src="terrain/aw2/ds${this.defender['co']['co_name'].toLowerCase()}.png?v=1" class="border co_portrait">
                         </div>
                     </div>
                 </div>
                 <div class="unit-options" id="calc-plus-options">
                     <div class="unit option">
-                        <div class="selected-unit border">
+                        <div class="selected-unit border ${atRoot ? '' : 'calc-plus-locked'}">
                             <img src="terrain/ani/${this.defender['country']['code']}${this.defender['unit']['units_name'].toLowerCase()}.gif">
                             ${(this.defender['hp'] < 1 || this.defender['hp'] > 9) ? '' : '<img src="terrain/aw2/' + this.defender['hp'] + '.gif" class="hp-display">'}
                         </div>
@@ -392,18 +384,18 @@ class CalcNode {
                     </div>
                 </div>
                 <div class="terrain-options" id="calc-plus-options">
-                    <div class="terrain option">
+                    <div class="terrain option ${atRoot ? '' : 'calc-plus-locked'}">
                         <img src="terrain/aw2/${defenderCountry+this.defender['terrain']['terrain_name'].toLowerCase().replace('?', '')}.gif" class="selected-terrain">
                         <div class="terrain-stars">
                             <img src="terrain/terrainstar.gif">
-                            <p>${this.defender['terrain']['terrain_defense']}</p>
+                            <p>${(this.defender.co.co_name === 'Lash' && this.defender.power === 'S') ? this.defender['terrain']['terrain_defense'] * 2 : this.defender['terrain']['terrain_defense']}</p>
                         </div>
                     </div>
                 </div> 
-                <div class="power-options" id="calc-plus-options" style="flex-direction: column; width: 57px">
+                <div class="power-options ${!atRoot ? 'calc-plus-locked' : ''}" id="calc-plus-options" style="flex-direction: column; width: 57px">
                     <div class="option" style="margin: 0px 0px;">
-                        <img src="terrain/aw2/redstar.gif" ${(this.defender['power'] === 'Y') ? 'class="green-border toggle-cop"' : 'class="toggle-cop"'}> 
-                        <img src="terrain/aw2/bluestar.gif" ${(this.defender['power'] === 'S') ? 'class="green-border toggle-scop"' : 'class="toggle-scop"'}>
+                        <img src="terrain/aw2/redstar.gif" ${((this.defender['power'] === 'Y') ? 'id="calc-plus-blue-border"' : '') + 'class="toggle-cop"'}> 
+                        <img src="terrain/aw2/bluestar.gif" ${((this.defender['power'] === 'S') ? 'id="calc-plus-blue-border"' : '') + 'class="toggle-scop"'}>
                     </div>
                 </div> 
                 <div class="misc-options" id="calc-plus-options" style="width: 98px;">
@@ -686,8 +678,6 @@ class CalcNode {
         }
     }
 }
-
-
 
 /////////////////////////////////////////////////////
 /////////////////////////////////////////////////////
