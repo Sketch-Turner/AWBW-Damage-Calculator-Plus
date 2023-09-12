@@ -1,0 +1,24 @@
+{
+    "manifest_version": 3,
+    "name": "Damage Calculator +",
+    "description": "Provides additional Damage Calculator functionality.",
+    "version": "1.0",
+    "icons": {
+        "16": "images/icon_16.png",
+        "32": "images/icon_32.png",
+        "48": "images/icon_48.png",
+        "128": "images/icon_128.png"
+    },
+    "content_scripts": [
+        {
+          "js": ["scripts/calc_plus.js"],
+          "matches": ["https://awbw.amarriner.com/*"]
+        }
+    ],
+    "web_accessible_resources": [
+        {
+          "resources": ["images/*", "scripts/calc_plus.css"],
+          "matches": ["https://awbw.amarriner.com/*"]
+        }
+    ]  
+}

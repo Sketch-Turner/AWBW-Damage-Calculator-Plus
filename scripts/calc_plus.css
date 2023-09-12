@@ -1,0 +1,165 @@
+.calc-plus-node-ctrls {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 100%;
+}
+
+.calc-plus-ctrls {
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 2px; /* Adjust padding for smaller buttons */
+    cursor: pointer;
+    border-radius: 4px;
+    width: 16px; /* Adjust width for smaller buttons */
+    display: inline-flex;
+}
+
+
+/* Use the same class for both left and right options */
+.calc-plus-ctrls-del,
+.calc-plus-ctrls-add {
+    margin: 0; /* Remove any margin */
+}
+
+.calc-plus-ctrls-add {
+    margin-left: auto;
+}
+
+.calc-plus-main-display {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.calc-plus-damage {
+    display: flex;
+    justify-content: space-around;
+}
+
+.calc-plus {
+    background: white; 
+    border: 1px solid black; 
+    display: none; 
+    flex-direction: column;
+    font-family: sans-serif; 
+    font-size: 14px; 
+    left: 200px; 
+    position: absolute; 
+    top: 200px; 
+    -webkit-user-select: none; 
+    -moz-user-select: none; 
+    -ms-user-select: none; 
+    user-select: none; 
+    width: 345px;
+    height: 350px; 
+    min-width: 358px;
+    min-height: 278px;
+    z-index: 800;
+    resize: both;
+    overflow: auto;
+}
+
+.calc-plus-header { /*grab header*/
+    align-items: center;
+    cursor: grab;
+    display: flex;
+}
+
+.calc-plus-header span {
+    cursor: pointer;
+    font-size: 16px;
+    margin-left: auto;
+    margin-right: 8px;
+}
+
+/* Make sure .calc-plus-display is positioned relatively */
+.calc-plus-display {
+    position: relative;
+    min-height: 0;
+    flex-grow: 1;
+    width: 100%;
+    height: 100%;
+    background: #f9e0e0;
+    overflow: scroll;
+}
+
+/* Set fixed or absolute positioning for .calc-plus-node elements */
+.calc-plus-node {
+    position: absolute; /* Use 'fixed' if you want the elements to remain fixed even while scrolling */
+    top: 0;
+    left: 0;
+    /* Adjust width and height if needed */
+    width: 100px;
+    height: 100px;
+    /* Other styles */
+    overflow: hidden;
+}
+
+
+.calc-plus-main {
+    display: flex;
+    flex-direction: row;
+}
+
+.calc-plus-results {
+    background-color: plum;
+}
+
+.calc-plus-summary-display{
+    align-items: center;
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    margin-top: 4px;
+    margin-left: 1px;
+    margin-right: 1px;
+}
+
+.calc-plus-summary-image {
+    border: 1px solid #888888;
+    background-color: white;
+    display: flex;
+    align-items: flex-end;
+    position: relative;
+    margin: 2px;
+}
+
+.calc-plus-summary-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    position: relative;
+    margin: 2px;
+}
+
+.calc-plus-summary-attack, .calc-plus-summary-defend {
+    background: #DDDDDD;
+    border: 1px solid #888888;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50%;
+    height: 100%;
+}
+
+#calc-plus-options {
+    margin-right: 4px;
+    margin-top: 4px;
+}
+
+#calc-plus-city-options, #calc-plus-tower-options {
+    width: 47%;
+    margin-right: 0px;
+}
+
+#calc-plus-fund-options {
+    margin-top: 0px;
+    margin-left: 61px;
+    margin-bottom: 4px;
+    width: 106px;
+}
