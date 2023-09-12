@@ -4,6 +4,7 @@ const SIZE_X = 340;
 const SIZE_Y = 126;
 const SIZE_Y_FOCUSED = 240;
 const SCROLLBAR_WIDTH = 20;
+const Z_INDEX = 800;
 const CO_LIST = {
     "andy":{"co_name":"Andy","co_id":"1"},
     "grit":{"co_name":"Grit","co_id":"2"},
@@ -692,11 +693,28 @@ class DamageCalculator {
         this.buildCalculator();
         this.currentElement = null;
         this.currentNode = null;
+        this.zindex = Z_INDEX;
         this.isMenuOpen = {
             'select-co': false,
             'select-terrain': false,
             'select-unit': false
         };
+    }
+
+    bringToFront() {
+        if (this.zindex < Z_INDEX) {
+            this.zindex += 1;
+            const calcPlus = document.getElementById("calc-plus");
+            calcPlus.style.zIndex = this.zindex;
+        }
+    }
+
+    sendToBack() {
+        if (this.zindex >= Z_INDEX) {
+            this.zindex -= 1;
+            const calcPlus = document.getElementById("calc-plus");
+            calcPlus.style.zIndex = this.zindex;
+        }
     }
 
     updateWindowSize() {
@@ -759,6 +777,7 @@ class DamageCalculator {
 
     // Show/hide calc
     toggleCalculator() {
+        this.bringToFront();
         const dc = document.getElementById('calc-plus');
         dc.style.display = (dc.style.display !== 'flex') ? 'flex' : 'none';
         for (const key in this.isMenuOpen) {
@@ -798,7 +817,6 @@ class DamageCalculator {
     async buildCalculator() {
         await this.root.refactor({'towers': true, 'cities': true, 'funds': true, 'power': true, 'co': true});
         const dc = document.getElementById('calculator');
-        //TODO click handler to make dc overlap dc+ on focus
 
         //insert html
         const co_menu = `
@@ -883,7 +901,7 @@ class DamageCalculator {
         </div>
         `;
         const HTMLstring = `
-            <div id="calc-plus" class="calc-plus" move="false" mouse="false" style="left: 200px; top: 200px; width: 358px; height: 278px">
+            <div id="calc-plus" class="calc-plus" move="false" mouse="false" style="left: 200px; top: 200px; width: 358px; height: 278px; z-index: ${this.zindex};">
                 <header id="calc-plus-header" class="calc-plus-header">
                     Damage Calculator +
                     <div class="reverse-info-box calculator-help">
@@ -909,10 +927,14 @@ class DamageCalculator {
         const grabHeader = document.getElementById("calc-plus-header");
         const calcPlus = document.getElementById("calc-plus");
 
+        //if click on old dc, send dc+ to back
+        dc.addEventListener("click", () => this.sendToBack());
+
         let lastPosX = parseInt(calcPlus.style.left);
         let lastPosY = parseInt(calcPlus.style.top);
 
         grabHeader.addEventListener("mousedown", (event) => {
+            this.bringToFront();
             grabHeader.mouse = "true";
             grabHeader.style.cursor = "grabbing";
             grabHeader.offsetX = event.clientX - lastPosX;
@@ -948,6 +970,8 @@ class DamageCalculator {
         // Attach a single click event listener to the container
         const calcDisplay = document.getElementById("calc-plus-display");   
         calcDisplay.addEventListener('click', async (event) => {
+            this.bringToFront();
+
             const addButton = event.target.closest('.calc-plus-ctrls-add');
             const deleteButton = event.target.closest('.calc-plus-ctrls-del');
             const svgNode = event.target.closest('.calc-plus-node');
@@ -1292,6 +1316,7 @@ document.head.appendChild(link);
 
 //Add calc plus button
 const old_dc_button = document.querySelector('.calculator-toggle.game-tools-btn');
+
 const new_dc_button = `
 <div class="calculator-plus-toggle game-tools-btn" style="border-right: none;">
     <div class="game-tools-bg">
@@ -1304,6 +1329,9 @@ old_dc_button.insertAdjacentHTML('afterend', new_dc_button);
 
 //Add calculator
 let DCP = new DamageCalculator();
+
+//If old calc is opened, send dc+ to back
+old_dc_button.addEventListener('click', () => DCP.sendToBack());
 
 // Add event listener for new button
 const menuContainer = document.getElementById('map-controls-container');
