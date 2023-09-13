@@ -123,6 +123,8 @@ class CalcNode {
         this.defenderMaxCities = 99;
         this.defenderMaxTowers = 99;
         this.isValid = true;
+        this.selectingAttacker = false;
+        this.selectingDefender = false;
         this.calcResults = {
             'attackDamageMin': '',
             'attackDamageMax': '',
@@ -286,17 +288,6 @@ class CalcNode {
         </div>
         `;
 
-        let headerHtml = `
-        <div class="headers" style="height: 32px;">
-            <header>
-                Attacker
-			</header>
-            <header>
-                Defender
-			</header>
-        </div>
-        `;
-
         let attackerCountry = '';
         if (this.attacker['terrain']['terrain_name'].includes('?')) {
             attackerCountry = this.attacker['country']['name'].toLowerCase();
@@ -308,9 +299,22 @@ class CalcNode {
         }
 
         const atRoot = this.id === this.getRoot().id;
+        let headerHtml = '';
         let resultsHtml = '';
         let displayHtml = '';
         if (this.isFocused) {
+            headerHtml = `
+            <div class="headers" style="height: 32px;">
+                <header>
+                    Attacker
+                    <span class="select-attacker ${this.selectingAttacker ? 'bold' : ''}"> [Select] </span>
+                </header>
+                <header>
+                    Defender
+                    ${atRoot ? '<span class="select-defender ' + (this.selectingDefender ? 'bold' : '') + '"> [Select] </span>' : ''}
+                </header>
+            </div>
+            `;
             let attackerHtml = `
             <div class="calculator-attack" style="justify-content: flex-start; align-content: flex-start;">
                 <div class="co-options" id="calc-plus-options">
@@ -334,7 +338,7 @@ class CalcNode {
                 </div>
                 <div class="terrain-options" id="calc-plus-options">
                     <div class="terrain option">
-                        <img src="terrain/aw2/${attackerCountry+this.attacker['terrain']['terrain_name'].toLowerCase().replace('?', '')}.gif" class="selected-terrain">
+                        <img src="terrain/aw2/${attackerCountry+this.attacker['terrain']['terrain_name'].toLowerCase().replaceAll(' ', '').replaceAll('?', '')}.gif" class="selected-terrain">
                         <div class="terrain-stars">
                             <img src="terrain/terrainstar.gif">
                             <p>${(this.attacker.co.co_name === 'Lash' && this.attacker.power === 'S') ? this.attacker['terrain']['terrain_defense'] * 2 : this.attacker['terrain']['terrain_defense']}</p>
@@ -386,7 +390,7 @@ class CalcNode {
                 </div>
                 <div class="terrain-options" id="calc-plus-options">
                     <div class="terrain option ${atRoot ? '' : 'calc-plus-locked'}">
-                        <img src="terrain/aw2/${defenderCountry+this.defender['terrain']['terrain_name'].toLowerCase().replace('?', '')}.gif" class="selected-terrain">
+                        <img src="terrain/aw2/${defenderCountry+this.defender['terrain']['terrain_name'].toLowerCase().replaceAll(' ', '').replaceAll('?', '')}.gif" class="selected-terrain">
                         <div class="terrain-stars">
                             <img src="terrain/terrainstar.gif">
                             <p>${(this.defender.co.co_name === 'Lash' && this.defender.power === 'S') ? this.defender['terrain']['terrain_defense'] * 2 : this.defender['terrain']['terrain_defense']}</p>
@@ -440,6 +444,16 @@ class CalcNode {
             </div>
             `;
         } else {
+            headerHtml = `
+            <div class="headers" style="height: 32px;">
+                <header>
+                    Attacker
+                </header>
+                <header>
+                    Defender
+                </header>
+            </div>
+            `;
             displayHtml = `
                 <div class="calc-plus-summary-display">
                     <div class="calc-plus-summary-attack">
@@ -465,7 +479,7 @@ class CalcNode {
                             (this.attacker.power === 'S' ? '<img src="terrain/aw2/bluestar.gif" style="width: 23px">' : '')}
                         </div>
                         <div class="calc-plus-summary-image">
-                            <img src="terrain/aw2/${attackerCountry+this.attacker['terrain']['terrain_name'].toLowerCase().replace('?', '')}.gif" style="z-index: 0; width: 24px">
+                            <img src="terrain/aw2/${attackerCountry+this.attacker['terrain']['terrain_name'].toLowerCase().replaceAll(' ', '').replaceAll('?', '')}.gif" style="z-index: 0; width: 24px">
                             <img src="terrain/ani/${this.attacker['country']['code']}${this.attacker['unit']['units_name'].toLowerCase()}.gif" style="z-index: 1; width: 24px; position: absolute;">
                             ${(this.attacker['hp'] < 1 || this.attacker['hp'] > 9) ? '' : '<img src="terrain/aw2/' + this.attacker['hp'] + '.gif" style="width: 12px; z-index: 2; position: absolute; bottom: 0; right: 0;">'}
                         </div>
@@ -494,7 +508,7 @@ class CalcNode {
                             (this.defender.power === 'S' ? '<img src="terrain/aw2/bluestar.gif" style="width: 23px">' : '')}
                         </div>
                         <div class="calc-plus-summary-image">
-                            <img src="terrain/aw2/${defenderCountry+this.defender['terrain']['terrain_name'].toLowerCase().replace('?', '')}.gif" style="z-index: 0; width: 24px">
+                            <img src="terrain/aw2/${defenderCountry+this.defender['terrain']['terrain_name'].toLowerCase().replaceAll(' ', '').replaceAll('?', '')}.gif" style="z-index: 0; width: 24px">
                             <img src="terrain/ani/${this.defender['country']['code']}${this.defender['unit']['units_name'].toLowerCase()}.gif" style="z-index: 1; width: 24px; position: absolute;">
                             ${(this.defender['hp'] < 1 || this.defender['hp'] > 9) ? '' : '<img src="terrain/aw2/' + this.defender['hp'] + '.gif" style="width: 12px; z-index: 2; position: absolute; bottom: 0; right: 0;">'}
                         </div>
@@ -633,8 +647,10 @@ class CalcNode {
         const maxHP = Math.max(0, this.defenderDisplayHP - this.calcResults['attackDamageMin']);
 
         nextDefender['hp'] = Math.ceil(maxHP/10);
+        const nextAttacker = JSON.parse(JSON.stringify(DEFAULT_ATTACKER));
+        nextAttacker.country = this.attacker.country;
 
-        const newNode = new CalcNode(JSON.parse(JSON.stringify(DEFAULT_ATTACKER)), nextDefender);
+        const newNode = new CalcNode(nextAttacker, nextDefender);
         newNode.defenderMaxHP = maxHP;
         newNode.defenderDisplayHP = maxHP;
 
@@ -694,6 +710,8 @@ class DamageCalculator {
         this.currentElement = null;
         this.currentNode = null;
         this.zindex = Z_INDEX;
+        this.clickSelectMode = 'N'; //N: None, A: Attacker, D: Defender
+        this.clickedUnit = null;
         this.isMenuOpen = {
             'select-co': false,
             'select-terrain': false,
@@ -811,6 +829,66 @@ class DamageCalculator {
             menu.style.left = menuPosition[0] + 'px';
             menu.style.top = menuPosition[1] + 'px';
         }
+    }
+
+    getPlayers() {
+        let players = [];
+        const playerElements = document.getElementsByClassName('player-overview-container');
+    
+        for (const element of playerElements) {
+            players.push(element.id.replace('player', ''));
+        }
+    
+        return players;
+    }
+
+    async getData(unitID) {
+        return new Promise((resolve, reject) => {
+            let playerID = null;
+            const request = new XMLHttpRequest();
+            request.open("POST", "/api/game/fetch_game_viewer_data.php", true);
+            request.setRequestHeader("Content-Type", "application/json");
+            request.onreadystatechange = () => {
+                if (request.readyState === XMLHttpRequest.DONE) {
+                    if (request.status === 200) {
+                        const response = JSON.parse(request.responseText);
+
+                        //Get clicked unit
+                        const unit = response.units[unitID];
+
+                        //Get clicked tile
+                        const tile = response.terrain[unit.units_x][unit.units_y] ? response.terrain[unit.units_x][unit.units_y] : response.buildings[unit.units_x][unit.units_y];
+
+                        //Get player
+                        const player = response.players[unit.units_players_id];
+
+                        if (unit && tile && player) {
+                            this.clickedUnit = {
+                                "cities": player.other_buildings-player.labs-player.towers,
+                                "co": {"co_name": player.co_name, "co_id": player.players_co_id},
+                                "country": {"code": player.countries_code, "name": player.countries_name.replace(' ', '').toLowerCase()},
+                                "funds": player.players_funds,
+                                "hp": unit.units_hit_points,
+                                "power": player.players_co_power_on,
+                                "terrain": {"terrain_name": tile.terrain_name, "terrain_id": tile.terrain_id, "terrain_defense": tile.terrain_defense},
+                                "towers": player.towers,
+                                "unit": {"units_ammo": unit.units_ammo, "units_name": unit.units_name, "units_id": unit.generic_id}
+                            };
+                        }
+                        resolve(); // Resolve the Promise when the calculation is done
+                    } else {
+                        console.error("Calc-Plus Error:", request.status);
+                        reject(request.status); // Reject the Promise in case of an error
+                    }
+                }
+            };
+            playerID = this.getPlayers()[0];
+            const data = {
+                playersID: playerID,
+                objects: ["units", "players", "buildings", "terrain"]
+            };
+            request.send(JSON.stringify(data));
+        });
     }
 
     //add calc
@@ -967,11 +1045,40 @@ class DamageCalculator {
             }
         });
 
-        // Attach a single click event listener to the container
-        const calcDisplay = document.getElementById("calc-plus-display");   
+        //Calc plus display
+        const calcDisplay = document.getElementById("calc-plus-display"); 
+
+        //Attack click listener to gamemap. Used to detect unit selections.
+        const gamemap = document.getElementById('gamemap-container');
+        gamemap.addEventListener('click', async (event) => {
+            if (this.clickSelectMode !== 'N') {
+                const clickedUnit = event.target.closest('.game-unit');
+                if (clickedUnit) {
+                    await this.getData(clickedUnit.getAttribute('data-unit-id'));
+                    if (this.clickSelectMode === 'A') {
+                        this.currentNode.attacker = JSON.parse(JSON.stringify(this.clickedUnit));
+                        this.currentNode.attackerDisplayHP = this.currentNode.attacker.hp * 10;
+                        this.currentNode.selectingAttacker = false;
+                    }
+                    if (this.clickSelectMode === 'D') {
+                        this.currentNode.defender = JSON.parse(JSON.stringify(this.clickedUnit));
+                        this.currentNode.defenderDisplayHP = this.currentNode.defender.hp * 10;
+                        this.currentNode.selectingDefender = false;
+                    }
+                    await this.currentNode.refactor({'a_towers': true, 'a_cities': true, 'funds': true, 'power': true, 'co': true, 'd_towers': true, 'd_cities': true});//if current node calc has changed, need to update all children
+                    this.root.orient(this.root.x, this.root.y);
+                    calcDisplay.innerHTML = this.root.getHTML(); // Update the display
+                }
+            }
+            
+            
+        });
+
+        // Attach a single click event listener to the container  
         calcDisplay.addEventListener('click', async (event) => {
             this.bringToFront();
-
+            this.clickSelectMode = 'N'; //None
+        
             const addButton = event.target.closest('.calc-plus-ctrls-add');
             const deleteButton = event.target.closest('.calc-plus-ctrls-del');
             const svgNode = event.target.closest('.calc-plus-node');
@@ -980,8 +1087,9 @@ class DamageCalculator {
             const selectCO = event.target.closest('.selected-co');
             const selectTerrain = event.target.closest('.selected-terrain');
             const selectUnit = event.target.closest('.selected-unit');
+            const toggleClickSelect = event.target.closest('.select-attacker') ? event.target.closest('.select-attacker') : event.target.closest('.select-defender');
             const inputField = event.target.closest('.text-input');
-        
+                   
             let updateDisplay = true; 
             let updateWindow = false;
             let valueChanges = {'a_towers': false, 'a_cities': false, 'funds': false, 'power': false, 'co': false, 'd_towers': false, 'd_cities': false};
@@ -1014,6 +1122,17 @@ class DamageCalculator {
                         valueChanges = {'a_towers': true, 'a_cities': true, 'funds': true, 'power': true, 'co': true, 'd_towers': false, 'd_cities': false};
                         selectedNode.add(selectedNode.genNextNode());
                         updateWindow = true;
+                    } else if (toggleClickSelect && selectedNode.isValid) {
+                        for (const key in this.isMenuOpen) {
+                            this.closeMenu(key);//close all menus
+                        }
+                        if (toggleClickSelect.classList[0] === 'select-attacker') {
+                            this.clickSelectMode = 'A';
+                            selectedNode.selectingAttacker = true;
+                        } else if (toggleClickSelect.classList[0] === 'select-defender') {
+                            this.clickSelectMode = 'D';
+                            selectedNode.selectingDefender = true;
+                        }
                     } else if (toggleCOP && selectedNode.isValid) {
                         for (const key in this.isMenuOpen) {
                             this.closeMenu(key);//close all menus
