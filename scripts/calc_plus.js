@@ -1,5 +1,5 @@
 const INDENT = 20;
-const OFFSET = 2;
+const OFFSET = 3;
 const SIZE_X = 340;
 const SIZE_Y = 126;
 const SIZE_Y_FOCUSED = 240;
@@ -109,8 +109,8 @@ class CalcNode {
         this.defender = defender;
         this.children = [];
         this.isFocused = true;
-        this.x = 0;
-        this.y = 0;
+        this.x = 1;
+        this.y = 1;
         this.width = 0;
         this.height = 0;
         this.parent = null;
@@ -228,63 +228,122 @@ class CalcNode {
         }
     }
 
-    getPolygon() {
-        let indent = INDENT;
+    getNodePolygon() {
         let poly = "";
         // top left
-        let p = [0, 0];
+        let p = [1, 1];
         poly += p[0] + "," + p[1] + " ";
         // top right
-        p = [this.width, 0];
+        p = [this.width, 1];
         poly += p[0] + "," + p[1] + " ";
         let offset = 0;
         this.children.forEach(child => {
             offset = child.index*OFFSET;
             // top left child
-            p = [child.x - this.x, child.y - this.y + offset];
+            p = [child.x - this.x, child.y - this.y + offset+1];
             poly += p[0] + "," + p[1] + " ";
             // indent center
-            p = [child.x - this.x + indent, child.y - this.y + indent + offset];
+            p = [child.x - this.x + INDENT, child.y - this.y + INDENT + offset+1];
             poly += p[0] + "," + p[1] + " ";
             // indent bottom
-            p = [child.x - this.x, child.y - this.y + 2 * indent + offset];
+            p = [child.x - this.x, child.y - this.y + 2 * INDENT + offset+1];
             poly += p[0] + "," + p[1] + " ";
         });
         // bottom right
         p = [this.width, this.height];
         poly += p[0] + "," + p[1] + " ";
         // bottom left
-        p = [0, this.height];
+        p = [1, this.height];
         poly += p[0] + "," + p[1] + " ";
         if (this.level !== 0) {
             // indent bottom
-            p = [0, 2 * indent];
+            p = [1, (2 * INDENT)+1];
             poly += p[0] + "," + p[1] + " ";
             // indent center
-            p = [indent, indent];
+            p = [INDENT+1, INDENT+1];
             poly += p[0] + "," + p[1];
         }
 
         return poly;
     }
 
-    getColor() {
-        if (this.isValid) {
-            if (this.isFocused === true) {
-                return "lightskyblue";
-            } else {
-                return "lightblue";
-            }
+    getAttackerPolygon() {
+        let poly = "";
+        let p = [];
+        if (this.parent === null) {
+            // top left
+            p = [2, 2];
+            poly += p[0] + "," + p[1] + " ";
         } else {
-            return '#b83b4b';
+            // top left
+            p = [3, 2];
+            poly += p[0] + "," + p[1] + " ";
         }
+
+        // top right
+        p = [this.width/2, 2];
+        poly += p[0] + "," + p[1] + " ";
+        // bottom right
+        p = [this.width/2, INDENT*2];
+        poly += p[0] + "," + p[1] + " ";
+        if (this.parent === null) {
+            // bottom left
+            p = [2, INDENT*2];
+            poly += p[0] + "," + p[1] + " ";
+        } else {
+            // bottom left
+            p = [3, INDENT*2];
+            poly += p[0] + "," + p[1] + " ";
+        }
+
+        if (this.level !== 0) {
+            // indent center
+            p = [INDENT+2, INDENT+1];
+            poly += p[0] + "," + p[1];
+        }
+        return poly;
     }
 
+    getDefenderPolygon() {
+        let poly = "";
+        // top left
+        let p = [this.width/2+1, 2];
+        poly += p[0] + "," + p[1] + " ";
+        if (this.children.length === 0) {
+            // top right
+            p = [this.width-1, 2];
+            poly += p[0] + "," + p[1] + " ";
+        } else {
+            // top right
+            p = [this.width, 2];
+            poly += p[0] + "," + p[1] + " ";
+        }
+        if (this.children.length !== 0) {
+            // indent center
+            p = [this.width + INDENT-1, INDENT+1];
+            poly += p[0] + "," + p[1] + " ";
+        } 
+        if (this.children.length === 0) {
+            // bottom right
+            p = [this.width-1, INDENT*2];
+            poly += p[0] + "," + p[1] + " ";
+        } else {
+            // bottom right
+            p = [this.width, INDENT*2];
+            poly += p[0] + "," + p[1] + " ";
+        }
+        // bottom left
+        p = [this.width/2+1, INDENT*2];
+        poly += p[0] + "," + p[1] + " ";
+        return poly;
+    }
+    
     generateHTML() {
+        const variableStyle = (!this.isValid) ? 'calc-plus-invalid' : (this.isFocused) ? 'calc-plus-focused' : 'calc-plus-unfocused'; 
         let optionsHtml = `
         <div class="calc-plus-node-ctrls">
-            ${(this.level !== 0) ? '<div class="calc-plus-ctrls calc-plus-ctrls-del" title="Delete"><img src="' + chrome.runtime.getURL('/images/delete_icon.png') + '"></div>' : ''}
-            ${(this.defenderDisplayHP - this.calcResults['attackDamageMin'] > 0) ? '<div class="calc-plus-ctrls calc-plus-ctrls-add" title="Add"><img src="' + chrome.runtime.getURL('/images/add_icon.png') + '"></div>' : ''}
+            ${(this.level !== 0) ? '<div class="calc-plus-ctrls calc-plus-ctrls-del ' + variableStyle +'" title="Delete"><img src="' + chrome.runtime.getURL('/images/delete_icon.png') + '"></div>' : ''}
+            ${(this.defenderDisplayHP - this.calcResults['attackDamageMin'] > 0) ? '<div class="calc-plus-ctrls calc-plus-ctrls-add ' + variableStyle + '" title="Add"><img src="' + chrome.runtime.getURL('/images/add_icon.png') + '"></div>' : ''}
         </div>
         `;
 
@@ -303,20 +362,32 @@ class CalcNode {
         let resultsHtml = '';
         let displayHtml = '';
         if (this.isFocused) {
+            // headerHtml = `
+            // <div class="headers calc-plus-node-headers ${variableStyle}" style="height: 32px;">
+            //     <header>
+            //         Attacker
+            //         <span class="select-attacker ${this.selectingAttacker ? 'bold' : ''}"> [Select] </span>
+            //     </header>
+            //     <header>
+            //         Defender
+            //         ${atRoot ? '<span class="select-defender ' + (this.selectingDefender ? 'bold' : '') + '"> [Select] </span>' : ''}
+            //     </header>
+            // </div>
+            // `;
             headerHtml = `
-            <div class="headers" style="height: 32px;">
-                <header>
-                    Attacker
-                    <span class="select-attacker ${this.selectingAttacker ? 'bold' : ''}"> [Select] </span>
-                </header>
-                <header>
-                    Defender
-                    ${atRoot ? '<span class="select-defender ' + (this.selectingDefender ? 'bold' : '') + '"> [Select] </span>' : ''}
-                </header>
-            </div>
+                <div class="calc-plus-node-headers ${variableStyle}" style="height: ${INDENT*2}px;">
+                    <div style="display: flex; flex-direction: column; width: 50%">
+                        <span>Attacker</span>
+                        <span class="calc-plus-select-attacker ${this.selectingAttacker ? 'clicked' : ''}"> [Select] </span>
+                    </div>
+                    <div style="display: flex; flex-direction: column; width: 50%">
+                        <span>Defender</span>
+                        ${atRoot ? '<span class="calc-plus-select-defender ' + (this.selectingDefender ? 'clicked' : '') + '"> [Select] </span>' : ''}
+                    </div>
+                </div>
             `;
             let attackerHtml = `
-            <div class="calculator-attack" style="justify-content: flex-start; align-content: flex-start;">
+            <div class="calculator-attack" style="justify-content: flex-start; align-content: flex-start; width: ${this.width/2-3}px;">
                 <div class="co-options" id="calc-plus-options">
                     <div class="co option">
                         <div class="selected-co ${atRoot ? '' : 'calc-plus-locked'}">
@@ -368,7 +439,7 @@ class CalcNode {
             </div>
             `;
             let defenderHtml = `
-            <div class="calculator-defend" style="justify-content: flex-start; align-content: flex-start;">
+            <div class="calculator-defend" style="justify-content: flex-start; align-content: flex-start; width: ${this.width/2-3}px;">
                 <div class="co-options" id="calc-plus-options">
                     <div class="co option">
                         <div class="selected-co ${atRoot ? '' : 'calc-plus-locked'}">
@@ -445,18 +516,18 @@ class CalcNode {
             `;
         } else {
             headerHtml = `
-            <div class="headers" style="height: 32px;">
-                <header>
-                    Attacker
-                </header>
-                <header>
-                    Defender
-                </header>
+            <div class="calc-plus-node-headers ${variableStyle}" style="height: ${INDENT*2}px;">
+                <div style="display: flex; flex-direction: column; width: 50%">
+                    <span>Attacker</span>
+                </div>
+                <div style="display: flex; flex-direction: column; width: 50%">
+                    <span>Defender</span>
+                </div>
             </div>
             `;
             displayHtml = `
                 <div class="calc-plus-summary-display">
-                    <div class="calc-plus-summary-attack">
+                    <div class="calc-plus-summary-attack ${variableStyle}">
                         <div class="calc-plus-summary-info">
                             <span>
                                 <img src="terrain/aw2/commtowericon.gif">
@@ -471,21 +542,21 @@ class CalcNode {
                                 ${this.attacker.funds}
                             </span>
                         </div>
-                        <div class="calc-plus-summary-image">
+                        <div class="calc-plus-summary-image ${variableStyle}">
                             <img src="terrain/aw2/ds${this.attacker['co']['co_name'].toLowerCase()}.png?v=1" style="width: 34px">
                         </div>
-                        <div class="calc-plus-summary-image" ${this.attacker.power === 'N' ? 'style="display: none;"' : 'style="border: none;"'}>
+                        <div class="calc-plus-summary-image ${variableStyle}" ${this.attacker.power === 'N' ? 'style="display: none;"' : 'style="border: none;"'}>
                             ${this.attacker.power === 'Y' ? '<img src="terrain/aw2/redstar.gif" style="width: 23px">' : 
                             (this.attacker.power === 'S' ? '<img src="terrain/aw2/bluestar.gif" style="width: 23px">' : '')}
                         </div>
-                        <div class="calc-plus-summary-image">
+                        <div class="calc-plus-summary-image ${variableStyle}">
                             <img src="terrain/aw2/${attackerCountry+this.attacker['terrain']['terrain_name'].toLowerCase().replaceAll(' ', '').replaceAll('?', '')}.gif" style="z-index: 0; width: 24px">
                             <img src="terrain/ani/${this.attacker['country']['code']}${this.attacker['unit']['units_name'].toLowerCase()}.gif" style="z-index: 1; width: 24px; position: absolute;">
                             ${(this.attacker['hp'] < 1 || this.attacker['hp'] > 9) ? '' : '<img src="terrain/aw2/' + this.attacker['hp'] + '.gif" style="width: 12px; z-index: 2; position: absolute; bottom: 0; right: 0;">'}
                         </div>
                     </div>
 
-                    <div class="calc-plus-summary-defend">
+                    <div class="calc-plus-summary-defend ${variableStyle}">
                         <div class="calc-plus-summary-info">
                             <span>
                                 <img src="terrain/aw2/commtowericon.gif">
@@ -500,14 +571,14 @@ class CalcNode {
                                 ${this.defender.funds}
                             </span>
                         </div>
-                        <div class="calc-plus-summary-image">
+                        <div class="calc-plus-summary-image ${variableStyle}">
                             <img src="terrain/aw2/ds${this.defender['co']['co_name'].toLowerCase()}.png?v=1" style="width: 34px">
                         </div>
-                        <div class="calc-plus-summary-image" ${this.defender.power === 'N' ? 'style="display: none;"' : 'style="border: none;"'}>
+                        <div class="calc-plus-summary-image ${variableStyle}" ${this.defender.power === 'N' ? 'style="display: none;"' : 'style="border: none;"'}>
                             ${this.defender.power === 'Y' ? '<img src="terrain/aw2/redstar.gif" style="width: 23px">' : 
                             (this.defender.power === 'S' ? '<img src="terrain/aw2/bluestar.gif" style="width: 23px">' : '')}
                         </div>
-                        <div class="calc-plus-summary-image">
+                        <div class="calc-plus-summary-image ${variableStyle}">
                             <img src="terrain/aw2/${defenderCountry+this.defender['terrain']['terrain_name'].toLowerCase().replaceAll(' ', '').replaceAll('?', '')}.gif" style="z-index: 0; width: 24px">
                             <img src="terrain/ani/${this.defender['country']['code']}${this.defender['unit']['units_name'].toLowerCase()}.gif" style="z-index: 1; width: 24px; position: absolute;">
                             ${(this.defender['hp'] < 1 || this.defender['hp'] > 9) ? '' : '<img src="terrain/aw2/' + this.defender['hp'] + '.gif" style="width: 12px; z-index: 2; position: absolute; bottom: 0; right: 0;">'}
@@ -533,9 +604,13 @@ class CalcNode {
             `;
         }
 
+
+
         return `
         <svg class="calc-plus-node" data-index="${this.index}" data-level="${this.level}" data-id="${this.id}" style="width: ${this.width+INDENT}px; height: ${this.height}px; left: ${this.x+this.level*OFFSET}px; top: ${this.y+this.getOffset()*OFFSET}px;">
-            <polygon points="${this.getPolygon()}" fill="${this.getColor()}" />
+            <polygon points="${this.getNodePolygon()}" class="calc-plus-poly ${variableStyle}"></polygon>
+            <polygon points="${this.getAttackerPolygon()}" class="calc-plus-node-header-poly ${variableStyle}"></polygon>
+            <polygon points="${this.getDefenderPolygon()}" class="calc-plus-node-header-poly ${variableStyle}"></polygon>
             <foreignObject position="relative" x="0" y="0" width="${this.width}" height="${this.height}">
                 <div class="calc-plus-node-content">
                     ${headerHtml}
@@ -1077,7 +1152,6 @@ class DamageCalculator {
         // Attach a single click event listener to the container  
         calcDisplay.addEventListener('click', async (event) => {
             this.bringToFront();
-            this.clickSelectMode = 'N'; //None
         
             const addButton = event.target.closest('.calc-plus-ctrls-add');
             const deleteButton = event.target.closest('.calc-plus-ctrls-del');
@@ -1087,7 +1161,7 @@ class DamageCalculator {
             const selectCO = event.target.closest('.selected-co');
             const selectTerrain = event.target.closest('.selected-terrain');
             const selectUnit = event.target.closest('.selected-unit');
-            const toggleClickSelect = event.target.closest('.select-attacker') ? event.target.closest('.select-attacker') : event.target.closest('.select-defender');
+            const toggleClickSelect = event.target.closest('.calc-plus-select-attacker') ? event.target.closest('.calc-plus-select-attacker') : event.target.closest('.calc-plus-select-defender');
             const inputField = event.target.closest('.text-input');
                    
             let updateDisplay = true; 
@@ -1112,6 +1186,7 @@ class DamageCalculator {
                         for (const key in this.isMenuOpen) {
                             this.closeMenu(key);//close all menus
                         }
+                        
                         selectedNode.delete();
                         updateWindow = true;
                     } else if (addButton && selectedNode.isValid) {
@@ -1119,6 +1194,8 @@ class DamageCalculator {
                         for (const key in this.isMenuOpen) {
                             this.closeMenu(key);//close all menus
                         }
+                        
+
                         valueChanges = {'a_towers': true, 'a_cities': true, 'funds': true, 'power': true, 'co': true, 'd_towers': false, 'd_cities': false};
                         selectedNode.add(selectedNode.genNextNode());
                         updateWindow = true;
@@ -1126,17 +1203,26 @@ class DamageCalculator {
                         for (const key in this.isMenuOpen) {
                             this.closeMenu(key);//close all menus
                         }
-                        if (toggleClickSelect.classList[0] === 'select-attacker') {
-                            this.clickSelectMode = 'A';
-                            selectedNode.selectingAttacker = true;
-                        } else if (toggleClickSelect.classList[0] === 'select-defender') {
-                            this.clickSelectMode = 'D';
-                            selectedNode.selectingDefender = true;
+                        
+                        if (this.clickSelectMode === 'N') {
+                            if (toggleClickSelect.classList[0] === 'calc-plus-select-attacker') {
+                                this.clickSelectMode = 'A';
+                                selectedNode.selectingAttacker = true;
+                            } else if (toggleClickSelect.classList[0] === 'calc-plus-select-defender') {
+                                this.clickSelectMode = 'D';
+                                selectedNode.selectingDefender = true;
+                            }
+                        } else {
+                            this.clickSelectMode = 'N';
+                            selectedNode.selectingAttacker = false;
+                            selectedNode.selectingDefender = false;
                         }
+
                     } else if (toggleCOP && selectedNode.isValid) {
                         for (const key in this.isMenuOpen) {
                             this.closeMenu(key);//close all menus
                         }
+                        
                         if (selectedNode.id === this.root.id) { 
                             //changes to root are always allowed
                             if (toggleCOP.parentNode.parentNode.parentNode.classList[0].replace('calculator-', '') === 'attack') {
@@ -1154,6 +1240,7 @@ class DamageCalculator {
                         for (const key in this.isMenuOpen) {
                             this.closeMenu(key);//close all menus
                         }
+                        
                         if (selectedNode.id === this.root.id) { 
                             //changes to root are always allowed
                             if (toggleSCOP.parentNode.parentNode.parentNode.classList[0].replace('calculator-', '') === 'attack') {
@@ -1170,6 +1257,7 @@ class DamageCalculator {
                     } else if (selectCO && selectedNode.isValid) {
                         this.closeMenu('select-terrain');
                         this.closeMenu('select-unit');
+                        
                         if (selectedNode.id === this.root.id) {
                             //select co
                             if (!selectedNode.isFocused) {
@@ -1197,6 +1285,7 @@ class DamageCalculator {
                     } else if (selectTerrain && selectedNode.isValid) {
                         this.closeMenu('select-co');
                         this.closeMenu('select-unit');
+                        
                         if (selectedNode.id === this.root.id || selectTerrain.parentNode.parentNode.parentNode.classList[0].replace('calculator-', '') === 'attack') {
                             const menu = document.getElementById('calc-plus-select-terrain');
                             let newCountry;
@@ -1245,6 +1334,7 @@ class DamageCalculator {
                     } else if (selectUnit && selectedNode.isValid) {
                         this.closeMenu('select-terrain');
                         this.closeMenu('select-co');
+                        
                         if (selectedNode.id === this.root.id || selectUnit.parentNode.parentNode.parentNode.classList[0].replace('calculator-', '') === 'attack') {
                             const menu = document.getElementById('calc-plus-select-unit');
                             let newCountry;
@@ -1293,6 +1383,7 @@ class DamageCalculator {
                         for (const key in this.isMenuOpen) {
                             this.closeMenu(key);//close all menus
                         }
+                        
                         valueChanges = this.updateInputs(this.currentNode, this.currentElement, valueChanges);
                         updateDisplay = false;
                     } else { //click
@@ -1300,6 +1391,7 @@ class DamageCalculator {
                         for (const key in this.isMenuOpen) {
                             this.closeMenu(key);//close all menus
                         }
+                        
                         if (selectedNode.isValid) {
                             if (!selectedNode.isFocused) {
                                 if (!selectedNode.parent.isFocused) {
