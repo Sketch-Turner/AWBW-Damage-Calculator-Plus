@@ -76,6 +76,6 @@ After changing the unit used in the first attack to an Anti-Air, the follow-up a
 
 Invalid calculations can be deleted to save space or left alone.
 
-## Error Reporting {error-reporting}
+## Error Reporting {#error-reporting}
 Report errors [here](https://forms.gle/my2XMuUk14ZDjry46).
 Feel free to contribute! this is my first JS project an I could definately use some help.
