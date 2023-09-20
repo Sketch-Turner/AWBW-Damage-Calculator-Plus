@@ -70,7 +70,7 @@ Initially, the follow-up attack is valid because the Defender will always surviv
 
 ![Valid](images/tutorial/valid.png)
 
-After changing the unit use in the first attack to an Anti-Air, the follow-up attack becomes invalid since the Defender will always be killed.
+After changing the unit used in the first attack to an Anti-Air, the follow-up attack becomes invalid since the Defender will always be killed.
 
 ![Invalid](images/tutorial/invalid.png)
 
@@ -78,3 +78,4 @@ Invalid calculations can be deleted to save space or left alone.
 
 ## Error Reporting
 Report errors [here](https://forms.gle/my2XMuUk14ZDjry46).
+Feel free to contribute! this is my first JS project an I could definately use some help.
