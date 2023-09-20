@@ -362,18 +362,6 @@ class CalcNode {
         let resultsHtml = '';
         let displayHtml = '';
         if (this.isFocused) {
-            // headerHtml = `
-            // <div class="headers calc-plus-node-headers ${variableStyle}" style="height: 32px;">
-            //     <header>
-            //         Attacker
-            //         <span class="select-attacker ${this.selectingAttacker ? 'bold' : ''}"> [Select] </span>
-            //     </header>
-            //     <header>
-            //         Defender
-            //         ${atRoot ? '<span class="select-defender ' + (this.selectingDefender ? 'bold' : '') + '"> [Select] </span>' : ''}
-            //     </header>
-            // </div>
-            // `;
             headerHtml = `
                 <div class="calc-plus-node-headers ${variableStyle}" style="height: ${INDENT*2}px;">
                     <div style="display: flex; flex-direction: column; width: 50%">
@@ -966,6 +954,27 @@ class DamageCalculator {
         });
     }
 
+    // getUnitFromCursorPosition(gamemap, cursorX, cursorY){
+    //     console.log('test');
+    //     let unitElement = null;
+    //     //if no units are available, return null
+    //     const units = gamemap.getElementsByClassName('game-unit');
+    //     if (units.length === 0) {
+    //         return unitElement;
+    //     }
+
+    //     //find unit where cursor is in bounding rect
+    //     for (const unit of units) {
+    //         const rect = unit.getBoundingClientRect();
+    //         if (cursorX >= rect.x && cursorX <= rect.x + rect.width && cursorY >= rect.y && cursorY <= rect.y + rect.height) {
+    //             unitElement = unit;
+    //             break;
+    //         }
+    //     }
+
+    //     return unitElement;
+    // }
+
     //add calc
     async buildCalculator() {
         await this.root.refactor({'towers': true, 'cities': true, 'funds': true, 'power': true, 'co': true});
@@ -1124,10 +1133,14 @@ class DamageCalculator {
         const calcDisplay = document.getElementById("calc-plus-display"); 
 
         //Attack click listener to gamemap. Used to detect unit selections.
-        const gamemap = document.getElementById('gamemap-container');
-        gamemap.addEventListener('click', async (event) => {
+        const gamemap = document.getElementById('gamemap');
+        gamemap.addEventListener('mousedown', async (event) => {
             if (this.clickSelectMode !== 'N') {
-                const clickedUnit = event.target.closest('.game-unit');
+                event.stopPropagation();
+                let clickedUnit = event.target.closest('.game-unit');
+                //if unable to get unit, try to find based on click position
+                //clickedUnit = clickedUnit ? clickedUnit : this.getUnitFromCursorPosition(gamemap, event.clientX, event.clientY);
+
                 if (clickedUnit) {
                     await this.getData(clickedUnit.getAttribute('data-unit-id'));
                     if (this.clickSelectMode === 'A') {
@@ -1140,14 +1153,13 @@ class DamageCalculator {
                         this.currentNode.defenderDisplayHP = this.currentNode.defender.hp * 10;
                         this.currentNode.selectingDefender = false;
                     }
+                    this.clickSelectMode = 'N';
                     await this.currentNode.refactor({'a_towers': true, 'a_cities': true, 'funds': true, 'power': true, 'co': true, 'd_towers': true, 'd_cities': true});//if current node calc has changed, need to update all children
                     this.root.orient(this.root.x, this.root.y);
                     calcDisplay.innerHTML = this.root.getHTML(); // Update the display
                 }
             }
-            
-            
-        });
+        }, true);
 
         // Attach a single click event listener to the container  
         calcDisplay.addEventListener('click', async (event) => {
@@ -1203,7 +1215,6 @@ class DamageCalculator {
                         for (const key in this.isMenuOpen) {
                             this.closeMenu(key);//close all menus
                         }
-                        
                         if (this.clickSelectMode === 'N') {
                             if (toggleClickSelect.classList[0] === 'calc-plus-select-attacker') {
                                 this.clickSelectMode = 'A';
