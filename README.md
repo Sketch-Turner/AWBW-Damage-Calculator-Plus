@@ -42,7 +42,7 @@ All attributes of the first attack may be changed.
 ![First Attack Valid Changes](images/tutorial/root_valid.png)
 
 All changes made in the past will update future attacks. Changes that would be possible (Green) are allowed (e.g. Defender loses a Comm Tower or Attacker gains a Comm Tower).
-Changes that would contradict something in the past are not allowed (e.g. Defender terrain changes in the middle of Attacker's turn).
+Changes that would contradict something in the past (Red) are not allowed (e.g. Defender terrain changes in the middle of Attacker's turn).
 Once a COP or SCOP has been activated, all future attacks must also have it activated.
 
 ![Follow-Up Attack Valid Changes](images/tutorial/follow_up_valid.png)
