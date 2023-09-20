@@ -775,6 +775,7 @@ class DamageCalculator {
         this.zindex = Z_INDEX;
         this.clickSelectMode = 'N'; //N: None, A: Attacker, D: Defender
         this.clickedUnit = null;
+        this.clickEvent = false;
         this.isMenuOpen = {
             'select-co': false,
             'select-terrain': false,
@@ -894,86 +895,47 @@ class DamageCalculator {
         }
     }
 
-    getPlayers() {
-        let players = [];
-        const playerElements = document.getElementsByClassName('player-overview-container');
-    
-        for (const element of playerElements) {
-            players.push(element.id.replace('player', ''));
+    getData(unitID) {
+        //get game data
+        let regex = /unitsInfo = (.*?);/;
+        let match = regex.exec(document.documentElement.innerHTML);
+        const units = JSON.parse(match[1]);
+
+        regex = /terrainInfo = (.*?);/;
+        match = regex.exec(document.documentElement.innerHTML);
+        const terrain = JSON.parse(match[1]);
+
+        regex = /buildingsInfo = (.*?);/;
+        match = regex.exec(document.documentElement.innerHTML);
+        const buildings = JSON.parse(match[1]);
+
+        regex = /playersInfo = (.*?);/;
+        match = regex.exec(document.documentElement.innerHTML);
+        const players = JSON.parse(match[1]);
+
+        //Get clicked unit
+        const unit = units[unitID];
+
+        //Get clicked tile
+        const tile = terrain[unit.units_x][unit.units_y] || buildings[unit.units_x][unit.units_y];
+
+        //Get player
+        const player = players[unit.units_players_id];
+
+        if (unit && tile && player) {
+            this.clickedUnit = {
+                "cities": player.other_buildings-player.labs-player.towers,
+                "co": {"co_name": player.co_name, "co_id": player.players_co_id},
+                "country": {"code": player.countries_code, "name": player.countries_name.replace(' ', '').toLowerCase()},
+                "funds": player.players_funds,
+                "hp": unit.units_hit_points,
+                "power": player.players_co_power_on,
+                "terrain": {"terrain_name": tile.terrain_name, "terrain_id": tile.terrain_id, "terrain_defense": tile.terrain_defense},
+                "towers": player.towers,
+                "unit": {"units_ammo": unit.units_ammo, "units_name": unit.units_name, "units_id": unit.generic_id}
+            };
         }
-    
-        return players;
     }
-
-    async getData(unitID) {
-        return new Promise((resolve, reject) => {
-            let playerID = null;
-            const request = new XMLHttpRequest();
-            request.open("POST", "/api/game/fetch_game_viewer_data.php", true);
-            request.setRequestHeader("Content-Type", "application/json");
-            request.onreadystatechange = () => {
-                if (request.readyState === XMLHttpRequest.DONE) {
-                    if (request.status === 200) {
-                        const response = JSON.parse(request.responseText);
-
-                        //Get clicked unit
-                        const unit = response.units[unitID];
-
-                        //Get clicked tile
-                        const tile = response.terrain[unit.units_x][unit.units_y] ? response.terrain[unit.units_x][unit.units_y] : response.buildings[unit.units_x][unit.units_y];
-
-                        //Get player
-                        const player = response.players[unit.units_players_id];
-
-                        if (unit && tile && player) {
-                            this.clickedUnit = {
-                                "cities": player.other_buildings-player.labs-player.towers,
-                                "co": {"co_name": player.co_name, "co_id": player.players_co_id},
-                                "country": {"code": player.countries_code, "name": player.countries_name.replace(' ', '').toLowerCase()},
-                                "funds": player.players_funds,
-                                "hp": unit.units_hit_points,
-                                "power": player.players_co_power_on,
-                                "terrain": {"terrain_name": tile.terrain_name, "terrain_id": tile.terrain_id, "terrain_defense": tile.terrain_defense},
-                                "towers": player.towers,
-                                "unit": {"units_ammo": unit.units_ammo, "units_name": unit.units_name, "units_id": unit.generic_id}
-                            };
-                        }
-                        resolve(); // Resolve the Promise when the calculation is done
-                    } else {
-                        console.error("Calc-Plus Error:", request.status);
-                        reject(request.status); // Reject the Promise in case of an error
-                    }
-                }
-            };
-            playerID = this.getPlayers()[0];
-            const data = {
-                playersID: playerID,
-                objects: ["units", "players", "buildings", "terrain"]
-            };
-            request.send(JSON.stringify(data));
-        });
-    }
-
-    // getUnitFromCursorPosition(gamemap, cursorX, cursorY){
-    //     console.log('test');
-    //     let unitElement = null;
-    //     //if no units are available, return null
-    //     const units = gamemap.getElementsByClassName('game-unit');
-    //     if (units.length === 0) {
-    //         return unitElement;
-    //     }
-
-    //     //find unit where cursor is in bounding rect
-    //     for (const unit of units) {
-    //         const rect = unit.getBoundingClientRect();
-    //         if (cursorX >= rect.x && cursorX <= rect.x + rect.width && cursorY >= rect.y && cursorY <= rect.y + rect.height) {
-    //             unitElement = unit;
-    //             break;
-    //         }
-    //     }
-
-    //     return unitElement;
-    // }
 
     //add calc
     async buildCalculator() {
@@ -1068,7 +1030,12 @@ class DamageCalculator {
                     Damage Calculator +
                     <div class="reverse-info-box calculator-help">
                         ?
-                        <span class="info-box-text">Hold down "A" or "D" while clicking a unit to add it to the calculator</span>
+                        <div class="info-box-text" style="right:0px; width:180px;">
+                            Damage Calculator Plus by Sketch_Turner<br>
+                            <a href="https://github.com/Sketch-Turner/AWBW-Damage-Calculator-Plus#table-of-contents">Tutorial</a><br>
+                            <a href="https://forms.gle/my2XMuUk14ZDjry46">Error Reporting</a><br>
+                            See you on the Global League. Good luck, have fun!!
+                        </div>
                     </div>
                     <span class="close-calc-plus">&#10005;</span>
                 </header>
@@ -1134,33 +1101,41 @@ class DamageCalculator {
 
         //Attack click listener to gamemap. Used to detect unit selections.
         const gamemap = document.getElementById('gamemap');
-        gamemap.addEventListener('mousedown', async (event) => {
+        const gamemapClick = async (event) => {
             if (this.clickSelectMode !== 'N') {
                 event.stopPropagation();
-                let clickedUnit = event.target.closest('.game-unit');
-                //if unable to get unit, try to find based on click position
-                //clickedUnit = clickedUnit ? clickedUnit : this.getUnitFromCursorPosition(gamemap, event.clientX, event.clientY);
-
-                if (clickedUnit) {
-                    await this.getData(clickedUnit.getAttribute('data-unit-id'));
-                    if (this.clickSelectMode === 'A') {
-                        this.currentNode.attacker = JSON.parse(JSON.stringify(this.clickedUnit));
-                        this.currentNode.attackerDisplayHP = this.currentNode.attacker.hp * 10;
-                        this.currentNode.selectingAttacker = false;
+                if (!this.clickEvent) {
+                    this.clickEvent = true;
+    
+                    let clickedUnit = event.target.closest('.game-unit') || event.target.closest('span[id^="unit"]');     
+                    if (clickedUnit) {
+                        // Your existing logic for both mousedown and click events
+                        const id = clickedUnit.getAttribute('data-unit-id') || clickedUnit.id.replace('unit_', '');
+                        this.getData(id);
+                        if (this.clickSelectMode === 'A') {
+                            this.currentNode.attacker = JSON.parse(JSON.stringify(this.clickedUnit));
+                            this.currentNode.attackerDisplayHP = this.currentNode.attacker.hp * 10;
+                            this.currentNode.selectingAttacker = false;
+                        }
+                        if (this.clickSelectMode === 'D') {
+                            this.currentNode.defender = JSON.parse(JSON.stringify(this.clickedUnit));
+                            this.currentNode.defenderDisplayHP = this.currentNode.defender.hp * 10;
+                            this.currentNode.selectingDefender = false;
+                        }
+                        this.clickSelectMode = 'N';
+                        await this.currentNode.refactor({'a_towers': true, 'a_cities': true, 'funds': true, 'power': true, 'co': true, 'd_towers': true, 'd_cities': true}); //if current node calc has changed, need to update all children
+                        this.root.orient(this.root.x, this.root.y);
+                        calcDisplay.innerHTML = this.root.getHTML(); // Update the display
                     }
-                    if (this.clickSelectMode === 'D') {
-                        this.currentNode.defender = JSON.parse(JSON.stringify(this.clickedUnit));
-                        this.currentNode.defenderDisplayHP = this.currentNode.defender.hp * 10;
-                        this.currentNode.selectingDefender = false;
-                    }
-                    this.clickSelectMode = 'N';
-                    await this.currentNode.refactor({'a_towers': true, 'a_cities': true, 'funds': true, 'power': true, 'co': true, 'd_towers': true, 'd_cities': true});//if current node calc has changed, need to update all children
-                    this.root.orient(this.root.x, this.root.y);
-                    calcDisplay.innerHTML = this.root.getHTML(); // Update the display
+                    this.clickEvent = false;
                 }
             }
-        }, true);
-
+        };
+        
+        // Add event listeners for both mousedown and click events
+        gamemap.addEventListener('mousedown', gamemapClick, true); //normal game
+        gamemap.addEventListener('click', gamemapClick, true); //move planner 
+        
         // Attach a single click event listener to the container  
         calcDisplay.addEventListener('click', async (event) => {
             this.bringToFront();
@@ -1537,7 +1512,7 @@ link.href = chrome.runtime.getURL('/scripts/calc_plus.css');
 document.head.appendChild(link);
 
 //Add calc plus button
-const old_dc_button = document.querySelector('.calculator-toggle.game-tools-btn');
+const old_dc_button = document.querySelector('.calculator-toggle.game-tools-btn') || document.querySelector('.calculator-toggle.planner-calc-toggle');
 
 const new_dc_button = `
 <div class="calculator-plus-toggle game-tools-btn" style="border-right: none;">
@@ -1547,7 +1522,7 @@ const new_dc_button = `
     <span class="game-tools-btn-text small_text">Damage Calculator +</span>
 </div>
 `;
-old_dc_button.insertAdjacentHTML('afterend', new_dc_button);
+old_dc_button.insertAdjacentHTML('beforebegin', new_dc_button);
 
 //Add calculator
 let DCP = new DamageCalculator();
