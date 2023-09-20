@@ -4,7 +4,7 @@
 1. [Introduction](#introduction)
 2. [Installation](#installation)
 3. [Usage](#usage)
-4. [Error Reporting](#error-reporting)
+4. [Errors](#errors)
 
 ## Introduction
 AWBW Damage Calculator Plus is a web extension that expands the functionality of the regular damage calculator by allowing calculation of sequential attacks. 
@@ -76,6 +76,6 @@ After changing the unit used in the first attack to an Anti-Air, the follow-up a
 
 Invalid calculations can be deleted to save space or left alone.
 
-## Error Reporting {#error-reporting}
+## Errors
 Report errors [here](https://forms.gle/my2XMuUk14ZDjry46).
 Feel free to contribute! this is my first JS project an I could definately use some help.
