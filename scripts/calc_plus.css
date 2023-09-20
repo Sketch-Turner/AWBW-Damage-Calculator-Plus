@@ -101,10 +101,8 @@
     -moz-user-select: none; 
     -ms-user-select: none; 
     user-select: none; 
-    width: 345px;
-    height: 350px; 
-    min-width: 358px;
-    min-height: 283px;
+    min-width: 360px;
+    min-height: 295px;
     resize: both;
     overflow: auto;
 }

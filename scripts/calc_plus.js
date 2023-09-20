@@ -1,8 +1,8 @@
 const INDENT = 20;
 const OFFSET = 3;
 const SIZE_X = 340;
-const SIZE_Y = 126;
-const SIZE_Y_FOCUSED = 240;
+const SIZE_Y = 136;
+const SIZE_Y_FOCUSED = 250;
 const SCROLLBAR_WIDTH = 20;
 const Z_INDEX = 800;
 const CO_LIST = {
@@ -801,7 +801,7 @@ class DamageCalculator {
     updateWindowSize() {
         const calc = document.getElementById("calc-plus");
         const width = this.root.getMaxDepth() * (SIZE_X + OFFSET) + 16;
-        const height = this.root.height + 38;
+        const height = this.root.height + 44;
         calc.style.width = width + 'px';
         calc.style.height = height + 'px';
     }
