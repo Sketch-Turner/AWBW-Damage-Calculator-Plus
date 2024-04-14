@@ -68,12 +68,19 @@
 
 /* Use the same class for both left and right options */
 .calc-plus-ctrls-del,
-.calc-plus-ctrls-add {
+.calc-plus-ctrls-add,
+.calc-plus-ctrls-new {
     margin: 2px;
 }
 
 .calc-plus-ctrls-add {
     margin-left: auto;
+}
+
+.calc-plus-ctrls-new {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
 }
 
 .calc-plus-main-display {
@@ -102,7 +109,7 @@
     -ms-user-select: none; 
     user-select: none; 
     min-width: 360px;
-    min-height: 295px;
+    min-height: 317px;
     resize: both;
     overflow: auto;
 }
@@ -129,13 +136,23 @@
     background: var(--calc-plus-background);
     position: relative;
     min-height: 0;
-    flex-grow: 1;
     width: 100%;
     height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* Align items to the start of the main axis */
+    align-items: flex-start;
     overflow: scroll;
 }
 
-/* Set fixed or absolute positioning for .calc-plus-node elements */
+.calc-plus-set {
+    position: relative;
+    display: inline-block;
+    background: #fe755f;
+    white-space: nowrap;
+    margin-bottom: 10px;
+}
+
 .calc-plus-node {
     position: absolute;
     top: 0;
