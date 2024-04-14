@@ -103,8 +103,11 @@ const DEFAULT_DEFENDER = {
     "unit": {"units_ammo": 0, "units_name": "Infantry", "units_id": 1}
 };
 
+/////////////////////////////////////////////////////
+// CalcNode                                        // 
+/////////////////////////////////////////////////////
 class CalcNode {
-    constructor(attacker, defender) {
+    constructor(attacker, defender, id) {
         this.attacker = attacker;
         this.defender = defender;
         this.children = [];
@@ -113,10 +116,13 @@ class CalcNode {
         this.y = 1;
         this.width = 0;
         this.height = 0;
-        this.parent = null;
-        this.level = 0;
-        this.index = 0;
-        this.id = "00";
+        this.parent = null; //set by add funct
+        // this.depth = 0;
+        // this.index = 0;
+        // this.row = 0;
+        this.id = id;
+        this.depth = 0; // set by add funct
+
         this.attackerDisplayHP = this.attacker['hp']*10;
         this.defenderDisplayHP = this.defender['hp']*10;
         this.defenderMaxHP = 100;
@@ -143,23 +149,34 @@ class CalcNode {
         };
     }
 
-    getOffset() {
-        if (this.parent === null) {
-            return 0;
-        } else {
-            return this.index + this.parent.getOffset();
+    //return offset based on index
+    getOffsetY() {
+        let index = 0;
+        let result = 0;
+        if (this.parent !== null) {
+            for (let i = 0; i < this.parent.children.length; i++) {
+                if (this.id === this.parent.children[i].id) {
+                    index = i;
+                    break;
+                }
+            }
+            result = index * OFFSET + this.parent.getOffsetY();
         }
+        return result;
     }
 
+    //return offset based on depth
+    getOffsetX() {
+        return this.depth * OFFSET;
+    }
+
+    //return max depth
     getMaxDepth() {
-        let maxDepth = 1;
-
-        for (const child of this.children) {
-            const childDepth = 1 + child.getMaxDepth();
-            maxDepth = Math.max(maxDepth, childDepth);
-        }
-
-        return maxDepth;
+        let max = this.depth;
+        this.children.forEach(child => {
+            max = Math.max(max, child.getMaxDepth());
+        });
+        return max;
     }
 
     setFocus(focus) {
@@ -186,9 +203,8 @@ class CalcNode {
 
     add(child) {
         child.parent = this;
-        child.level = this.level + 1;
+        child.depth = this.depth + 1;
         child.index = this.children.length;
-        child.id = this.id + child.level.toString() + child.index.toString();
         this.getRoot().removeFocus();
         child.setFocus(true);
         this.children.push(child);
@@ -255,7 +271,7 @@ class CalcNode {
         // bottom left
         p = [1, this.height];
         poly += p[0] + "," + p[1] + " ";
-        if (this.level !== 0) {
+        if (this.depth !== 0) {
             // indent bottom
             p = [1, (2 * INDENT)+1];
             poly += p[0] + "," + p[1] + " ";
@@ -296,7 +312,7 @@ class CalcNode {
             poly += p[0] + "," + p[1] + " ";
         }
 
-        if (this.level !== 0) {
+        if (this.depth !== 0) {
             // indent center
             p = [INDENT+2, INDENT+1];
             poly += p[0] + "," + p[1];
@@ -342,8 +358,8 @@ class CalcNode {
         const variableStyle = (!this.isValid) ? 'calc-plus-invalid' : (this.isFocused) ? 'calc-plus-focused' : 'calc-plus-unfocused'; 
         let optionsHtml = `
         <div class="calc-plus-node-ctrls">
-            ${(this.level !== 0) ? '<div class="calc-plus-ctrls calc-plus-ctrls-del ' + variableStyle +'" title="Delete"><img src="' + chrome.runtime.getURL('/images/delete_icon.png') + '"></div>' : ''}
-            ${(this.defenderDisplayHP - this.calcResults['attackDamageMin'] > 0) ? '<div class="calc-plus-ctrls calc-plus-ctrls-add ' + variableStyle + '" title="Add"><img src="' + chrome.runtime.getURL('/images/add_icon.png') + '"></div>' : ''}
+            ${'<div class="calc-plus-ctrls calc-plus-ctrls-del ' + variableStyle +'" title="Delete"><img src="' + chrome.runtime.getURL('/images/delete_icon.png') + '"></div>'}
+            ${(this.defenderDisplayHP - this.calcResults['attackDamageMin'] > 0) ? '<div class="calc-plus-ctrls calc-plus-ctrls-add ' + variableStyle + '" title="Add Attack"><img src="' + chrome.runtime.getURL('/images/add_icon.png') + '"></div>' : ''}
         </div>
         `;
 
@@ -592,10 +608,8 @@ class CalcNode {
             `;
         }
 
-
-
         return `
-        <svg class="calc-plus-node" data-index="${this.index}" data-level="${this.level}" data-id="${this.id}" style="width: ${this.width+INDENT}px; height: ${this.height}px; left: ${this.x+this.level*OFFSET}px; top: ${this.y+this.getOffset()*OFFSET}px;">
+        <svg class="calc-plus-node" data-id="${this.id}" style="width: ${this.children === null ? this.width : this.width + INDENT}px; height: ${this.height}px; left: ${this.x + this.getOffsetX()}px; top: ${this.y + this.getOffsetY()}px;">
             <polygon points="${this.getNodePolygon()}" class="calc-plus-poly ${variableStyle}"></polygon>
             <polygon points="${this.getAttackerPolygon()}" class="calc-plus-node-header-poly ${variableStyle}"></polygon>
             <polygon points="${this.getDefenderPolygon()}" class="calc-plus-node-header-poly ${variableStyle}"></polygon>
@@ -611,20 +625,6 @@ class CalcNode {
             </foreignObject>
         </svg>
         `;
-    }
-
-    findNode(index, level, id) {
-        if (this.index === index && this.level === level && this.id == id) {
-            return this;
-        } else {
-            let result = null;
-            this.children.forEach(child => {
-                if (!result) { // Check if a valid result has been found
-                    result = child.findNode(index, level, id);
-                }
-            });
-            return result;
-        }
     }
 
     delete() {
@@ -646,6 +646,22 @@ class CalcNode {
 
         //delete self
         this.self = null;
+    }
+
+    //finds node by id, return node
+    findNode(id) {
+        if (this.id === id) {
+            return this;
+        } else {
+            let foundNode = null;
+            this.children.forEach(child => {
+                const node = child.findNode(id);
+                if (node) {
+                    foundNode = node;
+                }
+            });
+            return foundNode;
+        }
     }
 
     getHTML() {
@@ -704,7 +720,7 @@ class CalcNode {
         });
     }
 
-    genNextNode() { //returns node post attack
+    genNextNode(id) { //returns node post attack
         let nextDefender = JSON.parse(JSON.stringify(this.defender));
         //get max defender hp after first attack
         const maxHP = Math.max(0, this.defenderDisplayHP - this.calcResults['attackDamageMin']);
@@ -713,7 +729,7 @@ class CalcNode {
         const nextAttacker = JSON.parse(JSON.stringify(DEFAULT_ATTACKER));
         nextAttacker.country = this.attacker.country;
 
-        const newNode = new CalcNode(nextAttacker, nextDefender);
+        const newNode = new CalcNode(nextAttacker, nextDefender, id);
         newNode.defenderMaxHP = maxHP;
         newNode.defenderDisplayHP = maxHP;
 
@@ -727,7 +743,7 @@ class CalcNode {
             this.removeFocus();
         }
         await this.calculate(); //wait for calc
-        const newChild = this.genNextNode();
+        const newChild = this.genNextNode(-1);//this is discarded so id doesnt matter???
         for (const child of this.children) {
             const oldDefender = JSON.parse(JSON.stringify(child.defender))
             child.defender = JSON.parse(JSON.stringify(newChild.defender));
@@ -760,15 +776,54 @@ class CalcNode {
 }
 
 /////////////////////////////////////////////////////
+// CalcTree                                        // 
 /////////////////////////////////////////////////////
-/////////////////////////////////////////////////////
-/////////////////////////////////////////////////////
-/////////////////////////////////////////////////////
+class CalcTree{
+    constructor(id) {
+        this.root = new CalcNode(JSON.parse(JSON.stringify(DEFAULT_ATTACKER)), JSON.parse(JSON.stringify(DEFAULT_DEFENDER)), id);
+        this.root.isRoot = true;
+        this.activeNode = this.root;
+        this.root.orient(0,0);
+    }
 
+    //refactor the active node
+    async refactor(valueChanges) {
+        await this.activeNode.refactor(valueChanges);
+    }
+
+    //returns html of each node
+    getHTML() {
+        return this.root.getHTML();
+    }
+
+    //find node by id, set as active, return node
+    selectNode(id) {
+        let node = this.root.findNode(id);
+        if (node) {
+            this.activeNode = node;
+        }
+        return node;
+    }
+
+    //returns height of tallest node
+    getHeight() {
+        return this.root.height;
+    }
+
+    //returns width of all nodes + offset
+    getWidth() {
+        return this.root.getMaxDepth() * (SIZE_X + OFFSET) - OFFSET;
+    }
+}
+
+/////////////////////////////////////////////////////
+// DamageCalculator                                // 
+/////////////////////////////////////////////////////
 class DamageCalculator {
     constructor() {
-        this.root = new CalcNode(JSON.parse(JSON.stringify(DEFAULT_ATTACKER)), JSON.parse(JSON.stringify(DEFAULT_DEFENDER)));
-        this.root.orient(this.root.x, this.root.y);
+        this.nextID = -1;
+        this.calcTreeList = [];
+        this.addNewTree();
         this.buildCalculator();
         this.currentElement = null;
         this.currentNode = null;
@@ -781,6 +836,82 @@ class DamageCalculator {
             'select-terrain': false,
             'select-unit': false
         };
+    }
+
+    orient() {
+        if (this.activeCalcTree) {
+            this.activeCalcTree.root.orient(0,0);
+        }
+    }
+
+    //return next id, increment id
+    getNextID() {
+        this.nextID++;
+        return this.nextID;
+    }
+
+    //refactor the active set
+    async refactor(valueChanges) {
+        await this.activeCalcTree.refactor(valueChanges);
+    }
+
+    //finds node by id, sets as active and returns node
+    selectNode(id) {
+        let node = null;
+        for (const calcTree of this.calcTreeList) {
+            node = calcTree.selectNode(id);
+            if (node) {
+                this.activeCalcTree = calcTree;
+                break;
+            }
+        }
+        return node;
+    }
+
+    //deletes node by id. if node is root, delete tree as well
+    deleteNode(id) {
+        const node = this.selectNode(id);
+        if (node.id === this.activeCalcTree.root.id) {
+            //get index of tree
+            let index = 0;
+            for (let i = 0; i < this.calcTreeList.length; i++) {
+                if (this.calcTreeList[i].root.id === node.id) {
+                    index = i;
+                    break;
+                }
+            }
+            this.calcTreeList.splice(index,1);//remove tree
+            //JS garbage collection should take care of Tree and Node memory reclaimation automatically....?
+        } else {
+            node.delete(); //remove node
+        }
+
+        this.activeCalcTree = null;
+        this.activeNode = null;
+
+        if (this.calcTreeList.length > 0) {
+            this.activeCalcTree = this.calcTreeList[0];
+            this.activeNode = this.activeCalcTree.root;
+        }
+    }
+
+    //returns HTML code for display element
+    getInnerHTML() {
+        let html = "";
+        this.calcTreeList.forEach(calcTree => {
+            html += `<div class="calc-plus-set" style="width: ${calcTree.getWidth()}px; height: ${calcTree.getHeight()}px;">${calcTree.getHTML()}</div>`;
+        });
+        //add button
+        html += `<div class="calc-plus-ctrls calc-plus-ctrls-new" title="New Calc">
+                    <img src="${chrome.runtime.getURL('/images/new_calc_icon.png')}">
+                    </div>`;
+        return html;
+    }
+
+    addNewTree() {
+        this.calcTreeList.push(new CalcTree(this.getNextID()));
+        this.activeCalcTree = this.calcTreeList[this.calcTreeList.length-1];
+        this.activeNode = this.activeCalcTree.root;
     }
 
     bringToFront() {
@@ -799,10 +930,23 @@ class DamageCalculator {
         }
     }
 
+    //returns the max depth out of all sets
+    getMaxDepth() {
+        let max = 0;
+        this.calcTreeList.forEach(calcTree => {
+            max = Math.max(max, calcTree.root.getMaxDepth());
+        });
+        return max;
+    }
+
     updateWindowSize() {
         const calc = document.getElementById("calc-plus");
-        const width = this.root.getMaxDepth() * (SIZE_X + OFFSET) + 16;
-        const height = this.root.height + 44;
+        const width = (this.getMaxDepth() + 1) * (SIZE_X + OFFSET) + 16;//root is depth 0
+        const button_height = 20; //add calc button
+        let height = 44 + button_height + (this.calcTreeList.length - 1) * OFFSET;
+        this.calcTreeList.forEach(calcTree => {
+            height += calcTree.root.height;
+        });
         calc.style.width = width + 'px';
         calc.style.height = height + 'px';
     }
@@ -939,7 +1083,7 @@ class DamageCalculator {
 
     //add calc
     async buildCalculator() {
-        await this.root.refactor({'towers': true, 'cities': true, 'funds': true, 'power': true, 'co': true});
+        await this.refactor({'towers': true, 'cities': true, 'funds': true, 'power': true, 'co': true});
         const dc = document.getElementById('calculator');
 
         //insert html
@@ -1032,20 +1176,21 @@ class DamageCalculator {
                         ?
                         <div class="info-box-text" style="right:0px; width:180px;">
                             Damage Calculator Plus by Sketch_Turner<br>
-                            <a href="https://github.com/Sketch-Turner/AWBW-Damage-Calculator-Plus#table-of-contents">Tutorial</a><br>
-                            <a href="https://forms.gle/my2XMuUk14ZDjry46">Error Reporting</a><br>
+                            <a href="https://github.com/Sketch-Turner/AWBW-Damage-Calculator-Plus#table-of-contents" target="_blank">Tutorial</a><br>
+                            <a href="https://forms.gle/my2XMuUk14ZDjry46" target="_blank">Error Reporting</a><br>
                             See you on the Global League. Good luck, have fun!!
                         </div>
                     </div>
                     <span class="close-calc-plus">&#10005;</span>
                 </header>
-                <div id="calc-plus-display" class="calc-plus-display">` + 
-                    this.root.getHTML() +
-                `</div>
-            </div>` + 
-            co_menu +
-            terrain_menu +
-            unit_menu;
+                <div id="calc-plus-display" class="calc-plus-display"> 
+                    ${this.getInnerHTML()}
+                </div>
+            </div> 
+            ${co_menu}
+            ${terrain_menu}
+            ${unit_menu}
+        `;
     
         dc.insertAdjacentHTML('afterend', HTMLstring);
 
@@ -1124,8 +1269,8 @@ class DamageCalculator {
                         }
                         this.clickSelectMode = 'N';
                         await this.currentNode.refactor({'a_towers': true, 'a_cities': true, 'funds': true, 'power': true, 'co': true, 'd_towers': true, 'd_cities': true}); //if current node calc has changed, need to update all children
-                        this.root.orient(this.root.x, this.root.y);
-                        calcDisplay.innerHTML = this.root.getHTML(); // Update the display
+                        this.orient();
+                        calcDisplay.innerHTML = this.getInnerHTML(); // Update the display
                     }
                     this.clickEvent = false;
                 }
@@ -1142,6 +1287,7 @@ class DamageCalculator {
         
             const addButton = event.target.closest('.calc-plus-ctrls-add');
             const deleteButton = event.target.closest('.calc-plus-ctrls-del');
+            const newButton = event.target.closest('.calc-plus-ctrls-new');
             const svgNode = event.target.closest('.calc-plus-node');
             const toggleCOP = event.target.closest('.toggle-cop');
             const toggleSCOP = event.target.closest('.toggle-scop');
@@ -1154,16 +1300,26 @@ class DamageCalculator {
             let updateDisplay = true; 
             let updateWindow = false;
             let valueChanges = {'a_towers': false, 'a_cities': false, 'funds': false, 'power': false, 'co': false, 'd_towers': false, 'd_cities': false};
-            if (svgNode) {
+            
+            if (newButton) {
+                for (const key in this.isMenuOpen) {
+                    this.closeMenu(key);//close all menus
+                }
+                this.addNewTree();
+                //update display
+                this.orient();
+                this.updateWindowSize(); //resize window
+                calcDisplay.innerHTML = `${this.getInnerHTML()}
+                <div class="calc-plus-ctrls calc-plus-ctrls-new" title="New Calc"><img src="${chrome.runtime.getURL('/images/new_calc_icon.png')}"></div>
+                `;
+            } else if (svgNode) {
                 valueChanges = this.updateInputs(this.currentNode, this.currentElement, valueChanges);
                 this.currentElement = svgNode;
 
-
-                const index = parseInt(svgNode.getAttribute('data-index'));
-                const level = parseInt(svgNode.getAttribute('data-level'));
                 const id = parseInt(svgNode.getAttribute('data-id'));
-                const selectedNode = this.root.findNode(index, level, id);
-        
+                console.log('id: ', id);
+                const selectedNode = this.selectNode(id);
+                        
                 if (selectedNode) {
                     //update current node values
                     this.currentNode = selectedNode;
@@ -1173,18 +1329,16 @@ class DamageCalculator {
                         for (const key in this.isMenuOpen) {
                             this.closeMenu(key);//close all menus
                         }
-                        
-                        selectedNode.delete();
+                        //selectedNode.delete();
+                        this.deleteNode(id);
                         updateWindow = true;
                     } else if (addButton && selectedNode.isValid) {
                         // Add
                         for (const key in this.isMenuOpen) {
                             this.closeMenu(key);//close all menus
                         }
-                        
-
                         valueChanges = {'a_towers': true, 'a_cities': true, 'funds': true, 'power': true, 'co': true, 'd_towers': false, 'd_cities': false};
-                        selectedNode.add(selectedNode.genNextNode());
+                        selectedNode.add(selectedNode.genNextNode(this.getNextID()));
                         updateWindow = true;
                     } else if (toggleClickSelect && selectedNode.isValid) {
                         for (const key in this.isMenuOpen) {
@@ -1209,7 +1363,7 @@ class DamageCalculator {
                             this.closeMenu(key);//close all menus
                         }
                         
-                        if (selectedNode.id === this.root.id) { 
+                        if (selectedNode.depth === 0) { 
                             //changes to root are always allowed
                             if (toggleCOP.parentNode.parentNode.parentNode.classList[0].replace('calculator-', '') === 'attack') {
                                 selectedNode.attacker['power'] = (selectedNode.attacker['power'] !== 'Y') ? 'Y' : 'N';
@@ -1227,7 +1381,7 @@ class DamageCalculator {
                             this.closeMenu(key);//close all menus
                         }
                         
-                        if (selectedNode.id === this.root.id) { 
+                        if (selectedNode.depth === 0) { 
                             //changes to root are always allowed
                             if (toggleSCOP.parentNode.parentNode.parentNode.classList[0].replace('calculator-', '') === 'attack') {
                                 selectedNode.attacker['power'] = (selectedNode.attacker['power'] !== 'S') ? 'S' : 'N';
@@ -1244,7 +1398,7 @@ class DamageCalculator {
                         this.closeMenu('select-terrain');
                         this.closeMenu('select-unit');
                         
-                        if (selectedNode.id === this.root.id) {
+                        if (selectedNode.depth === 0) {
                             //select co
                             if (!selectedNode.isFocused) {
                                 this.root.removeFocus();
@@ -1272,7 +1426,7 @@ class DamageCalculator {
                         this.closeMenu('select-co');
                         this.closeMenu('select-unit');
                         
-                        if (selectedNode.id === this.root.id || selectTerrain.parentNode.parentNode.parentNode.classList[0].replace('calculator-', '') === 'attack') {
+                        if (selectedNode.depth === 0 || selectTerrain.parentNode.parentNode.parentNode.classList[0].replace('calculator-', '') === 'attack') {
                             const menu = document.getElementById('calc-plus-select-terrain');
                             let newCountry;
                             if (selectTerrain.parentNode.parentNode.parentNode.classList[0].replace('calculator-', '') === 'attack') {
@@ -1321,7 +1475,7 @@ class DamageCalculator {
                         this.closeMenu('select-terrain');
                         this.closeMenu('select-co');
                         
-                        if (selectedNode.id === this.root.id || selectUnit.parentNode.parentNode.parentNode.classList[0].replace('calculator-', '') === 'attack') {
+                        if (selectedNode.depth === 0 || selectUnit.parentNode.parentNode.parentNode.classList[0].replace('calculator-', '') === 'attack') {
                             const menu = document.getElementById('calc-plus-select-unit');
                             let newCountry;
                             if (selectUnit.parentNode.parentNode.parentNode.classList[0].replace('calculator-', '') === 'attack') {
@@ -1385,7 +1539,7 @@ class DamageCalculator {
                                 }
                                 selectedNode.setFocus(true);
                             } else {
-                                if (selectedNode.id !== this.root.id && event.clientY - svgNode.getBoundingClientRect().top <= INDENT * 2) {
+                                if (selectedNode.depth !== 0 && event.clientY - svgNode.getBoundingClientRect().top <= INDENT * 2) {
                                     selectedNode.removeFocus();
                                 }
                             }
@@ -1397,11 +1551,11 @@ class DamageCalculator {
                     valueChanges = this.updateInputs(selectedNode, svgNode, valueChanges);
                     if (updateDisplay) {
                         await this.currentNode.refactor(valueChanges);//if current node calc has changed, need to update all children
-                        this.root.orient(this.root.x, this.root.y);
+                        this.orient();
                         if (updateWindow) {
                             this.updateWindowSize();
                         }
-                        calcDisplay.innerHTML = this.root.getHTML(); // Update the display
+                        calcDisplay.innerHTML = this.getInnerHTML(); // Update the display
                     }
                 }
             }
@@ -1415,18 +1569,16 @@ class DamageCalculator {
                 valueChanges =  this.updateInputs(this.currentNode, this.currentElement, valueChanges);
                 this.currentElement = svgNode;
 
-                const index = parseInt(svgNode.getAttribute('data-index'));
-                const level = parseInt(svgNode.getAttribute('data-level'));
                 const id = parseInt(svgNode.getAttribute('data-id'));
-                const selectedNode = this.root.findNode(index, level, id);
+                const selectedNode = this.selectNode(id);
         
                 if (selectedNode) {
                     //update current node values
                     this.currentNode = selectedNode;
                     valueChanges = this.updateInputs(selectedNode, svgNode, valueChanges);
                     await this.currentNode.refactor(valueChanges);
-                    this.root.orient(this.root.x, this.root.y);
-                    calcDisplay.innerHTML = this.root.getHTML(); // Update the display
+                    this.orient();
+                    calcDisplay.innerHTML = this.getInnerHTML(); // Update the display
                 }
             }
         });
@@ -1448,8 +1600,8 @@ class DamageCalculator {
             }
             this.closeMenu('select-co');
             await this.currentNode.refactor(valueChanges);
-            this.root.orient(this.root.x, this.root.y);
-            calcDisplay.innerHTML = this.root.getHTML(); // Update the display
+            this.orient();
+            calcDisplay.innerHTML = this.getInnerHTML(); // Update the display
         });
 
         //select terrain
@@ -1474,8 +1626,8 @@ class DamageCalculator {
             }
             this.closeMenu('select-terrain');
             await this.currentNode.refactor(valueChanges);
-            this.root.orient(this.root.x, this.root.y);
-            calcDisplay.innerHTML = this.root.getHTML(); // Update the display
+            this.orient();
+            calcDisplay.innerHTML = this.getInnerHTML(); // Update the display
         });
 
         //select unit menu
@@ -1494,8 +1646,8 @@ class DamageCalculator {
             }
             this.closeMenu('select-unit');
             await this.currentNode.refactor(valueChanges);
-            this.root.orient(this.root.x, this.root.y);
-            calcDisplay.innerHTML = this.root.getHTML(); // Update the display
+            this.orient();
+            calcDisplay.innerHTML = this.getInnerHTML(); // Update the display
         });
     }
 }
