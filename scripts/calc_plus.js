@@ -1,5 +1,6 @@
 const INDENT = 20;
 const OFFSET = 3;
+const TREE_OFFSET = 10;
 const SIZE_X = 340;
 const SIZE_Y = 136;
 const SIZE_Y_FOCUSED = 250;
@@ -940,12 +941,12 @@ class DamageCalculator {
     getInnerHTML() {
         let html = "";
         this.calcTreeList.forEach(calcTree => {
-            html += `<div class="calc-plus-set" style="width: ${calcTree.getWidth()}px; height: ${calcTree.getHeight()}px;">${calcTree.getHTML()}</div>`;
+            html += `<div class="calc-plus-tree" style="width: ${calcTree.getWidth()}px; height: ${calcTree.getHeight()}px;">${calcTree.getHTML()}</div>`;
         });
         //add button
         html += `<div class="calc-plus-ctrls calc-plus-ctrls-new" title="New Calc">
-                    <img src="${chrome.runtime.getURL('/images/new_calc_icon.png')}">
-                    </div>`;
+                    <img src="${chrome.runtime.getURL('/images/new_calc_icon_20x20.png')}">
+                 </div>`;
         return html;
     }
 
@@ -984,7 +985,7 @@ class DamageCalculator {
         const calc = document.getElementById("calc-plus");
         const width = (this.getMaxDepth() + 1) * (SIZE_X + OFFSET) + 16;//root is depth 0
         const button_height = 20; //add calc button
-        let height = 44 + button_height + (this.calcTreeList.length - 1) * OFFSET;
+        let height = 44 + button_height + (this.calcTreeList.length - 1) * TREE_OFFSET;
         this.calcTreeList.forEach(calcTree => {
             height += calcTree.root.height;
         });
@@ -1239,7 +1240,6 @@ class DamageCalculator {
     
         dc.insertAdjacentHTML('afterend', HTMLstring);
 
-
         //Header options
         const calculatorClose = document.querySelector(".close-calc-plus");
         calculatorClose.addEventListener("click", () => this.toggleCalculator());
@@ -1247,7 +1247,6 @@ class DamageCalculator {
         calculatorShrink.addEventListener("click", () => this.shrinkCalculator());
         const calculatorGrow = document.getElementById("calc-plus-grow");
         calculatorGrow.addEventListener("click", () => this.updateWindowSize());
-
 
         const grabHeader = document.getElementById("calc-plus-header");
         const calcPlus = document.getElementById("calc-plus");

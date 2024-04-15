@@ -81,6 +81,12 @@
     position: absolute;
     bottom: 0px;
     left: 0px;
+    width: 16px;
+    height: 16px;
+}
+
+.calc-plus-ctrls-new img:hover {
+    transform: scale(1.2);
 }
 
 .calc-plus-main-display {
@@ -148,7 +154,6 @@
 .calc-plus-set {
     position: relative;
     display: inline-block;
-    background: #fe755f;
     white-space: nowrap;
     margin-bottom: 10px;
 }
