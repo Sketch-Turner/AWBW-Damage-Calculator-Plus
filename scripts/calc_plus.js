@@ -1285,20 +1285,19 @@ class DamageCalculator {
                 if (!this.clickEvent) {
                     this.clickEvent = true;
     
-                    let clickedUnit = event.target.closest('.game-unit') || event.target.closest('span[id^="unit"]');     
-                    if (clickedUnit) {
-                        // Your existing logic for both mousedown and click events
-                        const id = clickedUnit.getAttribute('data-unit-id') || clickedUnit.id.replace('unit_', '');
-                        this.getData(id);
+                    let clickTarget = event.target.closest('.game-unit') || event.target.closest('span[id^="unit"]'); 
+                    if (clickTarget) {
+                        const id = clickTarget.getAttribute('data-unit-id') || clickTarget.id.replace('unit_', '');
+                        this.getData(id); //set values of this.clickedUnit
                         if (this.clickSelectMode === 'A') {
                             this.currentNode.attacker = JSON.parse(JSON.stringify(this.clickedUnit));
-                            this.currentNode.attackerAmmo = this.attacker.unit.units_ammo;
+                            this.currentNode.attackerAmmo = this.currentNode.attacker.unit.units_ammo;
                             this.currentNode.attackerDisplayHP = this.currentNode.attacker.hp * 10;
                             this.currentNode.selectingAttacker = false;
                         }
                         else if (this.clickSelectMode === 'D') {
                             this.currentNode.defender = JSON.parse(JSON.stringify(this.clickedUnit));
-                            this.currentNode.defenderAmmo = this.defender.unit.units_ammo;
+                            this.currentNode.defenderAmmo = this.currentNode.defender.unit.units_ammo;
                             this.currentNode.defenderDisplayHP = this.currentNode.defender.hp * 10;
                             this.currentNode.selectingDefender = false;
                         }
@@ -1353,7 +1352,6 @@ class DamageCalculator {
                 this.currentElement = svgNode;
 
                 const id = parseInt(svgNode.getAttribute('data-id'));
-                console.log('id: ', id);
                 const selectedNode = this.selectNode(id);
                         
                 if (selectedNode) {
