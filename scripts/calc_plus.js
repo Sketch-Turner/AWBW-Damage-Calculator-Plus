@@ -871,6 +871,14 @@ class DamageCalculator {
         };
     }
 
+    //shrink to default size
+    shrinkCalculator() {
+        //wrong numbers probably, but the calc has a min size in CSS
+        const calc = document.getElementById("calc-plus");
+        calc.style.width = SIZE_X + 'px';
+        calc.style.height = SIZE_Y_FOCUSED + 'px';
+    }
+
     orient() {
         if (this.activeCalcTree) {
             this.activeCalcTree.root.orient(0,0);
@@ -1205,16 +1213,20 @@ class DamageCalculator {
             <div id="calc-plus" class="calc-plus" move="false" mouse="false" style="left: 200px; top: 200px; width: 358px; height: 278px; z-index: ${this.zindex};">
                 <header id="calc-plus-header" class="calc-plus-header">
                     Damage Calculator +
-                    <div class="reverse-info-box calculator-help">
-                        ?
-                        <div class="info-box-text" style="right:0px; width:180px;">
-                            Damage Calculator Plus by Sketch_Turner<br>
-                            <a href="https://github.com/Sketch-Turner/AWBW-Damage-Calculator-Plus#table-of-contents" target="_blank">Tutorial</a><br>
-                            <a href="https://forms.gle/my2XMuUk14ZDjry46" target="_blank">Error Reporting</a><br>
-                            See you on the Global League. Good luck, have fun!!
+                    <span style="display: flex;">
+                        <div class="reverse-info-box" id="calc-plus-help" style="margin-top: 1px; margin-right: 9px;">
+                            ?
+                            <div class="info-box-text" style="right:0px; width:180px;">
+                                Damage Calculator Plus by Sketch_Turner<br>
+                                <a href="https://github.com/Sketch-Turner/AWBW-Damage-Calculator-Plus#table-of-contents" target="_blank">User Guide</a><br>
+                                <a href="https://forms.gle/my2XMuUk14ZDjry46" target="_blank">Error Reporting</a><br>
+                                See you on the Global League. Good luck, have fun!!
+                            </div>
                         </div>
-                    </div>
-                    <span class="close-calc-plus">&#10005;</span>
+                        <div title="Shrink" id="calc-plus-shrink" style="margin-top: 4px; margin-right: 9px; height: 16px;"><img src="${chrome.runtime.getURL('/images/shrink_icon.png')}"></div>
+                        <div title="Expand" id="calc-plus-grow" style="margin-top: 4px; margin-right: 9px; height: 16px;"><img src="${chrome.runtime.getURL('/images/grow_icon.png')}"></div>
+                        <div title="Hide" class="close-calc-plus">&#10005;</div>
+                    </span>
                 </header>
                 <div id="calc-plus-display" class="calc-plus-display"> 
                     ${this.getInnerHTML()}
@@ -1228,14 +1240,20 @@ class DamageCalculator {
         dc.insertAdjacentHTML('afterend', HTMLstring);
 
 
+        //Header options
         const calculatorClose = document.querySelector(".close-calc-plus");
         calculatorClose.addEventListener("click", () => this.toggleCalculator());
+        const calculatorShrink = document.getElementById("calc-plus-shrink");
+        calculatorShrink.addEventListener("click", () => this.shrinkCalculator());
+        const calculatorGrow = document.getElementById("calc-plus-grow");
+        calculatorGrow.addEventListener("click", () => this.updateWindowSize());
+
 
         const grabHeader = document.getElementById("calc-plus-header");
         const calcPlus = document.getElementById("calc-plus");
 
         //if click on old dc, send dc+ to back
-        dc.addEventListener("click", () => this.sendToBack());
+        dc.addEventListener("mousedown", () => this.sendToBack());
 
         let lastPosX = parseInt(calcPlus.style.left);
         let lastPosY = parseInt(calcPlus.style.top);
