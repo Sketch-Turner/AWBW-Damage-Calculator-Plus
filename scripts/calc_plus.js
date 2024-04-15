@@ -117,12 +117,13 @@ class CalcNode {
         this.width = 0;
         this.height = 0;
         this.parent = null; //set by add funct
-        // this.depth = 0;
-        // this.index = 0;
-        // this.row = 0;
         this.id = id;
         this.depth = 0; // set by add funct
 
+        this.attackerNoAmmoToggled = false;
+        this.defenderNoAmmoToggled = false;
+        this.attackerAmmo = this.attacker.unit.units_ammo;
+        this.defenderAmmo = this.defender.unit.units_ammo;
         this.attackerDisplayHP = this.attacker['hp']*10;
         this.defenderDisplayHP = this.defender['hp']*10;
         this.defenderMaxHP = 100;
@@ -390,6 +391,7 @@ class CalcNode {
                     </div>
                 </div>
             `;
+            const attckerNoSecondary = this.attacker.unit.units_name === 'Infantry' || this.attacker.unit.units_name === 'Recon' || this.attacker.unit.units_name === 'APC' ||this.attacker.unit.units_name === 'T-Copter' || this.attacker.unit.units_name === 'Lander'|| this.attacker.unit.units_name === 'BlackBomb' || this.attacker.unit.units_name === 'BlackBoat';
             let attackerHtml = `
             <div class="calculator-attack" style="justify-content: flex-start; align-content: flex-start; width: ${this.width/2-3}px;">
                 <div class="co-options" id="calc-plus-options">
@@ -420,12 +422,20 @@ class CalcNode {
                         </div>
                     </div>
                 </div> 
-                <div class="power-options ${!atRoot && this.parent.attacker['power'] !== 'N' ? 'calc-plus-locked' : ''}" id="calc-plus-options" style="flex-direction: column; width: 57px">
-                    <div class="option" style="margin: 0px 0px;">
-                        <img src="terrain/aw2/redstar.gif" ${((this.attacker['power'] === 'Y') ? 'id="calc-plus-blue-border"' : '') + 'class="toggle-cop"'}> 
-                        <img src="terrain/aw2/bluestar.gif" ${((this.attacker['power'] === 'S') ? 'id="calc-plus-blue-border"' : '') + 'class="toggle-scop"'}>
+                <div>
+                    <div class="power-options ${!atRoot && this.parent.attacker['power'] !== 'N' ? 'calc-plus-locked' : ''}" id="calc-plus-options" style="flex-direction: column; width: 57px">
+                        <div class="option" style="margin: 0px 0px;">
+                            <img src="terrain/aw2/redstar.gif" ${((this.attacker['power'] === 'Y') ? 'id="calc-plus-blue-border"' : '') + 'class="toggle-cop"'}> 
+                            <img src="terrain/aw2/bluestar.gif" ${((this.attacker['power'] === 'S') ? 'id="calc-plus-blue-border"' : '') + 'class="toggle-scop"'}>
+                        </div>
+                    </div> 
+                    <div class="ammo-options" id="calc-plus-ammo-options"${attckerNoSecondary ? 'style="visibility: hidden;"' : ''}>
+                        <div class="option">
+                            <span class="red-border-strikethru" ${this.attackerNoAmmoToggled ? '' : 'style="display: none;"'}></span>
+                            <img src="terrain/ammo_button.gif" ${this.attackerNoAmmoToggled ? 'class="red-border"' : ''}>
+                        </div>
                     </div>
-                </div> 
+                </div>
                 <div class="misc-options" id="calc-plus-options" style="width: 98px;">
                     <div class="city-options" id="calc-plus-city-options">
                         <img src="terrain/capt.gif"> 
@@ -435,13 +445,14 @@ class CalcNode {
                         <img src="terrain/aw2/commtowericon.gif"> 
                         <input type="number" max="99" min="0" style="width: 30px;" value="${this.attacker['towers']}" class="text-input tower-input">
                     </div> 
-                </div>
-                <div class="fund-options" id="calc-plus-fund-options">
-                    <img src="terrain/coin.gif" class="coin"> 
-                    <input type="number" min="0" step="1000" value="${this.attacker['funds']}" class="text-input funds-input">
+                    <div class="fund-options" id="calc-plus-fund-options">
+                        <img src="terrain/coin.gif" class="coin"> 
+                        <input type="number" min="0" step="1000" value="${this.attacker['funds']}" class="text-input funds-input">
+                    </div>
                 </div>
             </div>
             `;
+            const defenderNoSecondary = this.defender.unit.units_name === 'Infantry' || this.defender.unit.units_name === 'Recon' || this.defender.unit.units_name === 'APC' ||this.defender.unit.units_name === 'T-Copter' || this.defender.unit.units_name === 'Lander'|| this.defender.unit.units_name === 'BlackBomb' || this.defender.unit.units_name === 'BlackBoat';
             let defenderHtml = `
             <div class="calculator-defend" style="justify-content: flex-start; align-content: flex-start; width: ${this.width/2-3}px;">
                 <div class="co-options" id="calc-plus-options">
@@ -472,12 +483,20 @@ class CalcNode {
                         </div>
                     </div>
                 </div> 
-                <div class="power-options ${!atRoot ? 'calc-plus-locked' : ''}" id="calc-plus-options" style="flex-direction: column; width: 57px">
-                    <div class="option" style="margin: 0px 0px;">
-                        <img src="terrain/aw2/redstar.gif" ${((this.defender['power'] === 'Y') ? 'id="calc-plus-blue-border"' : '') + 'class="toggle-cop"'}> 
-                        <img src="terrain/aw2/bluestar.gif" ${((this.defender['power'] === 'S') ? 'id="calc-plus-blue-border"' : '') + 'class="toggle-scop"'}>
+                <div>
+                    <div class="power-options ${!atRoot ? 'calc-plus-locked' : ''}" id="calc-plus-options" style="flex-direction: column; width: 57px">
+                        <div class="option" style="margin: 0px 0px;">
+                            <img src="terrain/aw2/redstar.gif" ${((this.defender['power'] === 'Y') ? 'id="calc-plus-blue-border"' : '') + 'class="toggle-cop"'}> 
+                            <img src="terrain/aw2/bluestar.gif" ${((this.defender['power'] === 'S') ? 'id="calc-plus-blue-border"' : '') + 'class="toggle-scop"'}>
+                        </div>
+                    </div> 
+                    <div class="ammo-options" id="calc-plus-ammo-options"${defenderNoSecondary ? 'style="visibility: hidden;"' : ''}>
+                        <div class="option ${(!atRoot && this.parent.defenderNoAmmoToggled) ? 'calc-plus-locked' : ''}">
+                            <span class="red-border-strikethru ${(!atRoot && this.parent.defenderNoAmmoToggled) ? 'calc-plus-locked' : ''}" ${this.defenderNoAmmoToggled ? '' : 'style="display: none;"'}></span>
+                            <img src="terrain/ammo_button.gif" ${this.defenderNoAmmoToggled ? 'class="red-border ' + ((!atRoot && this.parent.defenderNoAmmoToggled) ? 'calc-plus-locked' : '') + '"' : ''}>
+                        </div>
                     </div>
-                </div> 
+                </div>
                 <div class="misc-options" id="calc-plus-options" style="width: 98px;">
                     <div class="city-options" id="calc-plus-city-options">
                         <img src="terrain/capt.gif"> 
@@ -487,10 +506,10 @@ class CalcNode {
                         <img src="terrain/aw2/commtowericon.gif"> 
                         <input type="number" max="${this.defenderMaxTowers}" min="0" style="width: 30px;" value="${this.defender['towers']}" class="text-input tower-input">
                     </div> 
-                </div>
-                <div class="fund-options" id="calc-plus-fund-options">
-                    <img src="terrain/coin.gif" class="coin"> 
-                    <input type="number" min="0" step="1000" value="${this.defender['funds']}" class="text-input funds-input">
+                    <div class="fund-options" id="calc-plus-fund-options">
+                        <img src="terrain/coin.gif" class="coin"> 
+                        <input type="number" min="0" step="1000" value="${this.defender['funds']}" class="text-input funds-input">
+                    </div>
                 </div>
             </div>
             `;
@@ -687,6 +706,18 @@ class CalcNode {
     }
 
     async calculate() {
+        //remove ammo if toggled else restore
+        if (this.attackerNoAmmoToggled) {
+            this.attacker.unit.units_ammo = 0;
+        } else {
+            this.attacker.unit.units_ammo = this.attackerAmmo;
+        }
+        if (this.defenderNoAmmoToggled) {
+            this.defender.unit.units_ammo = 0;
+        } else {
+            this.defender.unit.units_ammo = this.defenderAmmo;
+        }
+       
         return new Promise((resolve, reject) => {
             const request = new XMLHttpRequest();
             request.open("POST", "api/calculator/calculate_new.php", true);
@@ -716,6 +747,7 @@ class CalcNode {
                     }
                 }
             };
+
             request.send(JSON.stringify({'attacker': this.attacker, 'defender': this.defender}));
         });
     }
@@ -751,6 +783,7 @@ class CalcNode {
             child.defenderDisplayHP = newChild.defenderDisplayHP;
             child.defenderMaxCities = newChild.defenderMaxCities;
             child.defenderMaxTowers = newChild.defenderMaxTowers;
+            child.defenderNoAmmoToggled = this.defenderNoAmmoToggled;
 
 
             for (const key in valueChanges) {
@@ -768,7 +801,7 @@ class CalcNode {
             // child.attacker['co'] = this.attacker['co'];
 
             // TODO: Add other info that carries over here
-    
+            
             child.isValid = (child.defenderDisplayHP > 0) && this.isValid;
             await child.refactor(valueChanges);
         }
@@ -1259,11 +1292,13 @@ class DamageCalculator {
                         this.getData(id);
                         if (this.clickSelectMode === 'A') {
                             this.currentNode.attacker = JSON.parse(JSON.stringify(this.clickedUnit));
+                            this.currentNode.attackerAmmo = this.attacker.unit.units_ammo;
                             this.currentNode.attackerDisplayHP = this.currentNode.attacker.hp * 10;
                             this.currentNode.selectingAttacker = false;
                         }
-                        if (this.clickSelectMode === 'D') {
+                        else if (this.clickSelectMode === 'D') {
                             this.currentNode.defender = JSON.parse(JSON.stringify(this.clickedUnit));
+                            this.currentNode.defenderAmmo = this.defender.unit.units_ammo;
                             this.currentNode.defenderDisplayHP = this.currentNode.defender.hp * 10;
                             this.currentNode.selectingDefender = false;
                         }
@@ -1291,6 +1326,7 @@ class DamageCalculator {
             const svgNode = event.target.closest('.calc-plus-node');
             const toggleCOP = event.target.closest('.toggle-cop');
             const toggleSCOP = event.target.closest('.toggle-scop');
+            const toggleAmmo = event.target.closest('.ammo-options');
             const selectCO = event.target.closest('.selected-co');
             const selectTerrain = event.target.closest('.selected-terrain');
             const selectUnit = event.target.closest('.selected-unit');
@@ -1365,13 +1401,13 @@ class DamageCalculator {
                         
                         if (selectedNode.depth === 0) { 
                             //changes to root are always allowed
-                            if (toggleCOP.parentNode.parentNode.parentNode.classList[0].replace('calculator-', '') === 'attack') {
+                            if (toggleCOP.parentNode.parentNode.parentNode.parentNode.classList[0].replace('calculator-', '') === 'attack') {
                                 selectedNode.attacker['power'] = (selectedNode.attacker['power'] !== 'Y') ? 'Y' : 'N';
                                 valueChanges['power'] = true;
                             } else {
                                 selectedNode.defender['power'] = (selectedNode.defender['power'] !== 'Y') ? 'Y' : 'N';
                             }
-                        } else if (selectedNode.parent.attacker['power'] === 'N' && toggleCOP.parentNode.parentNode.parentNode.classList[0].replace('calculator-', '') === 'attack') {
+                        } else if (selectedNode.parent.attacker['power'] === 'N' && toggleCOP.parentNode.parentNode.parentNode.parentNode.classList[0].replace('calculator-', '') === 'attack') {
                             //if parent power is not active, attacker can toggle    
                             selectedNode.attacker['power'] = (selectedNode.attacker['power'] !== 'Y') ? 'Y' : 'N';
                             valueChanges['power'] = true;
@@ -1383,16 +1419,32 @@ class DamageCalculator {
                         
                         if (selectedNode.depth === 0) { 
                             //changes to root are always allowed
-                            if (toggleSCOP.parentNode.parentNode.parentNode.classList[0].replace('calculator-', '') === 'attack') {
+                            if (toggleSCOP.parentNode.parentNode.parentNode.parentNode.classList[0].replace('calculator-', '') === 'attack') {
                                 selectedNode.attacker['power'] = (selectedNode.attacker['power'] !== 'S') ? 'S' : 'N';
                                 valueChanges['power'] = true;
                             } else {
                                 selectedNode.defender['power'] = (selectedNode.defender['power'] !== 'S') ? 'S' : 'N';
                             }
-                        } else if (selectedNode.parent.attacker['power'] === 'N' && toggleSCOP.parentNode.parentNode.parentNode.classList[0].replace('calculator-', '') === 'attack') {
+                        } else if (selectedNode.parent.attacker['power'] === 'N' && toggleSCOP.parentNode.parentNode.parentNode.parentNode.classList[0].replace('calculator-', '') === 'attack') {
                             //if parent power is not active, attacker can toggle    
                             selectedNode.attacker['power'] = (selectedNode.attacker['power'] !== 'S') ? 'S' : 'N';
                             valueChanges['power'] = true;
+                        }
+                    } else if (toggleAmmo && selectedNode.isValid) {
+                        for (const key in this.isMenuOpen) {
+                            this.closeMenu(key);//close all menus
+                        }
+                        
+                        if (selectedNode.depth === 0) { 
+                            //changes to root are always allowed
+                            if (toggleAmmo.parentNode.parentNode.classList[0].replace('calculator-', '') === 'attack') {
+                                selectedNode.attackerNoAmmoToggled = !selectedNode.attackerNoAmmoToggled;
+                            } else {
+                                selectedNode.defenderNoAmmoToggled = !selectedNode.defenderNoAmmoToggled;
+                            }
+                        } else if (!selectedNode.parent.defenderNoAmmoToggled && toggleAmmo.parentNode.parentNode.classList[0].replace('calculator-', '') === 'defend') {
+                            //if defender parent had ammo, defender can toggle   
+                            selectedNode.defenderNoAmmoToggled = !selectedNode.defenderNoAmmoToggled;
                         }
                     } else if (selectCO && selectedNode.isValid) {
                         this.closeMenu('select-terrain');
@@ -1640,9 +1692,11 @@ class DamageCalculator {
             const node = this.currentNode;
             //detect attacker/defender and set node
             if (selectUnitMenu.getAttribute('player-id') === 'attack') {
-                node.attacker['unit'] = UNIT_LIST[unit];
+                node.attacker['unit'] = JSON.parse(JSON.stringify(UNIT_LIST[unit]));
+                node.attackerAmmo = node.attacker.unit.units_ammo;
             } else {
-                node.defender['unit'] = UNIT_LIST[unit];
+                node.defender['unit'] = JSON.parse(JSON.stringify(UNIT_LIST[unit]));
+                node.defenderAmmo = node.defender.unit.units_ammo;
             }
             this.closeMenu('select-unit');
             await this.currentNode.refactor(valueChanges);

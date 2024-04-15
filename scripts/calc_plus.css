@@ -301,9 +301,14 @@
 
 .calc-plus-locked:hover,
 .calc-plus-locked div:hover,
-.calc-plus-locked img:hover {
+.calc-plus-locked img:hover,
+.calc-plus-locked span:hover {
     cursor: not-allowed;
     transform: none !important;
+}
+
+.calc-plus-locked.red-border:hover {
+    transform: scale(1.2) !important;
 }
 
 #calc-plus-blue-border {
@@ -322,8 +327,13 @@
 }
 
 #calc-plus-fund-options {
-    margin-top: 0px;
-    margin-left: 61px;
-    margin-bottom: 4px;
+    margin-top: 4px;
+    margin-left: 0px;
+    margin-bottom: 0px;
     width: 106px;
+}
+
+#calc-plus-ammo-options {
+    margin-top: 4px;
+    margin-bottom: 0px;
 }
