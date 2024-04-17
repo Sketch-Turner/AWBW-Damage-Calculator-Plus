@@ -1373,7 +1373,9 @@ class DamageCalculator {
                     this.closeMenu(key);//close all menus
                 }
                 this.addNewTree();
+                this.currentNode = this.activeCalcTree.activeNode;
                 //update display
+                await this.currentNode.refactor(valueChanges);
                 this.orient();
                 this.updateWindowSize(); //resize window
                 calcDisplay.innerHTML = `${this.getInnerHTML()}
@@ -1483,7 +1485,7 @@ class DamageCalculator {
                         if (selectedNode.depth === 0  || !this.safeModeOn) {
                             //select co
                             if (!selectedNode.isFocused) {
-                                this.root.removeFocus();
+                                this.activeCalcTree.root.removeFocus();
                                 selectedNode.setFocus(true);
                             }
                             // if menu not open
@@ -1532,7 +1534,7 @@ class DamageCalculator {
                             }
                             //select terrain
                             if (!selectedNode.isFocused) {
-                                this.root.removeFocus();
+                                this.activeCalcTree.root.removeFocus();
                                 selectedNode.setFocus(true);
                             }
                             // if menu not open
@@ -1580,7 +1582,7 @@ class DamageCalculator {
                             }
                             //select unit
                             if (!selectedNode.isFocused) {
-                                this.root.removeFocus();
+                                this.activeCalcTree.root.removeFocus();
                                 selectedNode.setFocus(true);
                             }
                             // if menu not open
@@ -1616,12 +1618,12 @@ class DamageCalculator {
                         
                         if (selectedNode.isValid) {
                             if (!selectedNode.isFocused) {
-                                if (!selectedNode.parent.isFocused) {
-                                    this.root.removeFocus();
-                                }
+                                // if (!selectedNode.parent.isFocused) {
+                                //     this.activeCalcTree.root.removeFocus();
+                                // }
                                 selectedNode.setFocus(true);
                             } else {
-                                if (selectedNode.depth !== 0 && event.clientY - svgNode.getBoundingClientRect().top <= INDENT * 2) {
+                                if (event.clientY - svgNode.getBoundingClientRect().top <= INDENT * 2) {
                                     selectedNode.removeFocus();
                                 }
                             }
