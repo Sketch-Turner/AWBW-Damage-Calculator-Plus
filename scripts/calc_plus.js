@@ -356,7 +356,7 @@ class CalcNode {
         return poly;
     }
     
-    generateHTML() {
+    generateHTML(safeModeOn) {
         const variableStyle = (!this.isValid) ? 'calc-plus-invalid' : (this.isFocused) ? 'calc-plus-focused' : 'calc-plus-unfocused'; 
         let optionsHtml = `
         <div class="calc-plus-node-ctrls">
@@ -397,7 +397,7 @@ class CalcNode {
             <div class="calculator-attack" style="justify-content: flex-start; align-content: flex-start; width: ${this.width/2-3}px;">
                 <div class="co-options" id="calc-plus-options">
                     <div class="co option">
-                        <div class="selected-co ${atRoot ? '' : 'calc-plus-locked'}">
+                        <div class="selected-co ${safeModeOn && !atRoot ? 'calc-plus-locked' : ''}">
                             <img src="terrain/aw2/ds${this.attacker['co']['co_name'].toLowerCase()}.png?v=1" class="border co_portrait">
                         </div>
                     </div>
@@ -424,7 +424,7 @@ class CalcNode {
                     </div>
                 </div> 
                 <div>
-                    <div class="power-options ${!atRoot && this.parent.attacker['power'] !== 'N' ? 'calc-plus-locked' : ''}" id="calc-plus-options" style="flex-direction: column; width: 57px">
+                    <div class="power-options ${safeModeOn && !atRoot && this.parent.attacker['power'] !== 'N' ? 'calc-plus-locked' : ''}" id="calc-plus-options" style="flex-direction: column; width: 57px">
                         <div class="option" style="margin: 0px 0px;">
                             <img src="terrain/aw2/redstar.gif" ${((this.attacker['power'] === 'Y') ? 'id="calc-plus-blue-border"' : '') + 'class="toggle-cop"'}> 
                             <img src="terrain/aw2/bluestar.gif" ${((this.attacker['power'] === 'S') ? 'id="calc-plus-blue-border"' : '') + 'class="toggle-scop"'}>
@@ -458,14 +458,14 @@ class CalcNode {
             <div class="calculator-defend" style="justify-content: flex-start; align-content: flex-start; width: ${this.width/2-3}px;">
                 <div class="co-options" id="calc-plus-options">
                     <div class="co option">
-                        <div class="selected-co ${atRoot ? '' : 'calc-plus-locked'}">
+                        <div class="selected-co ${safeModeOn && !atRoot ? 'calc-plus-locked' : ''}">
                             <img src="terrain/aw2/ds${this.defender['co']['co_name'].toLowerCase()}.png?v=1" class="border co_portrait">
                         </div>
                     </div>
                 </div>
                 <div class="unit-options" id="calc-plus-options">
                     <div class="unit option">
-                        <div class="selected-unit border ${atRoot ? '' : 'calc-plus-locked'}">
+                        <div class="selected-unit border ${safeModeOn && !atRoot ? 'calc-plus-locked' : ''}">
                             <img src="terrain/ani/${this.defender['country']['code']}${this.defender['unit']['units_name'].toLowerCase()}.gif">
                             ${(this.defender['hp'] < 1 || this.defender['hp'] > 9) ? '' : '<img src="terrain/aw2/' + this.defender['hp'] + '.gif" class="hp-display">'}
                         </div>
@@ -476,7 +476,7 @@ class CalcNode {
                     </div>
                 </div>
                 <div class="terrain-options" id="calc-plus-options">
-                    <div class="terrain option ${atRoot ? '' : 'calc-plus-locked'}">
+                    <div class="terrain option ${safeModeOn && !atRoot ? 'calc-plus-locked' : ''}">
                         <img src="terrain/aw2/${defenderCountry+this.defender['terrain']['terrain_name'].toLowerCase().replaceAll(' ', '').replaceAll('?', '')}.gif" class="selected-terrain">
                         <div class="terrain-stars">
                             <img src="terrain/terrainstar.gif">
@@ -485,16 +485,16 @@ class CalcNode {
                     </div>
                 </div> 
                 <div>
-                    <div class="power-options ${!atRoot ? 'calc-plus-locked' : ''}" id="calc-plus-options" style="flex-direction: column; width: 57px">
+                    <div class="power-options ${safeModeOn && !atRoot ? 'calc-plus-locked' : ''}" id="calc-plus-options" style="flex-direction: column; width: 57px">
                         <div class="option" style="margin: 0px 0px;">
                             <img src="terrain/aw2/redstar.gif" ${((this.defender['power'] === 'Y') ? 'id="calc-plus-blue-border"' : '') + 'class="toggle-cop"'}> 
                             <img src="terrain/aw2/bluestar.gif" ${((this.defender['power'] === 'S') ? 'id="calc-plus-blue-border"' : '') + 'class="toggle-scop"'}>
                         </div>
                     </div> 
                     <div class="ammo-options" id="calc-plus-ammo-options"${defenderNoSecondary ? 'style="visibility: hidden;"' : ''}>
-                        <div class="option ${(!atRoot && this.parent.defenderNoAmmoToggled) ? 'calc-plus-locked' : ''}">
-                            <span class="red-border-strikethru ${(!atRoot && this.parent.defenderNoAmmoToggled) ? 'calc-plus-locked' : ''}" ${this.defenderNoAmmoToggled ? '' : 'style="display: none;"'}></span>
-                            <img src="terrain/ammo_button.gif" ${this.defenderNoAmmoToggled ? 'class="red-border ' + ((!atRoot && this.parent.defenderNoAmmoToggled) ? 'calc-plus-locked' : '') + '"' : ''}>
+                        <div class="option ${(safeModeOn && !atRoot && this.parent.defenderNoAmmoToggled) ? 'calc-plus-locked' : ''}">
+                            <span class="red-border-strikethru ${(safeModeOn && !atRoot && this.parent.defenderNoAmmoToggled) ? 'calc-plus-locked' : ''}" ${this.defenderNoAmmoToggled ? '' : 'style="display: none;"'}></span>
+                            <img src="terrain/ammo_button.gif" ${this.defenderNoAmmoToggled ? 'class="red-border ' + ((safeModeOn && !atRoot && this.parent.defenderNoAmmoToggled) ? 'calc-plus-locked' : '') + '"' : ''}>
                         </div>
                     </div>
                 </div>
@@ -684,17 +684,17 @@ class CalcNode {
         }
     }
 
-    getHTML() {
+    getHTML(safeModeOn) {
         try {
             let html = "";
-            html += this.generateHTML();
+            html += this.generateHTML(safeModeOn);
             
             let focused = "";
             for (const child of this.children) {
                 if (child.isFocused === false) {
-                    html += child.getHTML();
+                    html += child.getHTML(safeModeOn);
                 } else {
-                    focused += child.getHTML();
+                    focused += child.getHTML(safeModeOn);
                 }
             }
 
@@ -826,8 +826,8 @@ class CalcTree{
     }
 
     //returns html of each node
-    getHTML() {
-        return this.root.getHTML();
+    getHTML(safeModeOn) {
+        return this.root.getHTML(safeModeOn);
     }
 
     //find node by id, set as active, return node
@@ -857,6 +857,7 @@ class DamageCalculator {
     constructor() {
         this.nextID = -1;
         this.calcTreeList = [];
+        this.safeModeOn = true;
         this.addNewTree();
         this.buildCalculator();
         this.currentElement = null;
@@ -870,6 +871,17 @@ class DamageCalculator {
             'select-terrain': false,
             'select-unit': false
         };
+    }
+
+    //toggle safe mode and swap out icon
+    toggleSafeMode() {
+        this.safeModeOn = !this.safeModeOn;
+        const button = document.getElementById("calc-plus-safe");
+        button.title = `Safe Mode is ${this.safeModeOn ? 'On' : 'Off'}. Click to toggle.`;
+        const img = button.querySelector("img");
+        img.src = chrome.runtime.getURL('/images/' + (this.safeModeOn ? 'lock' : 'unlock') + '_icon.png');
+        const display = document.getElementById("calc-plus-display");
+        display.innerHTML = this.getInnerHTML(); //refresh display
     }
 
     //shrink to default size
@@ -941,7 +953,7 @@ class DamageCalculator {
     getInnerHTML() {
         let html = "";
         this.calcTreeList.forEach(calcTree => {
-            html += `<div class="calc-plus-tree" style="width: ${calcTree.getWidth()}px; height: ${calcTree.getHeight()}px;">${calcTree.getHTML()}</div>`;
+            html += `<div class="calc-plus-tree" style="width: ${calcTree.getWidth()}px; height: ${calcTree.getHeight()}px;">${calcTree.getHTML(this.safeModeOn)}</div>`;
         });
         //add button
         html += `<div class="calc-plus-ctrls calc-plus-ctrls-new" title="New Calc">
@@ -1224,6 +1236,7 @@ class DamageCalculator {
                                 See you on the Global League. Good luck, have fun!!
                             </div>
                         </div>
+                        <div title="Safe Mode is ${this.safeModeOn ? 'On' : 'Off'}. Click to toggle." id="calc-plus-safe" style="margin-top: 4px; margin-right: 9px; height: 16px;"><img src="${chrome.runtime.getURL('/images/' + (this.safeModeOn ? 'lock' : 'unlock') + '_icon.png')}"></div>
                         <div title="Shrink" id="calc-plus-shrink" style="margin-top: 4px; margin-right: 9px; height: 16px;"><img src="${chrome.runtime.getURL('/images/shrink_icon.png')}"></div>
                         <div title="Expand" id="calc-plus-grow" style="margin-top: 4px; margin-right: 9px; height: 16px;"><img src="${chrome.runtime.getURL('/images/grow_icon.png')}"></div>
                         <div title="Hide" class="close-calc-plus">&#10005;</div>
@@ -1247,6 +1260,8 @@ class DamageCalculator {
         calculatorShrink.addEventListener("click", () => this.shrinkCalculator());
         const calculatorGrow = document.getElementById("calc-plus-grow");
         calculatorGrow.addEventListener("click", () => this.updateWindowSize());
+        const calculatorSafe = document.getElementById("calc-plus-safe");
+        calculatorSafe.addEventListener("click", () => this.toggleSafeMode());
 
         const grabHeader = document.getElementById("calc-plus-header");
         const calcPlus = document.getElementById("calc-plus");
@@ -1414,7 +1429,7 @@ class DamageCalculator {
                             this.closeMenu(key);//close all menus
                         }
                         
-                        if (selectedNode.depth === 0) { 
+                        if (selectedNode.depth === 0 || !this.safeModeOn) { 
                             //changes to root are always allowed
                             if (toggleCOP.parentNode.parentNode.parentNode.parentNode.classList[0].replace('calculator-', '') === 'attack') {
                                 selectedNode.attacker['power'] = (selectedNode.attacker['power'] !== 'Y') ? 'Y' : 'N';
@@ -1432,7 +1447,7 @@ class DamageCalculator {
                             this.closeMenu(key);//close all menus
                         }
                         
-                        if (selectedNode.depth === 0) { 
+                        if (selectedNode.depth === 0 || !this.safeModeOn) { 
                             //changes to root are always allowed
                             if (toggleSCOP.parentNode.parentNode.parentNode.parentNode.classList[0].replace('calculator-', '') === 'attack') {
                                 selectedNode.attacker['power'] = (selectedNode.attacker['power'] !== 'S') ? 'S' : 'N';
@@ -1450,7 +1465,7 @@ class DamageCalculator {
                             this.closeMenu(key);//close all menus
                         }
                         
-                        if (selectedNode.depth === 0) { 
+                        if (selectedNode.depth === 0  || !this.safeModeOn) { 
                             //changes to root are always allowed
                             if (toggleAmmo.parentNode.parentNode.classList[0].replace('calculator-', '') === 'attack') {
                                 selectedNode.attackerNoAmmoToggled = !selectedNode.attackerNoAmmoToggled;
@@ -1464,8 +1479,8 @@ class DamageCalculator {
                     } else if (selectCO && selectedNode.isValid) {
                         this.closeMenu('select-terrain');
                         this.closeMenu('select-unit');
-                        
-                        if (selectedNode.depth === 0) {
+                        //at root or safe mode off
+                        if (selectedNode.depth === 0  || !this.safeModeOn) {
                             //select co
                             if (!selectedNode.isFocused) {
                                 this.root.removeFocus();
@@ -1492,8 +1507,8 @@ class DamageCalculator {
                     } else if (selectTerrain && selectedNode.isValid) {
                         this.closeMenu('select-co');
                         this.closeMenu('select-unit');
-                        
-                        if (selectedNode.depth === 0 || selectTerrain.parentNode.parentNode.parentNode.classList[0].replace('calculator-', '') === 'attack') {
+                        //at root, safe mode off, or attacker can change
+                        if (selectedNode.depth === 0 || !this.safeModeOn || selectTerrain.parentNode.parentNode.parentNode.classList[0].replace('calculator-', '') === 'attack') {
                             const menu = document.getElementById('calc-plus-select-terrain');
                             let newCountry;
                             if (selectTerrain.parentNode.parentNode.parentNode.classList[0].replace('calculator-', '') === 'attack') {
@@ -1541,8 +1556,8 @@ class DamageCalculator {
                     } else if (selectUnit && selectedNode.isValid) {
                         this.closeMenu('select-terrain');
                         this.closeMenu('select-co');
-                        
-                        if (selectedNode.depth === 0 || selectUnit.parentNode.parentNode.parentNode.classList[0].replace('calculator-', '') === 'attack') {
+                        //at root, safe mode off, or attacker
+                        if (selectedNode.depth === 0 || !this.safeModeOn || selectUnit.parentNode.parentNode.parentNode.classList[0].replace('calculator-', '') === 'attack') {
                             const menu = document.getElementById('calc-plus-select-unit');
                             let newCountry;
                             if (selectUnit.parentNode.parentNode.parentNode.classList[0].replace('calculator-', '') === 'attack') {
