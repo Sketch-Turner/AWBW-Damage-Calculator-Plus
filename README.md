@@ -90,9 +90,9 @@ Once a COP or SCOP has been activated, all future attacks must also have it acti
 
 If you would like to make an invalid change, you can turn off Safe Mode in two easy steps.
 
-First, use <img src="images/tutorial/keyboard_shortcut.png" width="46px" height="16px"/> to access the Dev Settings. The Safe Mode Toggle will appear at the top of the calculator.
+First, use <img src="images/tutorial/keyboard_shortcut.png" width="92px" height="32px"/> to access the Dev Settings. The Safe Mode Toggle will appear at the top of the calculator.
 
-Then, simply toggle Safe Mode on or off as you desire. Invalid inputs are locked when Safe Mode is on (![Locked](images/lock_icon.png)) and can be changed when Safe Mode is off (![Unlocked](images/unlock_icon.png)).
+Then, simply toggle Safe Mode on or off as you desire. Invalid inputs are locked when Safe Mode is on ( ![Locked](images/lock_icon.png) ) and can be changed when Safe Mode is off ( ![Unlocked](images/unlock_icon.png) ).
 
 When the Safe Mode Toggle is not visible, Safe Mode is always on.
 Be careful when using the calculator with Safe Mode off as illogical or unreliable results are possible.
