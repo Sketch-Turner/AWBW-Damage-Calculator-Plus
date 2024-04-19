@@ -28,10 +28,9 @@ The display value effects the unit's attack power, luck rolls, and defense bonus
 ![HP](images/tutorial/hp_display.png)
 
 ### Add Button
-The Add Button will appear in the bottom right corner if the defender has a chance to survive after the attacker fires.
-
 ![Add Button](images/add_icon.png)
 
+The Add Button will appear in the bottom right corner if the defender has a chance to survive after the attacker fires.
 When a new calculation is added, the defender of the current calculation will be carried over. By default the defender is assumed to have taken the minimum damage possible from the attacker.
 
 ![Defender HP](images/tutorial/defender_hp.png)
@@ -42,15 +41,14 @@ In this example, tank + mech garuntees a kill whereas tank + infantry doesn't.
 ![Follow-Up Attack Comparison](images/tutorial/multiple_paths.png)
 
 ### Delete Button
-The Delete Button is located in the bottom left corner. Pressing this button will delete the calculation and any follow-up attacks that occur after.
-
 ![Delete Button](images/delete_icon.png)
 
-### New Calc Button
-The New Calc Button is located in the bottom left and can be used to add a new calculation.
+The Delete Button is located in the bottom left corner. Pressing this button will delete the calculation and any follow-up attacks that occur after.
 
+### New Calc Button
 ![New Calc Button](images/new_calc_icon_20x20.png)
-The New Calc Button allows the comparison of different attack orders. 
+
+The New Calc Button is located in the bottom left and allows the comparison of different attack orders. 
 In the example below, Max has his SCOP ready and an anti-air 8 spaces from the bomber. 
 
 ![Move Order Example](images/tutorial/calc_comparison_game.png)
