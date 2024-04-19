@@ -858,6 +858,7 @@ class DamageCalculator {
         this.nextID = -1;
         this.calcTreeList = [];
         this.safeModeOn = true;
+        this.safeModeVisible = false;
         this.addNewTree();
         this.buildCalculator();
         this.currentElement = null;
@@ -877,6 +878,11 @@ class DamageCalculator {
     toggleSafeMode() {
         this.safeModeOn = !this.safeModeOn;
         const button = document.getElementById("calc-plus-safe");
+        if (!this.safeModeVisible) {
+            button.style.display = "none";
+        } else {
+            button.style.display = "block";
+        }
         button.title = `Safe Mode is ${this.safeModeOn ? 'On' : 'Off'}. Click to toggle.`;
         const img = button.querySelector("img");
         img.src = chrome.runtime.getURL('/images/' + (this.safeModeOn ? 'lock' : 'unlock') + '_icon.png');
@@ -952,9 +958,11 @@ class DamageCalculator {
     //returns HTML code for display element
     getInnerHTML() {
         let html = "";
-        this.calcTreeList.forEach(calcTree => {
-            html += `<div class="calc-plus-tree" style="width: ${calcTree.getWidth()}px; height: ${calcTree.getHeight()}px;">${calcTree.getHTML(this.safeModeOn)}</div>`;
-        });
+        let y = 0;
+        for(let i = 0; i < this.calcTreeList.length; i++) {
+            html += `<div class="calc-plus-tree" style="width: ${this.calcTreeList[i].getWidth()}px; height: ${this.calcTreeList[i].getHeight()}px; top: ${y}px;">${this.calcTreeList[i].getHTML(this.safeModeOn)}</div>`;
+            y += this.calcTreeList[i].getHeight() + TREE_OFFSET;
+        }
         //add button
         html += `<div class="calc-plus-ctrls calc-plus-ctrls-new" title="New Calc">
                     <img src="${chrome.runtime.getURL('/images/new_calc_icon_20x20.png')}">
@@ -996,7 +1004,7 @@ class DamageCalculator {
     updateWindowSize() {
         const calc = document.getElementById("calc-plus");
         const width = (this.getMaxDepth() + 1) * (SIZE_X + OFFSET) + 16;//root is depth 0
-        const button_height = 20; //add calc button
+        const button_height = 22; //add calc button
         let height = 44 + button_height + (this.calcTreeList.length - 1) * TREE_OFFSET;
         this.calcTreeList.forEach(calcTree => {
             height += calcTree.root.height;
@@ -1236,7 +1244,7 @@ class DamageCalculator {
                                 See you on the Global League. Good luck, have fun!!
                             </div>
                         </div>
-                        <div title="Safe Mode is ${this.safeModeOn ? 'On' : 'Off'}. Click to toggle." id="calc-plus-safe" style="margin-top: 4px; margin-right: 9px; height: 16px;"><img src="${chrome.runtime.getURL('/images/' + (this.safeModeOn ? 'lock' : 'unlock') + '_icon.png')}"></div>
+                        <div title="Safe Mode is ${this.safeModeOn ? 'On' : 'Off'}. Click to toggle." id="calc-plus-safe" style="display: none; margin-top: 4px; margin-right: 9px; height: 16px;"><img src="${chrome.runtime.getURL('/images/' + (this.safeModeOn ? 'lock' : 'unlock') + '_icon.png')}"></div>
                         <div title="Shrink" id="calc-plus-shrink" style="margin-top: 4px; margin-right: 9px; height: 16px;"><img src="${chrome.runtime.getURL('/images/shrink_icon.png')}"></div>
                         <div title="Expand" id="calc-plus-grow" style="margin-top: 4px; margin-right: 9px; height: 16px;"><img src="${chrome.runtime.getURL('/images/grow_icon.png')}"></div>
                         <div title="Hide" class="close-calc-plus">&#10005;</div>
@@ -1265,6 +1273,15 @@ class DamageCalculator {
 
         const grabHeader = document.getElementById("calc-plus-header");
         const calcPlus = document.getElementById("calc-plus");
+
+        //detect key press to show safe mode unlock
+        document.addEventListener("keydown", (event) => {
+            if (event.key === "+") {
+                this.safeModeVisible = !this.safeModeVisible;
+                this.safeModeOn = false;
+                this.toggleSafeMode();
+            }
+        });
 
         //if click on old dc, send dc+ to back
         dc.addEventListener("mousedown", () => this.sendToBack());
@@ -1378,9 +1395,7 @@ class DamageCalculator {
                 await this.currentNode.refactor(valueChanges);
                 this.orient();
                 this.updateWindowSize(); //resize window
-                calcDisplay.innerHTML = `${this.getInnerHTML()}
-                <div class="calc-plus-ctrls calc-plus-ctrls-new" title="New Calc"><img src="${chrome.runtime.getURL('/images/new_calc_icon.png')}"></div>
-                `;
+                calcDisplay.innerHTML = this.getInnerHTML()
             } else if (svgNode) {
                 valueChanges = this.updateInputs(this.currentNode, this.currentElement, valueChanges);
                 this.currentElement = svgNode;
@@ -1751,29 +1766,31 @@ document.head.appendChild(link);
 
 //Add calc plus button
 const old_dc_button = document.querySelector('.calculator-toggle.game-tools-btn') || document.querySelector('.calculator-toggle.planner-calc-toggle');
-
-const new_dc_button = `
-<div class="calculator-plus-toggle game-tools-btn" style="border-right: none;">
-    <div class="game-tools-bg">
-        <img src="` + chrome.runtime.getURL('/images/new_calc.png') + `" style="display: block;">
+if (old_dc_button) {
+    const new_dc_button = `
+    <div class="calculator-plus-toggle game-tools-btn" style="border-right: none;">
+        <div class="game-tools-bg">
+            <img src="` + chrome.runtime.getURL('/images/new_calc.png') + `" style="display: block;">
+        </div>
+        <span class="game-tools-btn-text small_text">Damage Calculator +</span>
     </div>
-    <span class="game-tools-btn-text small_text">Damage Calculator +</span>
-</div>
-`;
-old_dc_button.insertAdjacentHTML('beforebegin', new_dc_button);
+    `;
 
-//Add calculator
-let DCP = new DamageCalculator();
+    old_dc_button.insertAdjacentHTML('beforebegin', new_dc_button);
 
-//If old calc is opened, send dc+ to back
-old_dc_button.addEventListener('click', () => DCP.sendToBack());
+    //Add calculator
+    let DCP = new DamageCalculator();
 
-// Add event listener for new button
-const menuContainer = document.getElementById('map-controls-container');
-menuContainer.addEventListener('click', function (event) {
-  // Check if the clicked element or its parent is the newly added button
-  if (event.target.classList.contains('calculator-plus-toggle') || event.target.closest('.calculator-plus-toggle')) {
-      // Handle the click event for the new button here
-      DCP.toggleCalculator();
-  }
-});
+    //If old calc is opened, send dc+ to back
+    old_dc_button.addEventListener('click', () => DCP.sendToBack());
+
+    // Add event listener for new button
+    const menuContainer = document.getElementById('map-controls-container');
+    menuContainer.addEventListener('click', function (event) {
+    // Check if the clicked element or its parent is the newly added button
+    if (event.target.classList.contains('calculator-plus-toggle') || event.target.closest('.calculator-plus-toggle')) {
+        // Handle the click event for the new button here
+        DCP.toggleCalculator();
+    }
+    });
+}

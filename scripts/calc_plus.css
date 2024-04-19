@@ -152,10 +152,9 @@
 }
 
 .calc-plus-tree {
-    position: relative;
+    position: absolute;
     display: inline-block;
     white-space: nowrap;
-    margin-bottom: 10px;
 }
 
 .calc-plus-node {
