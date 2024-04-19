@@ -76,7 +76,7 @@ After changing the unit used in the first attack to an Anti-Air, the follow-up a
 
 Invalid calculations can be deleted to save space or left alone.
 
-### Valid and Invalid Inputs
+### Safe Mode
 By default, changes to the defender or attackers that break game logic are not allowed. An alternate cursor will be used when hovering over an attribute that may not be altered.
 All attributes of the first attack may be changed.
 
@@ -87,6 +87,15 @@ Changes that would contradict something in the past (Red) are not allowed (e.g. 
 Once a COP or SCOP has been activated, all future attacks must also have it activated.
 
 ![Follow-Up Attack Valid Changes](images/tutorial/follow_up_valid.png)
+
+If you would like to make an invalid change, you can turn off Safe Mode in two easy steps.
+
+First, use (images/tutorial/keyboard_shortcut.png) to access the Dev Settings. The Safe Mode Toggle will appear at the top of the calculator.
+
+Then, simply toggle Safe Mode on or off as you desire. Invalid inputs are locked when Safe Mode is on (images/lock_icon.png) and can be changed when Safe Mode is off. (images/tutorial/unlock_icon.png)
+
+When the Safe Mode Toggle is not visible, Safe Mode is always on.
+Be careful when using the calculator with Safe Mode off as illogical or unreliable results are possible.
 
 ## Errors
 Report errors [here](https://forms.gle/my2XMuUk14ZDjry46).
