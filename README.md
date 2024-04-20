@@ -98,5 +98,5 @@ When the Safe Mode Toggle is not visible, Safe Mode is always on.
 Be careful when using the calculator with Safe Mode off as illogical or unreliable results are possible.
 
 ## Errors
-Report errors [here](https://forms.gle/my2XMuUk14ZDjry46).
+Report errors [here](https://forms.gle/zyKQuBn7xkgqtNSr5).
 Feel free to contribute! this is my first JS project an I could definately use some help.

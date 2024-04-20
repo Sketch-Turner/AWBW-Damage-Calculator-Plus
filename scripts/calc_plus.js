@@ -1240,7 +1240,7 @@ class DamageCalculator {
                             <div class="info-box-text" style="right:0px; width:180px;">
                                 Damage Calculator Plus by Sketch_Turner<br>
                                 <a href="https://github.com/Sketch-Turner/AWBW-Damage-Calculator-Plus#table-of-contents" target="_blank">User Guide</a><br>
-                                <a href="https://forms.gle/my2XMuUk14ZDjry46" target="_blank">Error Reporting</a><br>
+                                <a href="https://forms.gle/zyKQuBn7xkgqtNSr5" target="_blank">Error Reporting</a><br>
                                 See you on the Global League. Good luck, have fun!!
                             </div>
                         </div>
