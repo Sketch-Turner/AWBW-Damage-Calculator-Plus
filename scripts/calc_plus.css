@@ -100,6 +100,15 @@
     justify-content: space-around;
 }
 
+.calculator-damage .calc-plus-slider-display {
+    display: inline-block;
+    width: 100%
+}
+
+input.calc-plus-damage-slider {
+    width: 50%; 
+}
+
 .calc-plus {
     background: white; 
     border: 1px solid black; 

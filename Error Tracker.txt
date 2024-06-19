@@ -3,3 +3,6 @@
 
 2. Fast clicking on the inc/dec arrows on input fields can overwhelm the server.
     Could be improved by catching the 503 and waiting before resubmitting.
+
+3. Cost / Power charge is not calculated correctly for COs with non-standard unit cost. 
+    AWBW API does not take this into account. Could be hard-coded.
