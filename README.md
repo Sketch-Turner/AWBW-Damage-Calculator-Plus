@@ -4,7 +4,7 @@
 1. [Introduction](#introduction)
 2. [Installation](#installation)
 3. [Usage](#usage)
-4. [Errors](#errors)
+4. [Status](#status)
 
 ## Introduction
 AWBW Damage Calculator Plus is a web extension that expands the functionality of the regular damage calculator by allowing calculation of sequential attacks and side-by-side comparison of different attacks. 
@@ -97,6 +97,5 @@ Then, simply toggle Safe Mode on or off as you desire. Invalid inputs are locked
 When the Safe Mode Toggle is not visible, Safe Mode is always on.
 Be careful when using the calculator with Safe Mode off as illogical or unreliable results are possible.
 
-## Errors
-Report errors [here](https://forms.gle/zyKQuBn7xkgqtNSr5).
-Feel free to contribute! this is my first JS project an I could definately use some help.
+## Status
+Sadly no longer maintaining this project. Differences in how the AWBW backend is coded prevents unit selection in certain gamemodes. I planned to add the ability to calculate the % chance of getting a certain roll. Unfortunately, this proved to be impossible with the data returned by the API. I didn't want to recreate the damage calculator from scratch so the project is now defunct.
