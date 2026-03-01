@@ -3976,8 +3976,8 @@ class CalcNode {
         this.defenderNoAmmoToggled = false;
         this.attackerAmmo = this.attacker.unit.units_ammo;
         this.defenderAmmo = this.defender.unit.units_ammo;
-        this.attackerDisplayHP = this.calc.getDisplayHP(attacker);
-        this.defenderDisplayHP = this.calc.getDisplayHP(defender);
+        this.attackerDisplayHP = attacker.hp;
+        this.defenderDisplayHP = defender.hp;
         this.defenderMaxHP = 100;
         this.defenderMaxCities = 99;
         this.defenderMaxTowers = 99;
@@ -4383,7 +4383,7 @@ class CalcNode {
                         <span><span class="bold">@${Math.max(0, Math.ceil((this.defenderDisplayHP - this.calcResults['attackDamageMax'])/10.0))}HP: </span>${this.calcResults['minCounterDamageMin'] === this.calcResults['minCounterDamageMax'] ? 
                         this.calcResults['minCounterDamageMin'] + '%' : this.calcResults['minCounterDamageMin'] + '% - ' + this.calcResults['minCounterDamageMax'] + '%'}</span>
                         ${Math.max(0, Math.ceil((this.defenderDisplayHP - this.calcResults['attackDamageMax'])/10.0)) === Math.max(0, Math.ceil((this.defenderDisplayHP - this.calcResults['attackDamageMin'])/10.0)) ?
-                            '' : '<span><span class="bold">@' + Math.max(0, Math.ceil((this.defenderDisplayHP - this.calcResults['attackDamageMin'])/10.0)) + 'HP: </span>' + ((this.calcResults['maxCounterDamageMin'] === this.calcResults['maxCounterDamageMax']) ? 
+                            '' : '<span><span class="bold">@' + Math.max(0, Math.ceil((this.defenderDisplayHP - Math.max(0, this.calcResults['attackDamageMin']))/10.0)) + 'HP: </span>' + ((this.calcResults['maxCounterDamageMin'] === this.calcResults['maxCounterDamageMax']) ? 
                             this.calcResults['maxCounterDamageMin'] + '%' : this.calcResults['maxCounterDamageMin'] + '% - ' + this.calcResults['maxCounterDamageMax'] + '%') + '</span>'}
                         <img src="terrain/coin.gif" class="gold-coin">
                         <span class="funds-damage-display">${this.calcResults['minCounterFundsMin'] === this.calcResults['maxCounterFundsMax'] ? this.calcResults['minCounterFundsMin'] : this.calcResults['minCounterFundsMin'] + ' - ' + this.calcResults['maxCounterFundsMax']}</span>
@@ -4473,7 +4473,7 @@ class CalcNode {
                         <span><span class="bold">@${Math.max(0, Math.ceil((this.defenderDisplayHP - this.calcResults['attackDamageMax'])/10.0))}HP: </span>${this.calcResults['minCounterDamageMin'] === this.calcResults['minCounterDamageMax'] ? 
                         this.calcResults['minCounterDamageMin'] + '%' : this.calcResults['minCounterDamageMin'] + '% - ' + this.calcResults['minCounterDamageMax'] + '%'}</span>
                         ${Math.max(0, Math.ceil((this.defenderDisplayHP - this.calcResults['attackDamageMax'])/10.0)) === Math.max(0, Math.ceil((this.defenderDisplayHP - this.calcResults['attackDamageMin'])/10.0)) ?
-                            '' : '<span><span class="bold">@' + Math.max(0, Math.ceil((this.defenderDisplayHP - this.calcResults['attackDamageMin'])/10.0)) + 'HP: </span>' + ((this.calcResults['maxCounterDamageMin'] === this.calcResults['maxCounterDamageMax']) ? 
+                            '' : '<span><span class="bold">@' + Math.max(0, Math.ceil((this.defenderDisplayHP - Math.max(0, this.calcResults['attackDamageMin']))/10.0)) + 'HP: </span>' + ((this.calcResults['maxCounterDamageMin'] === this.calcResults['maxCounterDamageMax']) ? 
                             this.calcResults['maxCounterDamageMin'] + '%' : this.calcResults['maxCounterDamageMin'] + '% - ' + this.calcResults['maxCounterDamageMax'] + '%') + '</span>'}
                     </div>
                 </div>
@@ -4615,11 +4615,10 @@ class CalcNode {
     genNextNode(id, displayLuckSlider) { //returns node post attack
         let nextDefender = JSON.parse(JSON.stringify(this.defender));
         // Get damage the attack will do. If luck mode is on, use slider value; else use min value
-        const attackerDamage = (displayLuckSlider) ? this.sliderDamage : this.calcResults['attackDamageMin'];
+        const attackerDamage = (displayLuckSlider) ? this.sliderDamage : Math.max(0, this.calcResults['attackDamageMin']);
         const maxHP = Math.max(0, this.defenderDisplayHP - attackerDamage);
-        console.log('damage', attackerDamage);
 
-        nextDefender['hp'] = Math.ceil(maxHP/10);
+        nextDefender['hp'] = maxHP;
         const nextAttacker = JSON.parse(JSON.stringify(DEFAULT_ATTACKER));
         nextAttacker.country = this.attacker.country;
 
@@ -4638,7 +4637,6 @@ class CalcNode {
         }
         // await this.calculate(); //wait for calc
         this.calcResults = this.calc.calculate(this.attacker, this.defender);
-        console.log(this.calcResults);
         const newChild = this.genNextNode(-1, displayLuckSlider);//this is discarded so id doesnt matter???
         for (const child of this.children) {
             const oldDefender = JSON.parse(JSON.stringify(child.defender))
@@ -4646,7 +4644,6 @@ class CalcNode {
             //if luck mode, use slider val
             child.defenderMaxHP = newChild.defenderMaxHP;
             child.defenderDisplayHP = newChild.defenderDisplayHP;
-            console.log('maxHP', child.defenderMaxHP, 'dispHP', child.defenderDisplayHP);
             //TODO?????
             
             child.defenderMaxCities = newChild.defenderMaxCities;
@@ -4681,7 +4678,7 @@ class CalcNode {
 /////////////////////////////////////////////////////
 // CalcTree                                        // 
 /////////////////////////////////////////////////////
-class CalcTree{
+class CalcTree {
     constructor(id) {
         this.root = new CalcNode(JSON.parse(JSON.stringify(DEFAULT_ATTACKER)), JSON.parse(JSON.stringify(DEFAULT_DEFENDER)), id, new BuiltinCalculator());
         this.root.isRoot = true;
@@ -4753,30 +4750,31 @@ class BuiltinCalculator {
         const attack_min = Math.max(attack.max, 0);
         const attack_max = Math.max(attack.min, 0);
         if (this.canCounter(attacker, defender)) {
-            // min attack (max counter)
+            // min attack (min counter)
             if (attack_min < defender.hp) {
                 defender.hp -= attack_min;
                 counter = this.calc(defender, attacker, true);
                 defender.hp += attack_min;
                 
-                result.maxCounterDamageMin = counter.min;
-                result.maxCounterDamageMax = counter.max;
-                result.maxCounterFundsMin = this.getDamageCost(attacker, counter.min);
-                result.maxCounterFundsMax = this.getDamageCost(attacker, counter.max);
-            }
-
-            // max attack (min counter)
-            if (attack_max < defender.hp) {
-                defender.hp -= attack_max;
-                counter = this.calc(defender, attacker, true);
-                defender.hp += attack_max;
-
                 result.minCounterDamageMin = counter.min;
                 result.minCounterDamageMax = counter.max;
                 result.minCounterFundsMin = this.getDamageCost(attacker, counter.min);
                 result.minCounterFundsMax = this.getDamageCost(attacker, counter.max);
             }
+
+            // max attack (max counter)
+            if (attack_max < defender.hp) {
+                defender.hp -= attack_max;
+                counter = this.calc(defender, attacker, true);
+                defender.hp += attack_max;
+
+                result.maxCounterDamageMin = counter.min;
+                result.maxCounterDamageMax = counter.max;
+                result.maxCounterFundsMin = this.getDamageCost(attacker, counter.min);
+                result.maxCounterFundsMax = this.getDamageCost(attacker, counter.max);
+            }
         }
+        console.log(attacker, defender, result);
         return result;
     }
 
