@@ -3857,79 +3857,79 @@ const SECONDARY_DAMAGE = [
     [4, 5, 45, 45, 10, 0, 0, 0, 0, 0, 0, 0, 75, 0, 1, 70, 1, 30, 1, 6, 40, 55, 0, 0, 40, 6]
 ];
 const CO_LIST = {
-    "andy":{"co_name":"Andy","co_id":"1"},
-    "grit":{"co_name":"Grit","co_id":"2"},
-    "kanbei":{"co_name":"Kanbei","co_id":"3"},
-    "drake":{"co_name":"Drake","co_id":"5"},
-    "max":{"co_name":"Max","co_id":"7"},
-    "sami":{"co_name":"Sami","co_id":"8"},
-    "olaf":{"co_name":"Olaf","co_id":"9"},
-    "eagle":{"co_name":"Eagle","co_id":"10"},
-    "adder":{"co_name":"Adder","co_id":"11"},
-    "hawke":{"co_name":"Hawke","co_id":"12"},
-    "sensei":{"co_name":"Sensei","co_id":"13"},
-    "jess":{"co_name":"Jess","co_id":"14"},
-    "colin":{"co_name":"Colin","co_id":"15"},
-    "lash":{"co_name":"Lash","co_id":"16"},
-    "hachi":{"co_name":"Hachi","co_id":"17"},
-    "sonja":{"co_name":"Sonja","co_id":"18"},
-    "sasha":{"co_name":"Sasha","co_id":"19"},
-    "grimm":{"co_name":"Grimm","co_id":"20"},
-    "koal":{"co_name":"Koal","co_id":"21"},
-    "jake":{"co_name":"Jake","co_id":"22"},
-    "kindle":{"co_name":"Kindle","co_id":"23"},
-    "nell":{"co_name":"Nell","co_id":"24"},
-    "flak":{"co_name":"Flak","co_id":"25"},
-    "jugger":{"co_name":"Jugger","co_id":"26"},
-    "javier":{"co_name":"Javier","co_id":"27"},
-    "rachel":{"co_name":"Rachel","co_id":"28"},
-    "sturm":{"co_name":"Sturm","co_id":"29"},
-    "vonbolt":{"co_name":"VonBolt","co_id":"30"}
+    "andy":{"co_name":"Andy","co_id":1},
+    "grit":{"co_name":"Grit","co_id":2},
+    "kanbei":{"co_name":"Kanbei","co_id":3},
+    "drake":{"co_name":"Drake","co_id":5},
+    "max":{"co_name":"Max","co_id":7},
+    "sami":{"co_name":"Sami","co_id":8},
+    "olaf":{"co_name":"Olaf","co_id":9},
+    "eagle":{"co_name":"Eagle","co_id":10},
+    "adder":{"co_name":"Adder","co_id":11},
+    "hawke":{"co_name":"Hawke","co_id":12},
+    "sensei":{"co_name":"Sensei","co_id":13},
+    "jess":{"co_name":"Jess","co_id":14},
+    "colin":{"co_name":"Colin","co_id":15},
+    "lash":{"co_name":"Lash","co_id":16},
+    "hachi":{"co_name":"Hachi","co_id":17},
+    "sonja":{"co_name":"Sonja","co_id":18},
+    "sasha":{"co_name":"Sasha","co_id":19},
+    "grimm":{"co_name":"Grimm","co_id":20},
+    "koal":{"co_name":"Koal","co_id":21},
+    "jake":{"co_name":"Jake","co_id":22},
+    "kindle":{"co_name":"Kindle","co_id":23},
+    "nell":{"co_name":"Nell","co_id":24},
+    "flak":{"co_name":"Flak","co_id":25},
+    "jugger":{"co_name":"Jugger","co_id":26},
+    "javier":{"co_name":"Javier","co_id":27},
+    "rachel":{"co_name":"Rachel","co_id":28},
+    "sturm":{"co_name":"Sturm","co_id":29},
+    "vonbolt":{"co_name":"VonBolt","co_id":30}
 };
 const TERRAIN_LIST = {
-    "plain": {"terrain_name":"Plain","terrain_id":"1","terrain_defense":"1"},
-    "mountain": {"terrain_name":"Mountain","terrain_id":"2","terrain_defense":"4"},
-    "wood": {"terrain_name":"Wood","terrain_id":"3","terrain_defense":"2"},
-    "hriver": {"terrain_name":"HRiver","terrain_id":"4","terrain_defense":"0"},
-    "hroad": {"terrain_name":"HRoad","terrain_id":"15","terrain_defense":"0"},
-    "hbridge": {"terrain_name":"HBridge","terrain_id":"26","terrain_defense":"0"},
-    "sea": {"terrain_name":"Sea","terrain_id":"28","terrain_defense":"0"},
-    "hshoal": {"terrain_name":"HShoal","terrain_id":"29","terrain_defense":"0"},
-    "reef": {"terrain_name":"Reef","terrain_id":"33","terrain_defense":"1"},
-    "city": {"terrain_name":"?City","terrain_id":"34","terrain_defense":"3"},
-    "base": {"terrain_name":"?Base","terrain_id":"35","terrain_defense":"3"},
-    "airport": {"terrain_name":"?Airport","terrain_id":"36","terrain_defense":"3"},
-    "port": {"terrain_name":"?Port","terrain_id":"37","terrain_defense":"3"},
-    "comtower": {"terrain_name":"?ComTower","terrain_id":"133","terrain_defense":"3"},
-    "lab": {"terrain_name":"?Lab","terrain_id":"145","terrain_defense":"3"},
-    "hq": {"terrain_name":"?HQ","terrain_id":"42","terrain_defense":"4"}
+    "plain": {"terrain_name":"Plain","terrain_id":1,"terrain_defense":1},
+    "mountain": {"terrain_name":"Mountain","terrain_id":2,"terrain_defense":4},
+    "wood": {"terrain_name":"Wood","terrain_id":3,"terrain_defense":2},
+    "hriver": {"terrain_name":"HRiver","terrain_id":4,"terrain_defense":0},
+    "hroad": {"terrain_name":"HRoad","terrain_id":15,"terrain_defense":0},
+    "hbridge": {"terrain_name":"HBridge","terrain_id":26,"terrain_defense":0},
+    "sea": {"terrain_name":"Sea","terrain_id":28,"terrain_defense":0},
+    "hshoal": {"terrain_name":"HShoal","terrain_id":29,"terrain_defense":0},
+    "reef": {"terrain_name":"Reef","terrain_id":33,"terrain_defense":1},
+    "city": {"terrain_name":"?City","terrain_id":34,"terrain_defense":3},
+    "base": {"terrain_name":"?Base","terrain_id":35,"terrain_defense":3},
+    "airport": {"terrain_name":"?Airport","terrain_id":36,"terrain_defense":3},
+    "port": {"terrain_name":"?Port","terrain_id":37,"terrain_defense":3},
+    "comtower": {"terrain_name":"?ComTower","terrain_id":133,"terrain_defense":3},
+    "lab": {"terrain_name":"?Lab","terrain_id":145,"terrain_defense":3},
+    "hq": {"terrain_name":"?HQ","terrain_id":42,"terrain_defense":4}
 };
 const UNIT_LIST = {
-    "infantry": {"units_name":"Infantry","units_id":"1","units_ammo":"0","cost":1000},
-    "mech": {"units_name":"Mech","units_id":"2","units_ammo":"3","cost":3000},
-    "md.tank": {"units_name":"Md.Tank","units_id":"3","units_ammo":"8","cost":16000},
-    "tank": {"units_name":"Tank","units_id":"4","units_ammo":"9","cost":7000},
-    "recon": {"units_name":"Recon","units_id":"5","units_ammo":"0","cost":4000},
-    "apc": {"units_name":"APC","units_id":"6","units_ammo":"0","cost":5000},
-    "artillery": {"units_name":"Artillery","units_id":"7","units_ammo":"9","cost":6000},
-    "rocket": {"units_name":"Rocket","units_id":"8","units_ammo":"6","cost":15000},
-    "anti-air": {"units_name":"Anti-Air","units_id":"9","units_ammo":"9","cost":8000},
-    "missile": {"units_name":"Missile","units_id":"10","units_ammo":"6","cost":12000},
-    "fighter": {"units_name":"Fighter","units_id":"11","units_ammo":"9","cost":20000},
-    "bomber": {"units_name":"Bomber","units_id":"12","units_ammo":"9","cost":22000},
-    "b-copter": {"units_name":"B-Copter","units_id":"13","units_ammo":"6","cost":9000},
-    "t-copter": {"units_name":"T-Copter","units_id":"14","units_ammo":"0","cost":5000},
-    "battleship": {"units_name":"Battleship","units_id":"15","units_ammo":"9","cost":28000},
-    "cruiser": {"units_name":"Cruiser","units_id":"16","units_ammo":"9","cost":16000},
-    "lander": {"units_name":"Lander","units_id":"17","units_ammo":"0","cost":12000},
-    "sub": {"units_name":"Sub","units_id":"18","units_ammo":"6","cost":20000},
-    "neotank": {"units_name":"Neotank","units_id":"46","units_ammo":"9","cost":22000},
-    "piperunner": {"units_name":"Piperunner","units_id":"960900","units_ammo":"9","cost":20000},
-    "blackbomb": {"units_name":"BlackBomb","units_id":"968731","units_ammo":"0","cost":25000},
-    "megatank": {"units_name":"MegaTank","units_id":"1141438","units_ammo":"3","cost":28000},
-    "blackboat": {"units_name":"BlackBoat","units_id":"28","units_ammo":"0","cost":7500},
-    "stealth": {"units_name":"Stealth","units_id":"30","units_ammo":"6","cost":24000},
-    "carrier": {"units_name":"Carrier","units_id":"29","units_ammo":"9","cost":30000}
+    "infantry": {"units_name":"Infantry","units_id":1,"units_ammo":0,"cost":1000},
+    "mech": {"units_name":"Mech","units_id":2,"units_ammo":3,"cost":3000},
+    "md.tank": {"units_name":"Md.Tank","units_id":3,"units_ammo":8,"cost":16000},
+    "tank": {"units_name":"Tank","units_id":4,"units_ammo":9,"cost":7000},
+    "recon": {"units_name":"Recon","units_id":5,"units_ammo":0,"cost":4000},
+    "apc": {"units_name":"APC","units_id":6,"units_ammo":0,"cost":5000},
+    "artillery": {"units_name":"Artillery","units_id":7,"units_ammo":9,"cost":6000},
+    "rocket": {"units_name":"Rocket","units_id":8,"units_ammo":6,"cost":15000},
+    "anti-air": {"units_name":"Anti-Air","units_id":9,"units_ammo":9,"cost":8000},
+    "missile": {"units_name":"Missile","units_id":10,"units_ammo":6,"cost":12000},
+    "fighter": {"units_name":"Fighter","units_id":11,"units_ammo":9,"cost":20000},
+    "bomber": {"units_name":"Bomber","units_id":12,"units_ammo":9,"cost":22000},
+    "b-copter": {"units_name":"B-Copter","units_id":13,"units_ammo":6,"cost":9000},
+    "t-copter": {"units_name":"T-Copter","units_id":14,"units_ammo":0,"cost":5000},
+    "battleship": {"units_name":"Battleship","units_id":15,"units_ammo":9,"cost":28000},
+    "cruiser": {"units_name":"Cruiser","units_id":16,"units_ammo":9,"cost":16000},
+    "lander": {"units_name":"Lander","units_id":17,"units_ammo":0,"cost":12000},
+    "sub": {"units_name":"Sub","units_id":18,"units_ammo":6,"cost":20000},
+    "neotank": {"units_name":"Neotank","units_id":46,"units_ammo":9,"cost":22000},
+    "piperunner": {"units_name":"Piperunner","units_id":960900,"units_ammo":9,"cost":20000},
+    "blackbomb": {"units_name":"BlackBomb","units_id":968731,"units_ammo":0,"cost":25000},
+    "megatank": {"units_name":"MegaTank","units_id":1141438,"units_ammo":3,"cost":28000},
+    "blackboat": {"units_name":"BlackBoat","units_id":28,"units_ammo":0,"cost":7500},
+    "stealth": {"units_name":"Stealth","units_id":30,"units_ammo":6,"cost":24000},
+    "carrier": {"units_name":"Carrier","units_id":29,"units_ammo":9,"cost":30000}
 };
 const DEFAULT_ATTACKER = {
     "cities": 0,
@@ -4192,7 +4192,7 @@ class CalcNode {
         return poly;
     }
     
-    generateHTML() {
+    generateHTML(safeModeOn, displayLuckSlider) {
         const variableStyle = (!this.isValid) ? 'calc-plus-invalid' : (this.isFocused) ? 'calc-plus-focused' : 'calc-plus-unfocused'; 
         let optionsHtml = `
         <div class="calc-plus-node-ctrls">
@@ -4637,7 +4637,8 @@ class CalcNode {
             this.removeFocus();
         }
         // await this.calculate(); //wait for calc
-        this.calc.calculate(this.attacker, this.defender);
+        this.calcResults = this.calc.calculate(this.attacker, this.defender);
+        console.log(this.calcResults);
         const newChild = this.genNextNode(-1, displayLuckSlider);//this is discarded so id doesnt matter???
         for (const child of this.children) {
             const oldDefender = JSON.parse(JSON.stringify(child.defender))
@@ -4749,29 +4750,31 @@ class BuiltinCalculator {
         result.attackFundsMax = this.getDamageCost(defender, attack.max);
 
         let counter = {"max":0, "min":0};
+        const attack_min = Math.max(attack.max, 0);
+        const attack_max = Math.max(attack.min, 0);
         if (this.canCounter(attacker, defender)) {
             // min attack (max counter)
-            if (attack.min < defender.hp) {
-                defender.hp -= attack.min;
+            if (attack_min < defender.hp) {
+                defender.hp -= attack_min;
                 counter = this.calc(defender, attacker, true);
-                defender.hp += attack.min;
+                defender.hp += attack_min;
                 
                 result.maxCounterDamageMin = counter.min;
                 result.maxCounterDamageMax = counter.max;
-                result.maxCounterFundsMin = this.getDamageCost(defender, counter.min);
-                result.maxCounterFundsMax = this.getDamageCost(defender, counter.max);
+                result.maxCounterFundsMin = this.getDamageCost(attacker, counter.min);
+                result.maxCounterFundsMax = this.getDamageCost(attacker, counter.max);
             }
 
             // max attack (min counter)
-            if (attack.max < defender.hp) {
-                defender.hp -= attack.max;
-                counter.min = this.calc(defender, attacker, true);
-                defender.hp += attack.max;
+            if (attack_max < defender.hp) {
+                defender.hp -= attack_max;
+                counter = this.calc(defender, attacker, true);
+                defender.hp += attack_max;
 
                 result.minCounterDamageMin = counter.min;
                 result.minCounterDamageMax = counter.max;
-                result.minCounterFundsMin = this.getDamageCost(defender, counter.min);
-                result.minCounterFundsMax = this.getDamageCost(defender, counter.max);
+                result.minCounterFundsMin = this.getDamageCost(attacker, counter.min);
+                result.minCounterFundsMax = this.getDamageCost(attacker, counter.max);
             }
         }
         return result;
@@ -4787,7 +4790,7 @@ class BuiltinCalculator {
         const maxLuck = this.lookupGlobal(attacker, "good_luck");
         const attackerHP = this.getDisplayHP(attacker);
         const defenseValue = this.getDefense(defender, this.isIndirect(attacker));
-
+        
         const minDamage = (base * attackValue / 100 - minLuck) * (attackerHP / 10) * ((200 - defenseValue) / 100);
         const maxDamage = (base * attackValue / 100 + maxLuck) * (attackerHP / 10) * ((200 - defenseValue) / 100);
 
@@ -4809,10 +4812,10 @@ class BuiltinCalculator {
 
     // get base attack damage
     getBase(attacker, defender) {
-        if(AMMO_USE[attacker.unit.units_id][defender.unit.units_id] && (UNIT_LIST[attacker.unit.units_name.toLowerCase()].units_ammo === 0 || attacker.unit.units_ammo > 0)) {
-            return PRIMARY_DAMAGE[attacker.unit.units_id][defender.unit.units_id]; // primary weapon
+        if(this.lookupAttackData(attacker, defender, "AMMO") && (UNIT_LIST[attacker.unit.units_name.toLowerCase()].units_ammo === 0 || attacker.unit.units_ammo > 0)) {
+            return this.lookupAttackData(attacker, defender, "PRIMARY"); // primary weapon
         } else {
-            return SECONDARY_DAMAGE[attacker.unit.units_id][defender.unit.units_id]; // secondary weapon
+            return this.lookupAttackData(attacker, defender, "SECONDARY"); // secondary weapon
         }
     }
 
@@ -4894,27 +4897,27 @@ class BuiltinCalculator {
         // terrain
         let terrain_def;
         if ([11, 12, 13, 14, 30, 968731].includes(defender.unit.units_id)) {
-            let terrain_def = 0;
+            terrain_def = 0;
         } else {
-            let terrain_def = defender.terrain.terrain_defense * this.getDisplayHP(defender) / 100;
+            terrain_def = defender.terrain.terrain_defense * this.getDisplayHP(defender) / 100;
 
             // lash scop
             if (defender.co.co_name === "Lash" && defender.power === "S") {
                 terrain_def *= 2;
             }
         }
-        
+
         return Math.trunc(100 + coBonus * 100 + terrain_def * 100);
     }
 
     // true if attack is valid, attacker can damage defender and has ammo
     canAttack(attacker, defender) {
         return !(
-            (PRIMARY_DAMAGE[attacker.unit.units_id][defender.unit.units_id] === 0 &&
-            SECONDARY_DAMAGE[attacker.unit.units_id][defender.unit.units_id] === 0)
+            (this.lookupAttackData(attacker, defender, "PRIMARY") === 0 &&
+            this.lookupAttackData(attacker, defender, "SECONDARY") === 0)
             ||
             ((attacker.unit.units_ammo === 0 && UNIT_LIST[attacker.unit.units_name.toLowerCase()].units_ammo > 0) &&
-            SECONDARY_DAMAGE[attacker.unit.units_id][defender.unit.units_id] === 0)
+            this.lookupAttackData(attacker, defender, "SECONDARY") === 0)
         );
     }
     
@@ -4949,7 +4952,7 @@ class BuiltinCalculator {
 
     // returns cost of unit damage (defender charge)
     getDamageCost(unit, damage) {
-        if (damage <=0 ) {
+        if (damage <= 0 ) {
             return 0;
         }
 
@@ -4959,17 +4962,31 @@ class BuiltinCalculator {
         let hp_delta;
         if (damage >= old_hp) {
             // unit killed
-            const hp_delta = old_display;
+            hp_delta = old_display;
         } else {
             const new_hp = old_hp - damage;
             unit.hp = new_hp;
             const new_display = this.getDisplayHP(unit);
             unit.hp = old_hp;
-            const hp_delta = old_display;
+            hp_delta = old_display - new_display;
         }
         // get cost
         const cost_per_hp = this.lookupGlobal(unit, "unit_cost") * UNIT_LIST[unit.unit.units_name.toLowerCase()].cost / 10;
         return cost_per_hp * hp_delta;
+    }
+
+    // look up unit attack data by attacker and defender unit id
+    lookupAttackData(attacker, defender, key) {
+        const row = [0, 9, 6, 7, 13, 15, 28, 968731, 12, 29, 16, 11, 1, 17, 3, 2, 1141438, 10, 46, 960900, 5, 8, 30, 18, 14, 4].indexOf(attacker.unit.units_id);
+        const col = [0, 9, 6, 7, 13, 15, 28, 968731, 12, 29, 16, 11, 1, 17, 3, 2, 1141438, 10, 46, 960900, 5, 8, 30, 18, 14, 4].indexOf(defender.unit.units_id);
+        switch(key) {
+            case "PRIMARY":
+                return PRIMARY_DAMAGE[row][col];
+            case "SECONDARY":
+                return SECONDARY_DAMAGE[row][col];
+            case "AMMO":
+                return AMMO_USE[row][col];
+        }
     }
 }
 
@@ -5287,8 +5304,7 @@ class DamageCalculator {
     }
 
     //add calc
-    async buildCalculator() {
-        await this.refactor({'towers': true, 'cities': true, 'funds': true, 'power': true, 'co': true});
+    buildCalculator() {
         const dc = document.getElementById('calculator');
 
         //insert html
@@ -5475,43 +5491,43 @@ class DamageCalculator {
         //Calc plus display
         const calcDisplay = document.getElementById("calc-plus-display"); 
 
-        //Attack click listener to gamemap. Used to detect unit selections.
-        const gamemap = document.getElementById('gamemap');
-        const gamemapClick = async (event) => {
-            if (this.clickSelectMode !== 'N') {
-                event.stopPropagation();
-                if (!this.clickEvent) {
-                    this.clickEvent = true;
+        // //Attack click listener to gamemap. Used to detect unit selections.
+        // const gamemap = document.getElementById('gamemap');
+        // const gamemapClick = async (event) => {
+        //     if (this.clickSelectMode !== 'N') {
+        //         event.stopPropagation();
+        //         if (!this.clickEvent) {
+        //             this.clickEvent = true;
     
-                    let clickTarget = event.target.closest('.game-unit') || event.target.closest('span[id^="unit"]'); 
-                    if (clickTarget) {
-                        const id = clickTarget.getAttribute('data-unit-id') || clickTarget.id.replace('unit_', '');
-                        this.getData(id); //set values of this.clickedUnit
-                        if (this.clickSelectMode === 'A') {
-                            this.currentNode.attacker = JSON.parse(JSON.stringify(this.clickedUnit));
-                            this.currentNode.attackerAmmo = this.currentNode.attacker.unit.units_ammo;
-                            this.currentNode.attackerDisplayHP = this.currentNode.attacker.hp * 10;
-                            this.currentNode.selectingAttacker = false;
-                        }
-                        else if (this.clickSelectMode === 'D') {
-                            this.currentNode.defender = JSON.parse(JSON.stringify(this.clickedUnit));
-                            this.currentNode.defenderAmmo = this.currentNode.defender.unit.units_ammo;
-                            this.currentNode.defenderDisplayHP = this.currentNode.defender.hp * 10;
-                            this.currentNode.selectingDefender = false;
-                        }
-                        this.clickSelectMode = 'N';
-                        await this.currentNode.refactor({'a_towers': true, 'a_cities': true, 'funds': true, 'power': true, 'co': true, 'd_towers': true, 'd_cities': true}); //if current node calc has changed, need to update all children
-                        this.orient();
-                        calcDisplay.innerHTML = this.getInnerHTML(); // Update the display
-                    }
-                    this.clickEvent = false;
-                }
-            }
-        };
+        //             let clickTarget = event.target.closest('.game-unit') || event.target.closest('span[id^="unit"]'); 
+        //             if (clickTarget) {
+        //                 const id = clickTarget.getAttribute('data-unit-id') || clickTarget.id.replace('unit_', '');
+        //                 this.getData(id); //set values of this.clickedUnit
+        //                 if (this.clickSelectMode === 'A') {
+        //                     this.currentNode.attacker = JSON.parse(JSON.stringify(this.clickedUnit));
+        //                     this.currentNode.attackerAmmo = this.currentNode.attacker.unit.units_ammo;
+        //                     this.currentNode.attackerDisplayHP = this.currentNode.attacker.hp * 10;
+        //                     this.currentNode.selectingAttacker = false;
+        //                 }
+        //                 else if (this.clickSelectMode === 'D') {
+        //                     this.currentNode.defender = JSON.parse(JSON.stringify(this.clickedUnit));
+        //                     this.currentNode.defenderAmmo = this.currentNode.defender.unit.units_ammo;
+        //                     this.currentNode.defenderDisplayHP = this.currentNode.defender.hp * 10;
+        //                     this.currentNode.selectingDefender = false;
+        //                 }
+        //                 this.clickSelectMode = 'N';
+        //                 await this.currentNode.refactor({'a_towers': true, 'a_cities': true, 'funds': true, 'power': true, 'co': true, 'd_towers': true, 'd_cities': true}); //if current node calc has changed, need to update all children
+        //                 this.orient();
+        //                 calcDisplay.innerHTML = this.getInnerHTML(); // Update the display
+        //             }
+        //             this.clickEvent = false;
+        //         }
+        //     }
+        // };
         
-        // Add event listeners for both mousedown and click events
-        gamemap.addEventListener('mousedown', gamemapClick, true); //normal game
-        gamemap.addEventListener('click', gamemapClick, true); //move planner 
+        // // Add event listeners for both mousedown and click events
+        // gamemap.addEventListener('mousedown', gamemapClick, true); //normal game
+        // gamemap.addEventListener('click', gamemapClick, true); //move planner 
       
         // Attach a single click event listener to the container  
         calcDisplay.addEventListener('click', async (event) => {
