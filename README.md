@@ -4,7 +4,8 @@
 1. [Introduction](#introduction)
 2. [Installation](#installation)
 3. [Usage](#usage)
-4. [Errors](#errors)
+4. [Experimental Features](#experimental)
+5. [Errors](#errors)
 
 ## Introduction
 AWBW Damage Calculator Plus is a web extension that expands the functionality of the regular damage calculator by allowing calculation of sequential attacks and side-by-side comparison of different attacks. 
@@ -76,6 +77,12 @@ After changing the unit used in the first attack to an Anti-Air, the follow-up a
 
 Invalid calculations can be deleted to save space or left alone.
 
+## Experimental Features
+Experimental features can be accessed by using the Dev Settings shortcut. Use <img src="images/tutorial/keyboard_shortcut.png" width="128px" height="32px"/> to access the Dev Settings. Toggle buttons for the experimental features will appear at the top of the calculator.
+
+### Luck Display
+The slider may be used to see the probability that an attack will do damage greater than or equal to the selected value. 
+
 ### Safe Mode
 By default, changes to the defender or attackers that break game logic are not allowed. An alternate cursor will be used when hovering over an attribute that may not be altered.
 All attributes of the first attack may be changed.
@@ -90,7 +97,7 @@ Once a COP or SCOP has been activated, all future attacks must also have it acti
 
 If you would like to make an invalid change, you can turn off Safe Mode in two easy steps.
 
-First, use <img src="images/tutorial/keyboard_shortcut.png" width="92px" height="32px"/> to access the Dev Settings. The Safe Mode Toggle will appear at the top of the calculator.
+First, use the Dev Setting shortcut to access the Safe Mode toggle button.
 
 Then, simply toggle Safe Mode on or off as you desire. Invalid inputs are locked when Safe Mode is on ( ![Locked](images/lock_icon.png) ) and can be changed when Safe Mode is off ( ![Unlocked](images/unlock_icon.png) ).
 

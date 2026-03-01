@@ -6,6 +6,3856 @@ const SIZE_Y = 136;
 const SIZE_Y_FOCUSED = 250;
 const SCROLLBAR_WIDTH = 20;
 const Z_INDEX = 800;
+
+//TODO better data import solution
+const CO_DATA = {
+    "Andy": {
+        "Global": {
+            "D2D": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0},
+            "COP": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0},
+            "SCOP": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0}
+        },
+        "Units":{
+            "1": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.2, "defense": 0.1, "move": 1, "range": 0}
+            },
+            "2": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.2, "defense": 0.1, "move": 1, "range": 0}
+            },
+            "3": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.2, "defense": 0.1, "move": 1, "range": 0}
+            },
+            "4": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.2, "defense": 0.1, "move": 1, "range": 0}
+            },
+            "5": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.2, "defense": 0.1, "move": 1, "range": 0}
+            },
+            "6": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 1, "range": 0}
+            },
+            "7": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.2, "defense": 0.1, "move": 1, "range": 0}
+            },
+            "8": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.2, "defense": 0.1, "move": 1, "range": 0}
+            },
+            "9": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.2, "defense": 0.1, "move": 1, "range": 0}
+            },
+            "10": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.2, "defense": 0.1, "move": 1, "range": 0}
+            },
+            "11": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.2, "defense": 0.1, "move": 1, "range": 0}
+            },
+            "12": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.2, "defense": 0.1, "move": 1, "range": 0}
+            },
+            "13": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.2, "defense": 0.1, "move": 1, "range": 0}
+            },
+            "14": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 1, "range": 0}
+            },
+            "15": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.2, "defense": 0.1, "move": 1, "range": 0}
+            },
+            "16": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.2, "defense": 0.1, "move": 1, "range": 0}
+            },
+            "17": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 1, "range": 0}
+            },
+            "18": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.2, "defense": 0.1, "move": 1, "range": 0}
+            },
+            "28": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 1, "range": 0}
+            },
+            "29": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.2, "defense": 0.1, "move": 1, "range": 0}
+            },
+            "30": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.2, "defense": 0.1, "move": 1, "range": 0}
+            },
+            "46": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.2, "defense": 0.1, "move": 1, "range": 0}
+            },
+            "960900": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.2, "defense": 0.1, "move": 1, "range": 0}
+            },
+            "968731": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 1, "range": 0}
+            },
+            "1141438": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.2, "defense": 0.1, "move": 1, "range": 0}
+            }
+        }
+    },
+    "Hachi": {
+        "Global": {
+            "D2D": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 0.9, "attack_bonus_plain": 0},
+            "COP": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 0.5, "attack_bonus_plain": 0},
+            "SCOP": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 0.5, "attack_bonus_plain": 0}
+        },
+        "Units":{
+            "1": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "2": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "3": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "4": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "5": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "6": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "7": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "8": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "9": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "10": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "11": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "12": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "13": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "14": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "15": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "16": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "17": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "18": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "28": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "29": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "30": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "46": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "960900": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "968731": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "1141438": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            }
+        }
+    },
+    "Jake": {
+        "Global": {
+            "D2D": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0.1},
+            "COP": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0.2},
+            "SCOP": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0.4}
+        },
+        "Units":{
+            "1": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "2": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "3": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "4": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "5": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "6": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "7": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 1},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 2, "range": 1}
+            },
+            "8": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 1},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 2, "range": 1}
+            },
+            "9": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "10": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 1},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 2, "range": 1}
+            },
+            "11": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "12": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "13": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "14": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "15": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "16": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "17": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "18": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "28": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "29": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "30": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "46": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "960900": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 1},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 2, "range": 1}
+            },
+            "968731": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "1141438": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 2, "range": 0}
+            }
+        }
+    },
+    "Max": {
+        "Global": {
+            "D2D": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0},
+            "COP": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0},
+            "SCOP": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0}
+        },
+        "Units":{
+            "1": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "2": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "3": {
+                "D2D": {"attack": 0.2, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.4, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.6, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "4": {
+                "D2D": {"attack": 0.2, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.4, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.6, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "5": {
+                "D2D": {"attack": 0.2, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.4, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.6, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "6": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "7": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": -1},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": -1},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": -1}
+            },
+            "8": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": -1},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": -1},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": -1}
+            },
+            "9": {
+                "D2D": {"attack": 0.2, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.4, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.6, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "10": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": -1},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": -1},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": -1}
+            },
+            "11": {
+                "D2D": {"attack": 0.2, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.4, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.6, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "12": {
+                "D2D": {"attack": 0.2, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.4, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.6, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "13": {
+                "D2D": {"attack": 0.2, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.4, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.6, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "14": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "15": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": -1},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": -1},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": -1}
+            },
+            "16": {
+                "D2D": {"attack": 0.2, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.4, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.6, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "17": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "18": {
+                "D2D": {"attack": 0.2, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.4, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.6, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "28": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "29": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": -1},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": -1},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": -1}
+            },
+            "30": {
+                "D2D": {"attack": 0.2, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.4, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.6, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "46": {
+                "D2D": {"attack": 0.2, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.4, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.6, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "960900": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": -1},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": -1},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": -1}
+            },
+            "968731": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "1141438": {
+                "D2D": {"attack": 0.2, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.4, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.6, "defense": 0.1, "move": 2, "range": 0}
+            }
+        }
+    },
+    "Nell": {
+        "Global": {
+            "D2D": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 19, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0},
+            "COP": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 59, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0},
+            "SCOP": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 99, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0}
+        },
+        "Units":{
+            "1": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "2": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "3": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "4": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "5": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "6": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "7": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "8": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "9": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "10": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "11": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "12": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "13": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "14": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "15": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "16": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "17": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "18": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "28": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "29": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "30": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "46": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "960900": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "968731": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "1141438": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            }
+        }
+    },
+    "Rachel": {
+        "Global": {
+            "D2D": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0},
+            "COP": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 39, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0},
+            "SCOP": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0}
+        },
+        "Missile": {
+            "SCOP": {"footsoldier": 3, "unit_value": 3, "unit_hp": 3}
+        },
+        "Units": {
+            "1": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "2": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "3": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "4": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "5": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "6": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "7": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "8": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "9": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "10": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "11": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "12": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "13": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "14": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "15": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "16": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "17": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "18": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "28": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "29": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "30": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "46": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "960900": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "968731": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "1141438": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            }
+        }
+    },
+    "Sami": {
+        "Global": {
+            "D2D": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0},
+            "COP": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0},
+            "SCOP": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0}
+        },
+        "Units":{
+            "1": {
+                "D2D": {"attack": 0.3, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.6, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.8, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "2": {
+                "D2D": {"attack": 0.3, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.6, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.8, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "3": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "4": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "5": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "6": {
+                "D2D": {"attack": 0, "defense": 0, "move": 1, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 1, "range": 0}
+            },
+            "7": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "8": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "9": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "10": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "11": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "12": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "13": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "14": {
+                "D2D": {"attack": 0, "defense": 0, "move": 1, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 1, "range": 0}
+            },
+            "15": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "16": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "17": {
+                "D2D": {"attack": 0, "defense": 0, "move": 1, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 1, "range": 0}
+            },
+            "18": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "28": {
+                "D2D": {"attack": 0, "defense": 0, "move": 1, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 1, "range": 0}
+            },
+            "29": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "30": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "46": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "960900": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "968731": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "1141438": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            }
+        }
+    },
+    "Colin": {
+        "Global": {
+            "D2D": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 0.8, "attack_bonus_plain": 0},
+            "COP": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 0.8, "attack_bonus_plain": 0},
+            "SCOP": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 0.8, "attack_bonus_plain": 0}
+        },
+        "Units":{
+            "1": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "2": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "3": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "4": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "5": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "6": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "7": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "8": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "9": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "10": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "11": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "12": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "13": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "14": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "15": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "16": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "17": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "18": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "28": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "29": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "30": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "46": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "960900": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "968731": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "1141438": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            }
+        }
+    },
+    "Grit": {
+        "Global": {
+            "D2D": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0},
+            "COP": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0},
+            "SCOP": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0}
+        },
+        "Units":{
+            "1": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "2": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "3": {
+                "D2D": {"attack": -0.2, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": -0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": -0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "4": {
+                "D2D": {"attack": -0.2, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": -0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": -0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "5": {
+                "D2D": {"attack": -0.2, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": -0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": -0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "6": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "7": {
+                "D2D": {"attack": 0.2, "defense": 0, "move": 0, "range": 1},
+                "COP": {"attack": 0.5, "defense": 0.1, "move": 0, "range": 2},
+                "SCOP": {"attack": 0.5, "defense": 0.1, "move": 0, "range": 3}
+            },
+            "8": {
+                "D2D": {"attack": 0.2, "defense": 0, "move": 0, "range": 1},
+                "COP": {"attack": 0.5, "defense": 0.1, "move": 0, "range": 2},
+                "SCOP": {"attack": 0.5, "defense": 0.1, "move": 0, "range": 3}
+            },
+            "9": {
+                "D2D": {"attack": -0.2, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": -0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": -0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "10": {
+                "D2D": {"attack": 0.2, "defense": 0, "move": 0, "range": 1},
+                "COP": {"attack": 0.5, "defense": 0.1, "move": 0, "range": 2},
+                "SCOP": {"attack": 0.5, "defense": 0.1, "move": 0, "range": 3}
+            },
+            "11": {
+                "D2D": {"attack": -0.2, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": -0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": -0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "12": {
+                "D2D": {"attack": -0.2, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": -0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": -0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "13": {
+                "D2D": {"attack": -0.2, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": -0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": -0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "14": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "15": {
+                "D2D": {"attack": 0.2, "defense": 0, "move": 0, "range": 1},
+                "COP": {"attack": 0.5, "defense": 0.1, "move": 0, "range": 2},
+                "SCOP": {"attack": 0.5, "defense": 0.1, "move": 0, "range": 3}
+            },
+            "16": {
+                "D2D": {"attack": -0.2, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": -0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": -0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "17": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "18": {
+                "D2D": {"attack": -0.2, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": -0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": -0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "28": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "29": {
+                "D2D": {"attack": 0.2, "defense": 0, "move": 0, "range": 1},
+                "COP": {"attack": 0.5, "defense": 0.1, "move": 0, "range": 2},
+                "SCOP": {"attack": 0.5, "defense": 0.1, "move": 0, "range": 3}
+            },
+            "30": {
+                "D2D": {"attack": -0.2, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": -0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": -0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "46": {
+                "D2D": {"attack": -0.2, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": -0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": -0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "960900": {
+                "D2D": {"attack": 0.2, "defense": 0, "move": 0, "range": 1},
+                "COP": {"attack": 0.5, "defense": 0.1, "move": 0, "range": 2},
+                "SCOP": {"attack": 0.5, "defense": 0.1, "move": 0, "range": 3}
+            },
+            "968731": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "1141438": {
+                "D2D": {"attack": -0.2, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": -0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": -0.1, "defense": 0.1, "move": 0, "range": 0}
+            }
+        }
+    },
+    "Olaf": {
+        "Global": {
+            "D2D": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0},
+            "COP": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0},
+            "SCOP": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0}
+        },
+        "Units":{
+            "1": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "2": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "3": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "4": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "5": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "6": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "7": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "8": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "9": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "10": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "11": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "12": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "13": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "14": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "15": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "16": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "17": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "18": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "28": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "29": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "30": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "46": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "960900": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "968731": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "1141438": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            }
+        }
+    },
+    "Sasha": {
+        "Global": {
+            "D2D": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0},
+            "COP": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0},
+            "SCOP": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0}
+        },
+        "Units":{
+            "1": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "2": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "3": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "4": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "5": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "6": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "7": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "8": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "9": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "10": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "11": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "12": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "13": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "14": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "15": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "16": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "17": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "18": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "28": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "29": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "30": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "46": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "960900": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "968731": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "1141438": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            }
+        }
+    },
+    "Drake": {
+        "Global": {
+            "D2D": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0},
+            "COP": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0},
+            "SCOP": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0}
+        },
+        "Units":{
+            "1": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "2": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "3": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "4": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "5": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "6": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "7": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "8": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "9": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "10": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "11": {
+                "D2D": {"attack": -0.3, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": -0.2, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": -0.2, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "12": {
+                "D2D": {"attack": -0.3, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": -0.2, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": -0.2, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "13": {
+                "D2D": {"attack": -0.3, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": -0.2, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": -0.2, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "14": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "15": {
+                "D2D": {"attack": 0, "defense": 0.1, "move": 1, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.2, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.2, "move": 1, "range": 0}
+            },
+            "16": {
+                "D2D": {"attack": 0, "defense": 0.1, "move": 1, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.2, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.2, "move": 1, "range": 0}
+            },
+            "17": {
+                "D2D": {"attack": 0, "defense": 0.1, "move": 1, "range": 0},
+                "COP": {"attack": 0, "defense": 0.2, "move": 1, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.2, "move": 1, "range": 0}
+            },
+            "18": {
+                "D2D": {"attack": 0, "defense": 0.1, "move": 1, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.2, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.2, "move": 1, "range": 0}
+            },
+            "28": {
+                "D2D": {"attack": 0, "defense": 0.1, "move": 1, "range": 0},
+                "COP": {"attack": 0, "defense": 0.2, "move": 1, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.2, "move": 1, "range": 0}
+            },
+            "29": {
+                "D2D": {"attack": 0, "defense": 0.1, "move": 1, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.2, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.2, "move": 1, "range": 0}
+            },
+            "30": {
+                "D2D": {"attack": -0.3, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": -0.2, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": -0.2, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "46": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "960900": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "968731": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "1141438": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            }
+        }
+    },
+    "Eagle": {
+        "Global": {
+            "D2D": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0},
+            "COP": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0},
+            "SCOP": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0}
+        },
+        "Units":{
+            "1": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "2": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "3": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "4": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "5": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "6": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "7": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "8": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "9": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "10": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "11": {
+                "D2D": {"attack": 0.15, "defense": 0.1, "move": 0, "range": 0},
+                "COP": {"attack": 0.3, "defense": 0.3, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.3, "defense": 0.3, "move": 0, "range": 0}
+            },
+            "12": {
+                "D2D": {"attack": 0.15, "defense": 0.1, "move": 0, "range": 0},
+                "COP": {"attack": 0.3, "defense": 0.3, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.3, "defense": 0.3, "move": 0, "range": 0}
+            },
+            "13": {
+                "D2D": {"attack": 0.15, "defense": 0.1, "move": 0, "range": 0},
+                "COP": {"attack": 0.3, "defense": 0.3, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.3, "defense": 0.3, "move": 0, "range": 0}
+            },
+            "14": {
+                "D2D": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.3, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.3, "move": 0, "range": 0}
+            },
+            "15": {
+                "D2D": {"attack": -0.3, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": -0.2, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": -0.2, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "16": {
+                "D2D": {"attack": -0.3, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": -0.2, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": -0.2, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "17": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "18": {
+                "D2D": {"attack": -0.3, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": -0.2, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": -0.2, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "28": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "29": {
+                "D2D": {"attack": -0.3, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": -0.2, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": -0.2, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "30": {
+                "D2D": {"attack": 0.15, "defense": 0.1, "move": 0, "range": 0},
+                "COP": {"attack": 0.3, "defense": 0.3, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.3, "defense": 0.3, "move": 0, "range": 0}
+            },
+            "46": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "960900": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "968731": {
+                "D2D": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.3, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.3, "move": 0, "range": 0}
+            },
+            "1141438": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            }
+        }
+    },
+    "Javier": {
+        "Global": {
+            "D2D": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0.2, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0},
+            "COP": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0.4, "tower_multiplier": 2, "good_luck": 9, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0},
+            "SCOP": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0.8, "tower_multiplier": 3, "good_luck": 9, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0}
+        },
+        "Units":{
+            "1": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "2": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "3": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "4": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "5": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "6": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "7": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "8": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "9": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "10": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "11": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "12": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "13": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "14": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "15": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "16": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "17": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "18": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "28": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "29": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "30": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "46": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "960900": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "968731": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "1141438": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            }
+        }
+    },
+    "Jess": {
+        "Global": {
+            "D2D": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0},
+            "COP": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0},
+            "SCOP": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0}
+        },
+        "Units":{
+            "1": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "2": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "3": {
+                "D2D": {"attack": 0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.3, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.5, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "4": {
+                "D2D": {"attack": 0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.3, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.5, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "5": {
+                "D2D": {"attack": 0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.3, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.5, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "6": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "7": {
+                "D2D": {"attack": 0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.3, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.5, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "8": {
+                "D2D": {"attack": 0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.3, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.5, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "9": {
+                "D2D": {"attack": 0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.3, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.5, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "10": {
+                "D2D": {"attack": 0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.3, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.5, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "11": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "12": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "13": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "14": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "15": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "16": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "17": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "18": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "28": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "29": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "30": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "46": {
+                "D2D": {"attack": 0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.3, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.5, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "960900": {
+                "D2D": {"attack": 0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.3, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.5, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "968731": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "1141438": {
+                "D2D": {"attack": 0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.3, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.5, "defense": 0.1, "move": 2, "range": 0}
+            }
+        }
+    },
+    "Grimm": {
+        "Global": {
+            "D2D": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0},
+            "COP": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0},
+            "SCOP": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0}
+        },
+        "Units":{
+            "1": {
+                "D2D": {"attack": 0.3, "defense": -0.2, "move": 0, "range": 0},
+                "COP": {"attack": 0.6, "defense": -0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.9, "defense": -0.1, "move": 0, "range": 0}
+            },
+            "2": {
+                "D2D": {"attack": 0.3, "defense": -0.2, "move": 0, "range": 0},
+                "COP": {"attack": 0.6, "defense": -0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.9, "defense": -0.1, "move": 0, "range": 0}
+            },
+            "3": {
+                "D2D": {"attack": 0.3, "defense": -0.2, "move": 0, "range": 0},
+                "COP": {"attack": 0.6, "defense": -0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.9, "defense": -0.1, "move": 0, "range": 0}
+            },
+            "4": {
+                "D2D": {"attack": 0.3, "defense": -0.2, "move": 0, "range": 0},
+                "COP": {"attack": 0.6, "defense": -0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.9, "defense": -0.1, "move": 0, "range": 0}
+            },
+            "5": {
+                "D2D": {"attack": 0.3, "defense": -0.2, "move": 0, "range": 0},
+                "COP": {"attack": 0.6, "defense": -0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.9, "defense": -0.1, "move": 0, "range": 0}
+            },
+            "6": {
+                "D2D": {"attack": 0, "defense": -0.2, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": -0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": -0.1, "move": 0, "range": 0}
+            },
+            "7": {
+                "D2D": {"attack": 0.3, "defense": -0.2, "move": 0, "range": 0},
+                "COP": {"attack": 0.6, "defense": -0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.9, "defense": -0.1, "move": 0, "range": 0}
+            },
+            "8": {
+                "D2D": {"attack": 0.3, "defense": -0.2, "move": 0, "range": 0},
+                "COP": {"attack": 0.6, "defense": -0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.9, "defense": -0.1, "move": 0, "range": 0}
+            },
+            "9": {
+                "D2D": {"attack": 0.3, "defense": -0.2, "move": 0, "range": 0},
+                "COP": {"attack": 0.6, "defense": -0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.9, "defense": -0.1, "move": 0, "range": 0}
+            },
+            "10": {
+                "D2D": {"attack": 0.3, "defense": -0.2, "move": 0, "range": 0},
+                "COP": {"attack": 0.6, "defense": -0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.9, "defense": -0.1, "move": 0, "range": 0}
+            },
+            "11": {
+                "D2D": {"attack": 0.3, "defense": -0.2, "move": 0, "range": 0},
+                "COP": {"attack": 0.6, "defense": -0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.9, "defense": -0.1, "move": 0, "range": 0}
+            },
+            "12": {
+                "D2D": {"attack": 0.3, "defense": -0.2, "move": 0, "range": 0},
+                "COP": {"attack": 0.6, "defense": -0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.9, "defense": -0.1, "move": 0, "range": 0}
+            },
+            "13": {
+                "D2D": {"attack": 0.3, "defense": -0.2, "move": 0, "range": 0},
+                "COP": {"attack": 0.6, "defense": -0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.9, "defense": -0.1, "move": 0, "range": 0}
+            },
+            "14": {
+                "D2D": {"attack": 0, "defense": -0.2, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": -0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": -0.1, "move": 0, "range": 0}
+            },
+            "15": {
+                "D2D": {"attack": 0.3, "defense": -0.2, "move": 0, "range": 0},
+                "COP": {"attack": 0.6, "defense": -0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.9, "defense": -0.1, "move": 0, "range": 0}
+            },
+            "16": {
+                "D2D": {"attack": 0.3, "defense": -0.2, "move": 0, "range": 0},
+                "COP": {"attack": 0.6, "defense": -0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.9, "defense": -0.1, "move": 0, "range": 0}
+            },
+            "17": {
+                "D2D": {"attack": 0, "defense": -0.2, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": -0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": -0.1, "move": 0, "range": 0}
+            },
+            "18": {
+                "D2D": {"attack": 0.3, "defense": -0.2, "move": 0, "range": 0},
+                "COP": {"attack": 0.6, "defense": -0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.9, "defense": -0.1, "move": 0, "range": 0}
+            },
+            "28": {
+                "D2D": {"attack": 0, "defense": -0.2, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": -0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": -0.1, "move": 0, "range": 0}
+            },
+            "29": {
+                "D2D": {"attack": 0.3, "defense": -0.2, "move": 0, "range": 0},
+                "COP": {"attack": 0.6, "defense": -0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.9, "defense": -0.1, "move": 0, "range": 0}
+            },
+            "30": {
+                "D2D": {"attack": 0.3, "defense": -0.2, "move": 0, "range": 0},
+                "COP": {"attack": 0.6, "defense": -0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.9, "defense": -0.1, "move": 0, "range": 0}
+            },
+            "46": {
+                "D2D": {"attack": 0.3, "defense": -0.2, "move": 0, "range": 0},
+                "COP": {"attack": 0.6, "defense": -0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.9, "defense": -0.1, "move": 0, "range": 0}
+            },
+            "960900": {
+                "D2D": {"attack": 0.3, "defense": -0.2, "move": 0, "range": 0},
+                "COP": {"attack": 0.6, "defense": -0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.9, "defense": -0.1, "move": 0, "range": 0}
+            },
+            "968731": {
+                "D2D": {"attack": 0, "defense": -0.2, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": -0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": -0.1, "move": 0, "range": 0}
+            },
+            "1141438": {
+                "D2D": {"attack": 0.3, "defense": -0.2, "move": 0, "range": 0},
+                "COP": {"attack": 0.6, "defense": -0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.9, "defense": -0.1, "move": 0, "range": 0}
+            }
+        }
+    },
+    "Kanbei": {
+        "Global": {
+            "D2D": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1.2, "attack_bonus_plain": 0},
+            "COP": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1.2, "attack_bonus_plain": 0},
+            "SCOP": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0.5, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1.2, "attack_bonus_plain": 0}
+        },
+        "Units":{
+            "1": {
+                "D2D": {"attack": 0.3, "defense": 0.3, "move": 0, "range": 0},
+                "COP": {"attack": 0.5, "defense": 0.4, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.5, "defense": 0.6, "move": 0, "range": 0}
+            },
+            "2": {
+                "D2D": {"attack": 0.3, "defense": 0.3, "move": 0, "range": 0},
+                "COP": {"attack": 0.5, "defense": 0.4, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.5, "defense": 0.6, "move": 0, "range": 0}
+            },
+            "3": {
+                "D2D": {"attack": 0.3, "defense": 0.3, "move": 0, "range": 0},
+                "COP": {"attack": 0.5, "defense": 0.4, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.5, "defense": 0.6, "move": 0, "range": 0}
+            },
+            "4": {
+                "D2D": {"attack": 0.3, "defense": 0.3, "move": 0, "range": 0},
+                "COP": {"attack": 0.5, "defense": 0.4, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.5, "defense": 0.6, "move": 0, "range": 0}
+            },
+            "5": {
+                "D2D": {"attack": 0.3, "defense": 0.3, "move": 0, "range": 0},
+                "COP": {"attack": 0.5, "defense": 0.4, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.5, "defense": 0.6, "move": 0, "range": 0}
+            },
+            "6": {
+                "D2D": {"attack": 0, "defense": 0.3, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.4, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.6, "move": 0, "range": 0}
+            },
+            "7": {
+                "D2D": {"attack": 0.3, "defense": 0.3, "move": 0, "range": 0},
+                "COP": {"attack": 0.5, "defense": 0.4, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.5, "defense": 0.6, "move": 0, "range": 0}
+            },
+            "8": {
+                "D2D": {"attack": 0.3, "defense": 0.3, "move": 0, "range": 0},
+                "COP": {"attack": 0.5, "defense": 0.4, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.5, "defense": 0.6, "move": 0, "range": 0}
+            },
+            "9": {
+                "D2D": {"attack": 0.3, "defense": 0.3, "move": 0, "range": 0},
+                "COP": {"attack": 0.5, "defense": 0.4, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.5, "defense": 0.6, "move": 0, "range": 0}
+            },
+            "10": {
+                "D2D": {"attack": 0.3, "defense": 0.3, "move": 0, "range": 0},
+                "COP": {"attack": 0.5, "defense": 0.4, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.5, "defense": 0.6, "move": 0, "range": 0}
+            },
+            "11": {
+                "D2D": {"attack": 0.3, "defense": 0.3, "move": 0, "range": 0},
+                "COP": {"attack": 0.5, "defense": 0.4, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.5, "defense": 0.6, "move": 0, "range": 0}
+            },
+            "12": {
+                "D2D": {"attack": 0.3, "defense": 0.3, "move": 0, "range": 0},
+                "COP": {"attack": 0.5, "defense": 0.4, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.5, "defense": 0.6, "move": 0, "range": 0}
+            },
+            "13": {
+                "D2D": {"attack": 0.3, "defense": 0.3, "move": 0, "range": 0},
+                "COP": {"attack": 0.5, "defense": 0.4, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.5, "defense": 0.6, "move": 0, "range": 0}
+            },
+            "14": {
+                "D2D": {"attack": 0, "defense": 0.3, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.4, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.6, "move": 0, "range": 0}
+            },
+            "15": {
+                "D2D": {"attack": 0.3, "defense": 0.3, "move": 0, "range": 0},
+                "COP": {"attack": 0.5, "defense": 0.4, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.5, "defense": 0.6, "move": 0, "range": 0}
+            },
+            "16": {
+                "D2D": {"attack": 0.3, "defense": 0.3, "move": 0, "range": 0},
+                "COP": {"attack": 0.5, "defense": 0.4, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.5, "defense": 0.6, "move": 0, "range": 0}
+            },
+            "17": {
+                "D2D": {"attack": 0, "defense": 0.3, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.4, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.6, "move": 0, "range": 0}
+            },
+            "18": {
+                "D2D": {"attack": 0.3, "defense": 0.3, "move": 0, "range": 0},
+                "COP": {"attack": 0.5, "defense": 0.4, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.5, "defense": 0.6, "move": 0, "range": 0}
+            },
+            "28": {
+                "D2D": {"attack": 0, "defense": 0.3, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.4, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.6, "move": 0, "range": 0}
+            },
+            "29": {
+                "D2D": {"attack": 0.3, "defense": 0.3, "move": 0, "range": 0},
+                "COP": {"attack": 0.5, "defense": 0.4, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.5, "defense": 0.6, "move": 0, "range": 0}
+            },
+            "30": {
+                "D2D": {"attack": 0.3, "defense": 0.3, "move": 0, "range": 0},
+                "COP": {"attack": 0.5, "defense": 0.4, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.5, "defense": 0.6, "move": 0, "range": 0}
+            },
+            "46": {
+                "D2D": {"attack": 0.3, "defense": 0.3, "move": 0, "range": 0},
+                "COP": {"attack": 0.5, "defense": 0.4, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.5, "defense": 0.6, "move": 0, "range": 0}
+            },
+            "960900": {
+                "D2D": {"attack": 0.3, "defense": 0.3, "move": 0, "range": 0},
+                "COP": {"attack": 0.5, "defense": 0.4, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.5, "defense": 0.6, "move": 0, "range": 0}
+            },
+            "968731": {
+                "D2D": {"attack": 0, "defense": 0.3, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.4, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.6, "move": 0, "range": 0}
+            },
+            "1141438": {
+                "D2D": {"attack": 0.3, "defense": 0.3, "move": 0, "range": 0},
+                "COP": {"attack": 0.5, "defense": 0.4, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.5, "defense": 0.6, "move": 0, "range": 0}
+            }
+        }
+    },
+    "Sensei": {
+        "Global": {
+            "D2D": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0},
+            "COP": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0},
+            "SCOP": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0}
+        },
+        "Units":{
+            "1": {
+                "D2D": {"attack": 0.4, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.5, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.5, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "2": {
+                "D2D": {"attack": 0.4, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.5, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.5, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "3": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "4": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "5": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "6": {
+                "D2D": {"attack": 0, "defense": 0, "move": 1, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 1, "range": 0}
+            },
+            "7": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "8": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "9": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "10": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "11": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "12": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "13": {
+                "D2D": {"attack": 0.5, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.75, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.75, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "14": {
+                "D2D": {"attack": 0, "defense": 0, "move": 1, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 1, "range": 0}
+            },
+            "15": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "16": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "17": {
+                "D2D": {"attack": 0, "defense": 0, "move": 1, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 1, "range": 0}
+            },
+            "18": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "28": {
+                "D2D": {"attack": 0, "defense": 0, "move": 1, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 1, "range": 0}
+            },
+            "29": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "30": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "46": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "960900": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "968731": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "1141438": {
+                "D2D": {"attack": -0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            }
+        }
+    },
+    "Sonja": {
+        "Global": {
+            "D2D": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0.5, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 9, "unit_cost": 1, "attack_bonus_plain": 0},
+            "COP": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0.5, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 9, "unit_cost": 1, "attack_bonus_plain": 0},
+            "SCOP": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 9, "unit_cost": 1, "attack_bonus_plain": 0}
+        },
+        "Units":{
+            "1": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "2": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "3": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "4": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "5": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "6": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "7": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "8": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "9": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "10": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "11": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "12": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "13": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "14": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "15": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "16": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "17": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "18": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "28": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "29": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "30": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "46": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "960900": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "968731": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "1141438": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            }
+        }
+    },
+    "Adder": {
+        "Global": {
+            "D2D": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0},
+            "COP": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0},
+            "SCOP": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0}
+        },
+        "Units":{
+            "1": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "2": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "3": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "4": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "5": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "6": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "7": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "8": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "9": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "10": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "11": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "12": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "13": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "14": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "15": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "16": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "17": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "18": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "28": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "29": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "30": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "46": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "960900": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "968731": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "1141438": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 2, "range": 0}
+            }
+        }
+    },
+    "Flak": {
+        "Global": {
+            "D2D": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 24, "bad_luck": 9, "unit_cost": 1, "attack_bonus_plain": 0},
+            "COP": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 49, "bad_luck": 19, "unit_cost": 1, "attack_bonus_plain": 0},
+            "SCOP": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 89, "bad_luck": 39, "unit_cost": 1, "attack_bonus_plain": 0}
+        },
+        "Units":{
+            "1": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "2": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "3": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "4": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "5": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "6": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "7": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "8": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "9": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "10": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "11": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "12": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "13": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "14": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "15": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "16": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "17": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "18": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "28": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "29": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "30": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "46": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "960900": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "968731": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "1141438": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            }
+        }
+    },
+    "Hawke": {
+        "Global": {
+            "D2D": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0},
+            "COP": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0},
+            "SCOP": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0}
+        },
+        "Units":{
+            "1": {
+                "D2D": {"attack": 0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.2, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.2, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "2": {
+                "D2D": {"attack": 0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.2, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.2, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "3": {
+                "D2D": {"attack": 0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.2, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.2, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "4": {
+                "D2D": {"attack": 0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.2, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.2, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "5": {
+                "D2D": {"attack": 0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.2, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.2, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "6": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "7": {
+                "D2D": {"attack": 0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.2, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.2, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "8": {
+                "D2D": {"attack": 0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.2, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.2, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "9": {
+                "D2D": {"attack": 0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.2, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.2, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "10": {
+                "D2D": {"attack": 0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.2, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.2, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "11": {
+                "D2D": {"attack": 0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.2, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.2, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "12": {
+                "D2D": {"attack": 0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.2, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.2, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "13": {
+                "D2D": {"attack": 0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.2, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.2, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "14": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "15": {
+                "D2D": {"attack": 0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.2, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.2, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "16": {
+                "D2D": {"attack": 0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.2, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.2, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "17": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "18": {
+                "D2D": {"attack": 0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.2, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.2, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "28": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "29": {
+                "D2D": {"attack": 0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.2, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.2, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "30": {
+                "D2D": {"attack": 0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.2, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.2, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "46": {
+                "D2D": {"attack": 0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.2, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.2, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "960900": {
+                "D2D": {"attack": 0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.2, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.2, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "968731": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "1141438": {
+                "D2D": {"attack": 0.1, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.2, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.2, "defense": 0.1, "move": 0, "range": 0}
+            }
+        }
+    },
+    "Jugger": {
+        "Global": {
+            "D2D": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 29, "bad_luck": 14, "unit_cost": 1, "attack_bonus_plain": 0},
+            "COP": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 54, "bad_luck": 24, "unit_cost": 1, "attack_bonus_plain": 0},
+            "SCOP": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 94, "bad_luck": 44, "unit_cost": 1, "attack_bonus_plain": 0}
+        },
+        "Units":{
+            "1": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "2": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "3": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "4": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "5": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "6": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "7": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "8": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "9": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "10": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "11": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "12": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "13": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "14": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "15": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "16": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "17": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "18": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "28": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "29": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "30": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "46": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "960900": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "968731": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "1141438": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            }
+        }
+    },
+    "Kindle": {
+        "Global": {
+            "D2D": {"attack_bonus_road": 0, "attack_bonus_prop": 0.4, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0},
+            "COP": {"attack_bonus_road": 0, "attack_bonus_prop": 0.8, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0},
+            "SCOP": {"attack_bonus_road": 0, "attack_bonus_prop": 1.3, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0}
+        },
+        "Units":{
+            "1": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "2": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "3": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "4": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "5": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "6": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "7": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "8": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "9": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "10": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "11": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "12": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "13": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "14": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "15": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "16": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "17": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "18": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "28": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "29": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "30": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "46": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "960900": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "968731": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "1141438": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            }
+        }
+    },
+    "Koal": {
+        "Global": {
+            "D2D": {"attack_bonus_road": 0.1, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0},
+            "COP": {"attack_bonus_road": 0.2, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0},
+            "SCOP": {"attack_bonus_road": 0.3, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0}
+        },
+        "Units":{
+            "1": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "2": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "3": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "4": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "5": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "6": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "7": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "8": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "9": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "10": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "11": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "12": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "13": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "14": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "15": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "16": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "17": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "18": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "28": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "29": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "30": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "46": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "960900": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "968731": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 2, "range": 0}
+            },
+            "1141438": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 1, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 2, "range": 0}
+            }
+        }
+    },
+    "Lash": {
+        "Global": {
+            "D2D": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0},
+            "COP": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0},
+            "SCOP": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0}
+        },
+        "Units":{
+            "1": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "2": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "3": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "4": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "5": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "6": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "7": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "8": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "9": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "10": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "11": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "12": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "13": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "14": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "15": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "16": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "17": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "18": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "28": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "29": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "30": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "46": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "960900": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "968731": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.1, "move": 0, "range": 0}
+            },
+            "1141438": {
+                "D2D": {"attack": 0, "defense": 0, "move": 0, "range": 0},
+                "COP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "SCOP": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0}
+            }
+        }
+    },
+    "Sturm": {
+        "Global": {
+            "D2D": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0},
+            "COP": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0},
+            "SCOP": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0}
+        },
+        "Missile": {
+            "COP": {"unit_value": 4},
+            "SCOP": {"unit_value": 8}
+        },
+        "Units": {
+            "1": {
+                "D2D": {"attack": -0.2, "defense": 0.2, "move": 0, "range": 0},
+                "COP": {"attack": -0.1, "defense": 0.3, "move": 0, "range": 0},
+                "SCOP": {"attack": -0.1, "defense": 0.3, "move": 0, "range": 0}
+            },
+            "2": {
+                "D2D": {"attack": -0.2, "defense": 0.2, "move": 0, "range": 0},
+                "COP": {"attack": -0.1, "defense": 0.3, "move": 0, "range": 0},
+                "SCOP": {"attack": -0.1, "defense": 0.3, "move": 0, "range": 0}
+            },
+            "3": {
+                "D2D": {"attack": -0.2, "defense": 0.2, "move": 0, "range": 0},
+                "COP": {"attack": -0.1, "defense": 0.3, "move": 0, "range": 0},
+                "SCOP": {"attack": -0.1, "defense": 0.3, "move": 0, "range": 0}
+            },
+            "4": {
+                "D2D": {"attack": -0.2, "defense": 0.2, "move": 0, "range": 0},
+                "COP": {"attack": -0.1, "defense": 0.3, "move": 0, "range": 0},
+                "SCOP": {"attack": -0.1, "defense": 0.3, "move": 0, "range": 0}
+            },
+            "5": {
+                "D2D": {"attack": -0.2, "defense": 0.2, "move": 0, "range": 0},
+                "COP": {"attack": -0.1, "defense": 0.3, "move": 0, "range": 0},
+                "SCOP": {"attack": -0.1, "defense": 0.3, "move": 0, "range": 0}
+            },
+            "6": {
+                "D2D": {"attack": 0, "defense": 0.2, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.3, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.3, "move": 0, "range": 0}
+            },
+            "7": {
+                "D2D": {"attack": -0.2, "defense": 0.2, "move": 0, "range": 0},
+                "COP": {"attack": -0.1, "defense": 0.3, "move": 0, "range": 0},
+                "SCOP": {"attack": -0.1, "defense": 0.3, "move": 0, "range": 0}
+            },
+            "8": {
+                "D2D": {"attack": -0.2, "defense": 0.2, "move": 0, "range": 0},
+                "COP": {"attack": -0.1, "defense": 0.3, "move": 0, "range": 0},
+                "SCOP": {"attack": -0.1, "defense": 0.3, "move": 0, "range": 0}
+            },
+            "9": {
+                "D2D": {"attack": -0.2, "defense": 0.2, "move": 0, "range": 0},
+                "COP": {"attack": -0.1, "defense": 0.3, "move": 0, "range": 0},
+                "SCOP": {"attack": -0.1, "defense": 0.3, "move": 0, "range": 0}
+            },
+            "10": {
+                "D2D": {"attack": -0.2, "defense": 0.2, "move": 0, "range": 0},
+                "COP": {"attack": -0.1, "defense": 0.3, "move": 0, "range": 0},
+                "SCOP": {"attack": -0.1, "defense": 0.3, "move": 0, "range": 0}
+            },
+            "11": {
+                "D2D": {"attack": -0.2, "defense": 0.2, "move": 0, "range": 0},
+                "COP": {"attack": -0.1, "defense": 0.3, "move": 0, "range": 0},
+                "SCOP": {"attack": -0.1, "defense": 0.3, "move": 0, "range": 0}
+            },
+            "12": {
+                "D2D": {"attack": -0.2, "defense": 0.2, "move": 0, "range": 0},
+                "COP": {"attack": -0.1, "defense": 0.3, "move": 0, "range": 0},
+                "SCOP": {"attack": -0.1, "defense": 0.3, "move": 0, "range": 0}
+            },
+            "13": {
+                "D2D": {"attack": -0.2, "defense": 0.2, "move": 0, "range": 0},
+                "COP": {"attack": -0.1, "defense": 0.3, "move": 0, "range": 0},
+                "SCOP": {"attack": -0.1, "defense": 0.3, "move": 0, "range": 0}
+            },
+            "14": {
+                "D2D": {"attack": 0, "defense": 0.2, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.3, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.3, "move": 0, "range": 0}
+            },
+            "15": {
+                "D2D": {"attack": -0.2, "defense": 0.2, "move": 0, "range": 0},
+                "COP": {"attack": -0.1, "defense": 0.3, "move": 0, "range": 0},
+                "SCOP": {"attack": -0.1, "defense": 0.3, "move": 0, "range": 0}
+            },
+            "16": {
+                "D2D": {"attack": -0.2, "defense": 0.2, "move": 0, "range": 0},
+                "COP": {"attack": -0.1, "defense": 0.3, "move": 0, "range": 0},
+                "SCOP": {"attack": -0.1, "defense": 0.3, "move": 0, "range": 0}
+            },
+            "17": {
+                "D2D": {"attack": 0, "defense": 0.2, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.3, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.3, "move": 0, "range": 0}
+            },
+            "18": {
+                "D2D": {"attack": -0.2, "defense": 0.2, "move": 0, "range": 0},
+                "COP": {"attack": -0.1, "defense": 0.3, "move": 0, "range": 0},
+                "SCOP": {"attack": -0.1, "defense": 0.3, "move": 0, "range": 0}
+            },
+            "28": {
+                "D2D": {"attack": 0, "defense": 0.2, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.3, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.3, "move": 0, "range": 0}
+            },
+            "29": {
+                "D2D": {"attack": -0.2, "defense": 0.2, "move": 0, "range": 0},
+                "COP": {"attack": -0.1, "defense": 0.3, "move": 0, "range": 0},
+                "SCOP": {"attack": -0.1, "defense": 0.3, "move": 0, "range": 0}
+            },
+            "30": {
+                "D2D": {"attack": -0.2, "defense": 0.2, "move": 0, "range": 0},
+                "COP": {"attack": -0.1, "defense": 0.3, "move": 0, "range": 0},
+                "SCOP": {"attack": -0.1, "defense": 0.3, "move": 0, "range": 0}
+            },
+            "46": {
+                "D2D": {"attack": -0.2, "defense": 0.2, "move": 0, "range": 0},
+                "COP": {"attack": -0.1, "defense": 0.3, "move": 0, "range": 0},
+                "SCOP": {"attack": -0.1, "defense": 0.3, "move": 0, "range": 0}
+            },
+            "960900": {
+                "D2D": {"attack": -0.2, "defense": 0.2, "move": 0, "range": 0},
+                "COP": {"attack": -0.1, "defense": 0.3, "move": 0, "range": 0},
+                "SCOP": {"attack": -0.1, "defense": 0.3, "move": 0, "range": 0}
+            },
+            "968731": {
+                "D2D": {"attack": 0, "defense": 0.2, "move": 0, "range": 0},
+                "COP": {"attack": 0, "defense": 0.3, "move": 0, "range": 0},
+                "SCOP": {"attack": 0, "defense": 0.3, "move": 0, "range": 0}
+            },
+            "1141438": {
+                "D2D": {"attack": -0.2, "defense": 0.2, "move": 0, "range": 0},
+                "COP": {"attack": -0.1, "defense": 0.3, "move": 0, "range": 0},
+                "SCOP": {"attack": -0.1, "defense": 0.3, "move": 0, "range": 0}
+            }
+        }
+    },
+    "Vonbolt": {
+        "Global": {
+            "D2D": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0},
+            "COP": null,
+            "SCOP": {"attack_bonus_road": 0, "attack_bonus_prop": 0, "counter_bonus": 0, "indirect_defense": 0, "tower_multiplier": 1, "good_luck": 9, "bad_luck": 0, "unit_cost": 1, "attack_bonus_plain": 0}
+        },
+        "Missile": {
+            "SCOP": {"unit_value_stun": 3}
+        },
+        "Units": {
+            "1": {
+                "D2D": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "COP": null,
+                "SCOP": {"attack": 0.2, "defense": 0.2, "move": 0, "range": 0}
+            },
+            "2": {
+                "D2D": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "COP": null,
+                "SCOP": {"attack": 0.2, "defense": 0.2, "move": 0, "range": 0}
+            },
+            "3": {
+                "D2D": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "COP": null,
+                "SCOP": {"attack": 0.2, "defense": 0.2, "move": 0, "range": 0}
+            },
+            "4": {
+                "D2D": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "COP": null,
+                "SCOP": {"attack": 0.2, "defense": 0.2, "move": 0, "range": 0}
+            },
+            "5": {
+                "D2D": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "COP": null,
+                "SCOP": {"attack": 0.2, "defense": 0.2, "move": 0, "range": 0}
+            },
+            "6": {
+                "D2D": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "COP": null,
+                "SCOP": {"attack": 0, "defense": 0.2, "move": 0, "range": 0}
+            },
+            "7": {
+                "D2D": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "COP": null,
+                "SCOP": {"attack": 0.2, "defense": 0.2, "move": 0, "range": 0}
+            },
+            "8": {
+                "D2D": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "COP": null,
+                "SCOP": {"attack": 0.2, "defense": 0.2, "move": 0, "range": 0}
+            },
+            "9": {
+                "D2D": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "COP": null,
+                "SCOP": {"attack": 0.2, "defense": 0.2, "move": 0, "range": 0}
+            },
+            "10": {
+                "D2D": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "COP": null,
+                "SCOP": {"attack": 0.2, "defense": 0.2, "move": 0, "range": 0}
+            },
+            "11": {
+                "D2D": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "COP": null,
+                "SCOP": {"attack": 0.2, "defense": 0.2, "move": 0, "range": 0}
+            },
+            "12": {
+                "D2D": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "COP": null,
+                "SCOP": {"attack": 0.2, "defense": 0.2, "move": 0, "range": 0}
+            },
+            "13": {
+                "D2D": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "COP": null,
+                "SCOP": {"attack": 0.2, "defense": 0.2, "move": 0, "range": 0}
+            },
+            "14": {
+                "D2D": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "COP": null,
+                "SCOP": {"attack": 0, "defense": 0.2, "move": 0, "range": 0}
+            },
+            "15": {
+                "D2D": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "COP": null,
+                "SCOP": {"attack": 0.2, "defense": 0.2, "move": 0, "range": 0}
+            },
+            "16": {
+                "D2D": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "COP": null,
+                "SCOP": {"attack": 0.2, "defense": 0.2, "move": 0, "range": 0}
+            },
+            "17": {
+                "D2D": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "COP": null,
+                "SCOP": {"attack": 0, "defense": 0.2, "move": 0, "range": 0}
+            },
+            "18": {
+                "D2D": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "COP": null,
+                "SCOP": {"attack": 0.2, "defense": 0.2, "move": 0, "range": 0}
+            },
+            "28": {
+                "D2D": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "COP": null,
+                "SCOP": {"attack": 0, "defense": 0.2, "move": 0, "range": 0}
+            },
+            "29": {
+                "D2D": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "COP": null,
+                "SCOP": {"attack": 0.2, "defense": 0.2, "move": 0, "range": 0}
+            },
+            "30": {
+                "D2D": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "COP": null,
+                "SCOP": {"attack": 0.2, "defense": 0.2, "move": 0, "range": 0}
+            },
+            "46": {
+                "D2D": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "COP": null,
+                "SCOP": {"attack": 0.2, "defense": 0.2, "move": 0, "range": 0}
+            },
+            "960900": {
+                "D2D": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "COP": null,
+                "SCOP": {"attack": 0.2, "defense": 0.2, "move": 0, "range": 0}
+            },
+            "968731": {
+                "D2D": {"attack": 0, "defense": 0.1, "move": 0, "range": 0},
+                "COP": null,
+                "SCOP": {"attack": 0, "defense": 0.2, "move": 0, "range": 0}
+            },
+            "1141438": {
+                "D2D": {"attack": 0.1, "defense": 0.1, "move": 0, "range": 0},
+                "COP": null,
+                "SCOP": {"attack": 0.2, "defense": 0.2, "move": 0, "range": 0}
+            }
+        }
+    }
+};
+const AMMO_USE = [
+    [0, 9, 6, 7, 13, 15, 28, 968731, 12, 29, 16, 11, 1, 17, 3, 2, 1141438, 10, 46, 960900, 5, 8, 30, 18, 14, 4],
+    [9, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1],
+    [6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [7, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1],
+    [13, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1],
+    [15, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1],
+    [28, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [968731, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [12, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1],
+    [29, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0],
+    [16, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+    [11, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0],
+    [1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1],
+    [17, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [3, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1],
+    [2, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1],
+    [1141438, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1],
+    [10, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0],
+    [46, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1],
+    [960900, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    [5, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1],
+    [8, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1],
+    [30, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    [18, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+    [14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [4, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1]
+];
+const PRIMARY_DAMAGE = [
+    [0, 9, 6, 7, 13, 15, 28, 968731, 12, 29, 16, 11, 1, 17, 3, 2, 1141438, 10, 46, 960900, 5, 8, 30, 18, 14, 4],
+    [9, 45, 50, 50, 120, 0, 0, 120, 75, 0, 0, 65, 105, 0, 10, 105, 1, 55, 5, 25, 60, 55, 75, 0, 120, 25],
+    [6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [7, 75, 70, 75, 0, 40, 55, 0, 0, 45, 65, 0, 90, 55, 45, 85, 15, 80, 40, 70, 80, 80, 0, 60, 0, 70],
+    [13, 25, 60, 65, 65, 25, 25, 0, 0, 25, 55, 0, 75, 25, 25, 75, 10, 65, 20, 55, 55, 65, 0, 25, 95, 55],
+    [15, 85, 80, 80, 0, 50, 95, 0, 0, 60, 95, 0, 95, 95, 55, 90, 25, 90, 50, 80, 90, 85, 0, 95, 0, 80],
+    [28, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [968731, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [12, 95, 105, 105, 0, 75, 95, 0, 0, 75, 85, 0, 110, 95, 95, 110, 35, 105, 90, 105, 105, 105, 0, 95, 0, 105],
+    [29, 0, 0, 0, 115, 0, 0, 120, 100, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 100, 0, 115, 0],
+    [16, 0, 0, 0, 0, 0, 25, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 90, 0, 0],
+    [11, 0, 0, 0, 100, 0, 0, 120, 100, 0, 0, 55, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 85, 0, 100, 0],
+    [1, 5, 14, 15, 7, 0, 0, 0, 0, 0, 0, 0, 55, 0, 1, 45, 1, 25, 1, 5, 12, 25, 0, 0, 30, 5],
+    [17, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [3, 105, 105, 105, 12, 10, 35, 0, 0, 10, 45, 0, 105, 35, 55, 95, 25, 105, 45, 85, 105, 105, 0, 10, 45, 85],
+    [2, 65, 75, 70, 9, 0, 0, 0, 0, 0, 0, 0, 65, 0, 15, 55, 5, 85, 15, 55, 85, 85, 0, 0, 35, 55],
+    [1141438, 195, 195, 195, 22, 45, 105, 0, 0, 45, 65, 0, 135, 75, 125, 125, 65, 195, 115, 180, 195, 195, 0, 45, 55, 180],
+    [10, 0, 0, 0, 120, 0, 0, 120, 100, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 100, 0, 120, 0],
+    [46, 115, 125, 115, 22, 15, 40, 0, 0, 15, 50, 0, 125, 40, 75, 115, 35, 125, 55, 105, 125, 125, 0, 15, 55, 105],
+    [960900, 85, 80, 80, 105, 55, 60, 120, 75, 60, 60, 65, 95, 60, 55, 90, 25, 90, 50, 80, 90, 85, 75, 85, 105, 80],
+    [5, 4, 45, 45, 10, 0, 0, 0, 0, 0, 0, 0, 70, 0, 1, 65, 1, 28, 1, 6, 35, 55, 0, 0, 35, 6],
+    [8, 85, 80, 80, 0, 55, 60, 0, 0, 60, 85, 0, 95, 60, 55, 90, 25, 90, 50, 80, 90, 85, 0, 85, 0, 80],
+    [30, 50, 85, 75, 85, 45, 65, 120, 70, 45, 35, 45, 90, 65, 70, 90, 15, 85, 60, 80, 85, 85, 55, 55, 95, 75],
+    [18, 0, 0, 0, 0, 55, 95, 0, 0, 75, 25, 0, 0, 95, 0, 0, 0, 0, 0, 0, 0, 0, 0, 55, 0, 0],
+    [14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [4, 65, 75, 70, 10, 1, 10, 0, 0, 1, 5, 0, 75, 10, 15, 70, 10, 85, 15, 55, 85, 85, 0, 1, 40, 55]
+];
+const SECONDARY_DAMAGE = [
+    [0, 9, 6, 7, 13, 15, 28, 968731, 12, 29, 16, 11, 1, 17, 3, 2, 1141438, 10, 46, 960900, 5, 8, 30, 18, 14, 4],
+    [9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [13, 6, 20, 25, 65, 0, 0, 0, 0, 0, 0, 0, 75, 0, 1, 75, 1, 35, 1, 6, 30, 35, 0, 0, 95, 6],
+    [15, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [28, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [968731, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [29, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [16, 0, 0, 0, 115, 0, 0, 120, 65, 0, 0, 55, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 100, 0, 115, 0],
+    [11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [17, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [3, 7, 45, 45, 12, 0, 0, 0, 0, 0, 0, 0, 105, 0, 1, 95, 1, 35, 1, 8, 45, 55, 0, 0, 45, 8],
+    [2, 6, 20, 32, 9, 0, 0, 0, 0, 0, 0, 0, 65, 0, 1, 55, 1, 35, 1, 6, 18, 35, 0, 0, 35, 6],
+    [1141438, 17, 65, 65, 22, 0, 0, 0, 0, 0, 0, 0, 135, 0, 1, 125, 1, 55, 1, 10, 65, 75, 0, 0, 55, 10],
+    [10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [46, 17, 65, 65, 22, 0, 0, 0, 0, 0, 0, 0, 125, 0, 1, 115, 1, 55, 1, 10, 65, 75, 0, 0, 55, 10],
+    [960900, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [30, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [18, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [4, 5, 45, 45, 10, 0, 0, 0, 0, 0, 0, 0, 75, 0, 1, 70, 1, 30, 1, 6, 40, 55, 0, 0, 40, 6]
+];
 const CO_LIST = {
     "andy":{"co_name":"Andy","co_id":"1"},
     "grit":{"co_name":"Grit","co_id":"2"},
@@ -55,38 +3905,38 @@ const TERRAIN_LIST = {
     "hq": {"terrain_name":"?HQ","terrain_id":"42","terrain_defense":"4"}
 };
 const UNIT_LIST = {
-    "infantry": {"units_name":"Infantry","units_id":"1","units_ammo":"0"},
-    "mech": {"units_name":"Mech","units_id":"2","units_ammo":"3"},
-    "md.tank": {"units_name":"Md.Tank","units_id":"3","units_ammo":"8"},
-    "tank": {"units_name":"Tank","units_id":"4","units_ammo":"9"},
-    "recon": {"units_name":"Recon","units_id":"5","units_ammo":"0"},
-    "apc": {"units_name":"APC","units_id":"6","units_ammo":"0"},
-    "artillery": {"units_name":"Artillery","units_id":"7","units_ammo":"9"},
-    "rocket": {"units_name":"Rocket","units_id":"8","units_ammo":"6"},
-    "anti-air": {"units_name":"Anti-Air","units_id":"9","units_ammo":"9"},
-    "missile": {"units_name":"Missile","units_id":"10","units_ammo":"6"},
-    "fighter": {"units_name":"Fighter","units_id":"11","units_ammo":"9"},
-    "bomber": {"units_name":"Bomber","units_id":"12","units_ammo":"9"},
-    "b-copter": {"units_name":"B-Copter","units_id":"13","units_ammo":"6"},
-    "t-copter": {"units_name":"T-Copter","units_id":"14","units_ammo":"0"},
-    "battleship": {"units_name":"Battleship","units_id":"15","units_ammo":"9"},
-    "cruiser": {"units_name":"Cruiser","units_id":"16","units_ammo":"9"},
-    "lander": {"units_name":"Lander","units_id":"17","units_ammo":"0"},
-    "sub": {"units_name":"Sub","units_id":"18","units_ammo":"6"},
-    "neotank": {"units_name":"Neotank","units_id":"46","units_ammo":"9"},
-    "piperunner": {"units_name":"Piperunner","units_id":"960900","units_ammo":"9"},
-    "blackbomb": {"units_name":"BlackBomb","units_id":"968731","units_ammo":"0"},
-    "megatank": {"units_name":"MegaTank","units_id":"1141438","units_ammo":"3"},
-    "blackboat": {"units_name":"BlackBoat","units_id":"28","units_ammo":"0"},
-    "stealth": {"units_name":"Stealth","units_id":"30","units_ammo":"6"},
-    "carrier": {"units_name":"Carrier","units_id":"29","units_ammo":"9"}
+    "infantry": {"units_name":"Infantry","units_id":"1","units_ammo":"0","cost":1000},
+    "mech": {"units_name":"Mech","units_id":"2","units_ammo":"3","cost":3000},
+    "md.tank": {"units_name":"Md.Tank","units_id":"3","units_ammo":"8","cost":16000},
+    "tank": {"units_name":"Tank","units_id":"4","units_ammo":"9","cost":7000},
+    "recon": {"units_name":"Recon","units_id":"5","units_ammo":"0","cost":4000},
+    "apc": {"units_name":"APC","units_id":"6","units_ammo":"0","cost":5000},
+    "artillery": {"units_name":"Artillery","units_id":"7","units_ammo":"9","cost":6000},
+    "rocket": {"units_name":"Rocket","units_id":"8","units_ammo":"6","cost":15000},
+    "anti-air": {"units_name":"Anti-Air","units_id":"9","units_ammo":"9","cost":8000},
+    "missile": {"units_name":"Missile","units_id":"10","units_ammo":"6","cost":12000},
+    "fighter": {"units_name":"Fighter","units_id":"11","units_ammo":"9","cost":20000},
+    "bomber": {"units_name":"Bomber","units_id":"12","units_ammo":"9","cost":22000},
+    "b-copter": {"units_name":"B-Copter","units_id":"13","units_ammo":"6","cost":9000},
+    "t-copter": {"units_name":"T-Copter","units_id":"14","units_ammo":"0","cost":5000},
+    "battleship": {"units_name":"Battleship","units_id":"15","units_ammo":"9","cost":28000},
+    "cruiser": {"units_name":"Cruiser","units_id":"16","units_ammo":"9","cost":16000},
+    "lander": {"units_name":"Lander","units_id":"17","units_ammo":"0","cost":12000},
+    "sub": {"units_name":"Sub","units_id":"18","units_ammo":"6","cost":20000},
+    "neotank": {"units_name":"Neotank","units_id":"46","units_ammo":"9","cost":22000},
+    "piperunner": {"units_name":"Piperunner","units_id":"960900","units_ammo":"9","cost":20000},
+    "blackbomb": {"units_name":"BlackBomb","units_id":"968731","units_ammo":"0","cost":25000},
+    "megatank": {"units_name":"MegaTank","units_id":"1141438","units_ammo":"3","cost":28000},
+    "blackboat": {"units_name":"BlackBoat","units_id":"28","units_ammo":"0","cost":7500},
+    "stealth": {"units_name":"Stealth","units_id":"30","units_ammo":"6","cost":24000},
+    "carrier": {"units_name":"Carrier","units_id":"29","units_ammo":"9","cost":30000}
 };
 const DEFAULT_ATTACKER = {
     "cities": 0,
     "co": {"co_name": "Andy", "co_id": 1},
     "country": {"code": "os", "name": "orangestar"},
     "funds": 0,
-    "hp": 10,
+    "hp": 100,
     "power": "N",
     "terrain": {"terrain_name": "Plain", "terrain_id": 1, "terrain_defense": 1},
     "towers": 0,
@@ -97,7 +3947,7 @@ const DEFAULT_DEFENDER = {
     "co": {"co_name": "Andy", "co_id": 1},
     "country": {"code": "bm", "name": "bluemoon"},
     "funds": 0,
-    "hp": 10,
+    "hp": 100,
     "power": "N",
     "terrain": {"terrain_name": "Plain", "terrain_id": 1, "terrain_defense": 1},
     "towers": 0,
@@ -108,7 +3958,7 @@ const DEFAULT_DEFENDER = {
 // CalcNode                                        // 
 /////////////////////////////////////////////////////
 class CalcNode {
-    constructor(attacker, defender, id) {
+    constructor(attacker, defender, id, builtinCalc) {
         this.attacker = attacker;
         this.defender = defender;
         this.children = [];
@@ -120,106 +3970,23 @@ class CalcNode {
         this.parent = null; //set by add funct
         this.id = id;
         this.depth = 0; // set by add funct
+        this.calc = builtinCalc;
 
         this.attackerNoAmmoToggled = false;
         this.defenderNoAmmoToggled = false;
         this.attackerAmmo = this.attacker.unit.units_ammo;
         this.defenderAmmo = this.defender.unit.units_ammo;
-        this.attackerDisplayHP = this.attacker['hp']*10;
-        this.defenderDisplayHP = this.defender['hp']*10;
+        this.attackerDisplayHP = this.calc.getDisplayHP(attacker);
+        this.defenderDisplayHP = this.calc.getDisplayHP(defender);
         this.defenderMaxHP = 100;
         this.defenderMaxCities = 99;
         this.defenderMaxTowers = 99;
-        this.sliderDamage = 0;
         this.isValid = true;
         this.selectingAttacker = false;
         this.selectingDefender = false;
-        this.calcResults = {
-            'attackDamageMin': '0', //avoid div by 0 in slider calc
-            'attackDamageMax': '1', 
-            'attackFundsMin': '',
-            'attackFundsMax': '',
-
-            'minCounterDamageMin': '',
-            'minCounterDamageMax': '',
-            'maxCounterDamageMin': '',
-            'maxCounterDamageMax': '',
-
-            'minCounterFundsMin': '', //display
-            'minCounterFundsMax': '',
-            'maxCounterFundsMin': '',
-            'maxCounterFundsMax': ''  //display
-        };
+        this.calcResults = {}; //set by add function
     }
-
-    // return cost of damage dealt to defender
-    getDefenderCharge() {
-        //determine how much damage is dealt
-        const before = this.defender.hp;
-        const after = Math.max(0, Math.ceil((this.defenderDisplayHP - this.sliderDamage)/10.0));
-        const damage = before - after;
-
-        //find unit cost
-        const maxHP = Math.floor(this.calcResults['attackDamageMax']/10);
-        const maxCost = this.calcResults['attackFundsMax'];
-        const unitCost = maxCost/maxHP;
-
-        //get value
-        return damage*unitCost;
-        //TODO: unit value due to CO not taken into account by AWBW API
-    }
-
-
-    //returns probaility of doing x damage or more
-    getProbability(damage) {
-        // Data from flak_calcs.py model
-        var data = [
-            {'name': 'Other', 'type': 'N', 'bad': 0, 'good': 9, 'functions': [{'a': 0, 'b': -10.0, 'c': 100.0, 'lower': 0, 'upper': 9}]},
-            {'name': 'Other', 'type': 'Y', 'bad': 0, 'good': 9, 'functions': [{'a': 0, 'b': -10.0, 'c': 100.0, 'lower': 0, 'upper': 9}]},
-            {'name': 'Other', 'type': 'S', 'bad': 0, 'good': 9, 'functions': [{'a': 0, 'b': -10.0, 'c': 100.0, 'lower': 0, 'upper': 9}]},
-            {'name': 'Nell', 'type': 'N', 'bad': 0, 'good': 19, 'functions': [{'a': 0, 'b': -5.0, 'c': 100.0, 'lower': 0, 'upper': 19}]},
-            {'name': 'Nell', 'type': 'Y', 'bad': 0, 'good': 59, 'functions': [{'a': 0, 'b': -1.6667, 'c': 100.0, 'lower': 0, 'upper': 59}]},
-            {'name': 'Nell', 'type': 'S', 'bad': 0, 'good': 99, 'functions': [{'a': 0, 'b': -1.0, 'c': 100.0, 'lower': 0, 'upper': 99}]},
-            {'name': 'Rachel', 'type': 'N', 'bad': 0, 'good': 9, 'functions': [{'a': 0, 'b': -10.0, 'c': 100.0, 'lower': 0, 'upper': 9}]},
-            {'name': 'Rachel', 'type': 'Y', 'bad': 0, 'good': 39, 'functions': [{'a': 0, 'b': -2.5, 'c': 100.0, 'lower': 0, 'upper': 39}]},
-            {'name': 'Rachel', 'type': 'S', 'bad': 0, 'good': 9, 'functions': [{'a': 0, 'b': -10.0, 'c': 100.0, 'lower': 0, 'upper': 9}]},
-            {'name': 'Flak', 'type': 'N', 'bad': -9, 'good': 24, 'functions': [{'a': -0.2, 'b': -3.8, 'c': 82.0, 'lower': -9, 'upper': 0}, {'a': 0, 'b': -4.0, 'c': 82.0, 'lower': 0, 'upper': 15}, {'a': 0.2, 'b': -10.2, 'c': 130.0, 'lower': 15, 'upper': 24}]},
-            {'name': 'Flak', 'type': 'Y', 'bad': -19, 'good': 49, 'functions': [{'a': -0.05, 'b': -1.95, 'c': 81.0, 'lower': -19, 'upper': 0}, {'a': 0, 'b': -2.0, 'c': 81.0, 'lower': 0, 'upper': 30}, {'a': 0.05, 'b': -5.05, 'c': 127.5, 'lower': 30, 'upper': 49}]},
-            {'name': 'Flak', 'type': 'S', 'bad': -39, 'good': 89, 'functions': [{'a': -0.0139, 'b': -1.0972, 'c': 78.3333, 'lower': -39, 'upper': 0}, {'a': 0, 'b': -1.1111, 'c': 78.3333, 'lower': 0, 'upper': 50}, {'a': 0.0139, 'b': -2.5139, 'c': 113.75, 'lower': 50, 'upper': 89}]},
-            {'name': 'Jugger', 'type': 'N', 'bad': -14, 'good': 29, 'functions': [{'a': -0.1111, 'b': -3.2222, 'c': 76.6667, 'lower': -14, 'upper': 0}, {'a': 0, 'b': -3.3333, 'c': 76.6667, 'lower': 0, 'upper': 15}, {'a': 0.1111, 'b': -6.7778, 'c': 103.3333, 'lower': 15, 'upper': 29}]},
-            {'name': 'Jugger', 'type': 'Y', 'bad': -24, 'good': 54, 'functions': [{'a': -0.0364, 'b': -1.7818, 'c': 78.1818, 'lower': -24, 'upper': 0}, {'a': 0, 'b': -1.8182, 'c': 78.1818, 'lower': 0, 'upper': 30}, {'a': 0.0364, 'b': -4.0364, 'c': 112.0, 'lower': 30, 'upper': 54}]},
-            {'name': 'Jugger', 'type': 'S', 'bad': -44, 'good': 94, 'functions': [{'a': -0.0117, 'b': -1.0409, 'c': 76.8421, 'lower': -44, 'upper': 0}, {'a': 0, 'b': -1.0526, 'c': 76.8421, 'lower': 0, 'upper': 50}, {'a': 0.0117, 'b': -2.2339, 'c': 106.6667, 'lower': 50, 'upper': 94}]},
-            {'name': 'Sonja', 'type': 'N', 'bad': -9, 'good': 9, 'functions': [{'a': -0.5, 'b': -9.5, 'c': 55.0, 'lower': -9, 'upper': 0}, {'a': 0.5, 'b': -10.5, 'c': 55.0, 'lower': 0, 'upper': 9}]},
-            {'name': 'Sonja', 'type': 'Y', 'bad': -9, 'good': 9, 'functions': [{'a': -0.5, 'b': -9.5, 'c': 55.0, 'lower': -9, 'upper': 0}, {'a': 0.5, 'b': -10.5, 'c': 55.0, 'lower': 0, 'upper': 9}]},
-            {'name': 'Sonja', 'type': 'S', 'bad': -9, 'good': 9, 'functions': [{'a': -0.5, 'b': -9.5, 'c': 55.0, 'lower': -9, 'upper': 0}, {'a': 0.5, 'b': -10.5, 'c': 55.0, 'lower': 0, 'upper': 9}]}
-        ];
-
-        //filter
-        const name = ['Nell', 'Rachel', 'Flak', 'Jugger', 'Sonja'].includes(this.attacker.co.co_name) ? this.attacker.co.co_name : 'Other';
-        console.log(name, this.attacker.co.co_name);
-        const type = this.attacker.power;
-        const current = data.filter(item => item.name === name && item.type === type)[0];
-
-        //get adjusted x
-        const sliderWidth = this.calcResults.attackDamageMax - this.calcResults.attackDamageMin;
-        const rollWidth = current.good - current.bad;
-        const x = current.bad + (rollWidth * (damage - this.calcResults.attackDamageMin) / sliderWidth);
-        
-
-        console.log('x', x);
-        //get probability
-        let prob;
-        current.functions.forEach(funct => {
-            if (x <= funct.upper && x >= funct.lower) {
-                console.log(funct);
-                console.log('prob', funct.a * x * x + funct.b * x + funct.c);
-                prob =  funct.a * x * x + funct.b * x + funct.c;
-            }
-        });
-        return prob;
-    }
-
-        
+       
     //return offset based on index
     getOffsetY() {
         let index = 0;
@@ -425,7 +4192,7 @@ class CalcNode {
         return poly;
     }
     
-    generateHTML(safeModeOn, displaySlider) {
+    generateHTML() {
         const variableStyle = (!this.isValid) ? 'calc-plus-invalid' : (this.isFocused) ? 'calc-plus-focused' : 'calc-plus-unfocused'; 
         let optionsHtml = `
         <div class="calc-plus-node-ctrls">
@@ -585,7 +4352,7 @@ class CalcNode {
             `;
             displayHtml = `${attackerHtml}
                            ${defenderHtml}`;
-            const attackerDamageHtml = displaySlider ? `
+            const attackerDamageHtml = displayLuckSlider ? `
             <div class="attacker-damage">
                 <div class="calc-plus-slider-display">
                     ${this.calcResults['attackDamageMin'] === this.calcResults['attackDamageMax'] ? '' : `
@@ -770,17 +4537,17 @@ class CalcNode {
         }
     }
 
-    getHTML(safeModeOn, displaySlider) {
+    getHTML(safeModeOn, displayLuckSlider) {
         try {
             let html = "";
-            html += this.generateHTML(safeModeOn, displaySlider);
+            html += this.generateHTML(safeModeOn, displayLuckSlider);
             
             let focused = "";
             for (const child of this.children) {
                 if (child.isFocused === false) {
-                    html += child.getHTML(safeModeOn, displaySlider);
+                    html += child.getHTML(safeModeOn, displayLuckSlider);
                 } else {
-                    focused += child.getHTML(safeModeOn, displaySlider);
+                    focused += child.getHTML(safeModeOn, displayLuckSlider);
                 }
             }
 
@@ -792,69 +4559,71 @@ class CalcNode {
         }
     }
 
-    async calculate() {
-        //remove ammo if toggled else restore
-        if (this.attackerNoAmmoToggled) {
-            this.attacker.unit.units_ammo = 0;
-        } else {
-            this.attacker.unit.units_ammo = this.attackerAmmo;
-        }
-        if (this.defenderNoAmmoToggled) {
-            this.defender.unit.units_ammo = 0;
-        } else {
-            this.defender.unit.units_ammo = this.defenderAmmo;
-        }
+    // async calculate() {
+    //     //remove ammo if toggled else restore
+    //     if (this.attackerNoAmmoToggled) {
+    //         this.attacker.unit.units_ammo = 0;
+    //     } else {
+    //         this.attacker.unit.units_ammo = this.attackerAmmo;
+    //     }
+    //     if (this.defenderNoAmmoToggled) {
+    //         this.defender.unit.units_ammo = 0;
+    //     } else {
+    //         this.defender.unit.units_ammo = this.defenderAmmo;
+    //     }
        
-        return new Promise((resolve, reject) => {
-            const request = new XMLHttpRequest();
-            request.open("POST", "api/calculator/calculate_new.php", true);
-            request.setRequestHeader("Content-Type", "application/json");
-            request.onreadystatechange = () => {
-                if (request.readyState === XMLHttpRequest.DONE) {
-                    if (request.status === 200) {
-                        const normalized = (this.sliderDamage - this.calcResults['attackDamageMin'])/(this.calcResults['attackDamageMax'] - this.calcResults['attackDamageMin']);
-                        const response = JSON.parse(request.responseText);
-                        this.calcResults['attackDamageMin'] = response['minInfo']['percent'];
-                        this.calcResults['attackDamageMax'] = response['maxInfo']['percent'];
-                        this.calcResults['attackFundsMin'] = response['minInfo']['fundsDamage'];
-                        this.calcResults['attackFundsMax'] = response['maxInfo']['fundsDamage'];
+    //     return new Promise((resolve, reject) => {
+    //         const request = new XMLHttpRequest();
+    //         request.open("POST", "api/calculator/calculate_new.php", true);
+    //         request.setRequestHeader("Content-Type", "application/json");
+    //         request.onreadystatechange = () => {
+    //             if (request.readyState === XMLHttpRequest.DONE) {
+    //                 if (request.status === 200) {
+    //                     const normalized = (this.sliderDamage - this.calcResults['attackDamageMin'])/(this.calcResults['attackDamageMax'] - this.calcResults['attackDamageMin']);
+    //                     const response = JSON.parse(request.responseText);
+    //                     this.calcResults['attackDamageMin'] = response['minInfo']['percent'];
+    //                     this.calcResults['attackDamageMax'] = response['maxInfo']['percent'];
+    //                     this.calcResults['attackFundsMin'] = response['minInfo']['fundsDamage'];
+    //                     this.calcResults['attackFundsMax'] = response['maxInfo']['fundsDamage'];
     
-                        this.calcResults['minCounterDamageMin'] = response['minCounterInfo']['minLuck']['counterPercent'];
-                        this.calcResults['minCounterDamageMax'] = response['minCounterInfo']['maxLuck']['counterPercent'];
-                        this.calcResults['maxCounterDamageMin'] = response['maxCounterInfo']['minLuck']['counterPercent'];
-                        this.calcResults['maxCounterDamageMax'] = response['maxCounterInfo']['maxLuck']['counterPercent'];
+    //                     this.calcResults['minCounterDamageMin'] = response['minCounterInfo']['minLuck']['counterPercent'];
+    //                     this.calcResults['minCounterDamageMax'] = response['minCounterInfo']['maxLuck']['counterPercent'];
+    //                     this.calcResults['maxCounterDamageMin'] = response['maxCounterInfo']['minLuck']['counterPercent'];
+    //                     this.calcResults['maxCounterDamageMax'] = response['maxCounterInfo']['maxLuck']['counterPercent'];
     
-                        this.calcResults['minCounterFundsMin'] = response['minCounterInfo']['minLuck']['counterFundsDamage'];
-                        this.calcResults['minCounterFundsMax'] = response['minCounterInfo']['maxLuck']['counterFundsDamage'];
-                        this.calcResults['maxCounterFundsMin'] = response['maxCounterInfo']['minLuck']['counterFundsDamage'];
-                        this.calcResults['maxCounterFundsMax'] = response['maxCounterInfo']['maxLuck']['counterFundsDamage'];
+    //                     this.calcResults['minCounterFundsMin'] = response['minCounterInfo']['minLuck']['counterFundsDamage'];
+    //                     this.calcResults['minCounterFundsMax'] = response['minCounterInfo']['maxLuck']['counterFundsDamage'];
+    //                     this.calcResults['maxCounterFundsMin'] = response['maxCounterInfo']['minLuck']['counterFundsDamage'];
+    //                     this.calcResults['maxCounterFundsMax'] = response['maxCounterInfo']['maxLuck']['counterFundsDamage'];
 
-                        //set value so that slider does not move
-                        const raw = response['minInfo']['percent'] + normalized * (response['maxInfo']['percent'] - response['minInfo']['percent']);
-                        this.sliderDamage = Math.min(Math.max(Math.floor(raw),response['minInfo']['percent']),response['maxInfo']['percent']);
+    //                     //set value so that slider does not move
+    //                     const raw = response['minInfo']['percent'] + normalized * (response['maxInfo']['percent'] - response['minInfo']['percent']);
+    //                     this.sliderDamage = Math.min(Math.max(Math.floor(raw),response['minInfo']['percent']),response['maxInfo']['percent']);
 
-                        resolve(); // Resolve the Promise when the calculation is done
-                    } else {
-                        console.error("Calc-Plus Error:", request.status);
-                        reject(request.status); // Reject the Promise in case of an error
-                    }
-                }
-            };
+    //                     resolve(); // Resolve the Promise when the calculation is done
+    //                 } else {
+    //                     console.error("Calc-Plus Error:", request.status);
+    //                     reject(request.status); // Reject the Promise in case of an error
+    //                 }
+    //             }
+    //         };
 
-            request.send(JSON.stringify({'attacker': this.attacker, 'defender': this.defender}));
-        });
-    }
+    //         request.send(JSON.stringify({'attacker': this.attacker, 'defender': this.defender}));
+    //     });
+    // }
 
-    genNextNode(id) { //returns node post attack
+    genNextNode(id, displayLuckSlider) { //returns node post attack
         let nextDefender = JSON.parse(JSON.stringify(this.defender));
-        //get max defender hp after first attack
-        const maxHP = Math.max(0, this.defenderDisplayHP - this.calcResults['attackDamageMin']);
+        // Get damage the attack will do. If luck mode is on, use slider value; else use min value
+        const attackerDamage = (displayLuckSlider) ? this.sliderDamage : this.calcResults['attackDamageMin'];
+        const maxHP = Math.max(0, this.defenderDisplayHP - attackerDamage);
+        console.log('damage', attackerDamage);
 
         nextDefender['hp'] = Math.ceil(maxHP/10);
         const nextAttacker = JSON.parse(JSON.stringify(DEFAULT_ATTACKER));
         nextAttacker.country = this.attacker.country;
 
-        const newNode = new CalcNode(nextAttacker, nextDefender, id);
+        const newNode = new CalcNode(nextAttacker, nextDefender, id, this.calc);
         newNode.defenderMaxHP = maxHP;
         newNode.defenderDisplayHP = maxHP;
 
@@ -863,17 +4632,22 @@ class CalcNode {
         return newNode;
     }
 
-    async refactor() {
+    refactor(displayLuckSlider) {
         if (!this.isValid) {
             this.removeFocus();
         }
-        await this.calculate(); //wait for calc
-        const newChild = this.genNextNode(-1);//this is discarded so id doesnt matter???
+        // await this.calculate(); //wait for calc
+        this.calc.calculate(this.attacker, this.defender);
+        const newChild = this.genNextNode(-1, displayLuckSlider);//this is discarded so id doesnt matter???
         for (const child of this.children) {
             const oldDefender = JSON.parse(JSON.stringify(child.defender))
             child.defender = JSON.parse(JSON.stringify(newChild.defender));
+            //if luck mode, use slider val
             child.defenderMaxHP = newChild.defenderMaxHP;
             child.defenderDisplayHP = newChild.defenderDisplayHP;
+            console.log('maxHP', child.defenderMaxHP, 'dispHP', child.defenderDisplayHP);
+            //TODO?????
+            
             child.defenderMaxCities = newChild.defenderMaxCities;
             child.defenderMaxTowers = newChild.defenderMaxTowers;
             child.defenderNoAmmoToggled = this.defenderNoAmmoToggled;
@@ -898,7 +4672,7 @@ class CalcNode {
             // TODO: Add other info that carries over here
             
             child.isValid = (child.defenderDisplayHP > 0) && this.isValid;
-            await child.refactor();
+            child.refactor(displayLuckSlider);
         }
     }
 }
@@ -908,20 +4682,20 @@ class CalcNode {
 /////////////////////////////////////////////////////
 class CalcTree{
     constructor(id) {
-        this.root = new CalcNode(JSON.parse(JSON.stringify(DEFAULT_ATTACKER)), JSON.parse(JSON.stringify(DEFAULT_DEFENDER)), id);
+        this.root = new CalcNode(JSON.parse(JSON.stringify(DEFAULT_ATTACKER)), JSON.parse(JSON.stringify(DEFAULT_DEFENDER)), id, new BuiltinCalculator());
         this.root.isRoot = true;
         this.activeNode = this.root;
         this.root.orient(0,0);
     }
 
     //refactor the active node
-    async refactor() {
-        await this.activeNode.refactor();
+    async refactor(displayLuckSlider) {
+        await this.activeNode.refactor(displayLuckSlider);
     }
 
     //returns html of each node
-    getHTML(safeModeOn, displaySlider) {
-        return this.root.getHTML(safeModeOn, displaySlider);
+    getHTML(safeModeOn, displayLuckSlider) {
+        return this.root.getHTML(safeModeOn, displayLuckSlider);
     }
 
     //find node by id, set as active, return node
@@ -941,6 +4715,261 @@ class CalcTree{
     //returns width of all nodes + offset
     getWidth() {
         return this.root.getMaxDepth() * (SIZE_X + OFFSET) - OFFSET;
+    }
+}
+
+/////////////////////////////////////////////////////
+// BuiltinCalculator                               //
+/////////////////////////////////////////////////////
+class BuiltinCalculator {
+    constructor() {}
+    
+    // return dict containing min/max attack and counter damage
+    calculate(attacker, defender) {
+        let result = {
+            'attackDamageMin': 0, 
+            'attackDamageMax': 0, 
+            'attackFundsMin': 0,
+            'attackFundsMax': 0,
+
+            'minCounterDamageMin': 0,
+            'minCounterDamageMax': 0,
+            'minCounterFundsMin': 0,
+            'minCounterFundsMax': 0,
+
+            'maxCounterDamageMin': 0,
+            'maxCounterDamageMax': 0,
+            'maxCounterFundsMin': 0,
+            'maxCounterFundsMax': 0
+        };
+        let attack = this.calc(attacker, defender, false);
+        result.attackDamageMin = attack.min;
+        result.attackDamageMax = attack.max;
+        result.attackFundsMin = this.getDamageCost(defender, attack.min);
+        result.attackFundsMax = this.getDamageCost(defender, attack.max);
+
+        let counter = {"max":0, "min":0};
+        if (this.canCounter(attacker, defender)) {
+            // min attack (max counter)
+            if (attack.min < defender.hp) {
+                defender.hp -= attack.min;
+                counter = this.calc(defender, attacker, true);
+                defender.hp += attack.min;
+                
+                result.maxCounterDamageMin = counter.min;
+                result.maxCounterDamageMax = counter.max;
+                result.maxCounterFundsMin = this.getDamageCost(defender, counter.min);
+                result.maxCounterFundsMax = this.getDamageCost(defender, counter.max);
+            }
+
+            // max attack (min counter)
+            if (attack.max < defender.hp) {
+                defender.hp -= attack.max;
+                counter.min = this.calc(defender, attacker, true);
+                defender.hp += attack.max;
+
+                result.minCounterDamageMin = counter.min;
+                result.minCounterDamageMax = counter.max;
+                result.minCounterFundsMin = this.getDamageCost(defender, counter.min);
+                result.minCounterFundsMax = this.getDamageCost(defender, counter.max);
+            }
+        }
+        return result;
+    }
+
+    // get min/max damage values of an attack
+    // negative values can result from negative luck
+    calc(attacker, defender, is_counter) {
+        // Damage% = (B*Av/100 + L-Lb)*(HPa/10)*((200-(Dv+Dtr*HPd))/100)
+        const base = this.getBase(attacker, defender);
+        const attackValue = this.getAttack(attacker, is_counter);
+        const minLuck = this.lookupGlobal(attacker, "bad_luck");
+        const maxLuck = this.lookupGlobal(attacker, "good_luck");
+        const attackerHP = this.getDisplayHP(attacker);
+        const defenseValue = this.getDefense(defender, this.isIndirect(attacker));
+
+        const minDamage = (base * attackValue / 100 - minLuck) * (attackerHP / 10) * ((200 - defenseValue) / 100);
+        const maxDamage = (base * attackValue / 100 + maxLuck) * (attackerHP / 10) * ((200 - defenseValue) / 100);
+
+        // rounding rule
+        const minRounded = Math.trunc(Math.ceil(minDamage / 0.05 + 0.00001) * 0.05);
+        const maxRounded = Math.trunc(Math.ceil(maxDamage / 0.05 + 0.00001) * 0.05);
+
+        return {"min": minRounded, "max": maxRounded};
+    }
+
+    // returns true if defender can counter attacker
+    canCounter(attacker, defender) {
+        if (this.canAttack(defender, attacker)) {
+            return !this.isIndirect(defender) && !this.isIndirect(attacker);
+        } else {
+            return false;
+        }
+    }
+
+    // get base attack damage
+    getBase(attacker, defender) {
+        if(AMMO_USE[attacker.unit.units_id][defender.unit.units_id] && (UNIT_LIST[attacker.unit.units_name.toLowerCase()].units_ammo === 0 || attacker.unit.units_ammo > 0)) {
+            return PRIMARY_DAMAGE[attacker.unit.units_id][defender.unit.units_id]; // primary weapon
+        } else {
+            return SECONDARY_DAMAGE[attacker.unit.units_id][defender.unit.units_id]; // secondary weapon
+        }
+    }
+
+    // get attack as percentage. 100 = no firepower boost
+    getAttack(attacker, is_counter) {
+        // CO D2D/COP/SCOP
+        let coBonus = this.lookupUnit(attacker, "attack");
+
+        // towers
+        let towerBonus = attacker.towers / 10;
+
+        // Jake plains bonus
+        if (attacker.co.co_name === "Jake") {
+            coBonus += ["plain", "hpiperubble", "vpiperubble"].includes(attacker.terrain.terrain_name.toLowerCase()) ? this.lookupGlobal(attacker, "attack_bonus_plain") : 0;
+        } 
+        // colin power of money
+        else if (attacker.co.co_name === "Colin") {
+            coBonus += 3 * attacker.funds / 100000;
+        }
+        // kindle
+        else if (attacker.co.co_name === "Colin") {
+            // urban bonus
+            coBonus += (this.onProp(attacker)) ? this.lookupGlobal(attacker, "attack_bonus_prop") : 0;
+            // high society
+            coBonus += 3 * attacker.cities / 100;
+        }
+        // koal
+        else if (attacker.co.co_name === "Koal") {
+            coBonus += (attacker.terrain.terrain_name.toLowerCase().includes("road")) ? this.lookupGlobal(attacker, "attack_bonus_road") : 0;
+        }
+        // lash
+        else if (attacker.co.co_name === "Lash") {
+            // no bonus for air units
+            if (![11, 12, 13, 14, 30, 968731].includes(attacker.unit.units_id)) {
+                let terrain_def = attacker.terrain.terrain_defense / 10;
+                if (attacker.power === "S") {
+                    // scop x2 bonus
+                    terrain_def *= 2;
+                }
+                coBonus += terrain_def;
+            }
+        }
+        // javier
+        else if (attacker.co.co_name === "Javier") {
+            towerBonus *= this.lookupGlobal(attacker, "tower_multiplier");
+        }
+        
+        // Kanbei / Sonja counter 
+        if (is_counter && ["Kanbei", "Sonja"].includes(attacker.co.co_name)) {
+            const temp_power = attacker.power;
+            attacker.power = "N";
+            const d2d = 1 + this.lookupUnit(attacker, "attack");
+            attacker.power = temp_power;
+            const adjusted_bonus = 1 + towerBonus + coBonus - d2d;
+            const counter = 1 + this.lookupGlobal(attacker, "counter_bonus");
+            return Math.trunc(d2d * counter * 100 + adjusted_bonus * 100);
+        } else {
+            return Math.trunc(100 + coBonus * 100 + towerBonus * 100);
+        }
+    }
+
+    // get defense as percentage. 100 = no defense boost
+    getDefense(defender, attacker_direct) {
+        // CO D2D/COP/SCOP
+        let coBonus = this.lookupUnit(defender, "defense");
+
+        // javier
+        if (defender.co.co_name === "Javier") {
+            let tower_defense = defender.towers / 10;
+            tower_defense *= this.lookupGlobal(defender, "tower_multiplier");
+            coBonus += tower_defense;
+
+            // indirect defense
+            if (!attacker_direct) {
+                coBonus += this.lookupGlobal(defender, "indirect_defense");
+            }
+        }
+
+        // terrain
+        let terrain_def;
+        if ([11, 12, 13, 14, 30, 968731].includes(defender.unit.units_id)) {
+            let terrain_def = 0;
+        } else {
+            let terrain_def = defender.terrain.terrain_defense * this.getDisplayHP(defender) / 100;
+
+            // lash scop
+            if (defender.co.co_name === "Lash" && defender.power === "S") {
+                terrain_def *= 2;
+            }
+        }
+        
+        return Math.trunc(100 + coBonus * 100 + terrain_def * 100);
+    }
+
+    // true if attack is valid, attacker can damage defender and has ammo
+    canAttack(attacker, defender) {
+        return !(
+            (PRIMARY_DAMAGE[attacker.unit.units_id][defender.unit.units_id] === 0 &&
+            SECONDARY_DAMAGE[attacker.unit.units_id][defender.unit.units_id] === 0)
+            ||
+            ((attacker.unit.units_ammo === 0 && UNIT_LIST[attacker.unit.units_name.toLowerCase()].units_ammo > 0) &&
+            SECONDARY_DAMAGE[attacker.unit.units_id][defender.unit.units_id] === 0)
+        );
+    }
+    
+    // lookup global data
+    lookupGlobal(unit, key) {
+        const power = (unit.power === "N") ? "D2D" : (unit.power === "Y") ? "COP" : "SCOP";
+        return CO_DATA[unit.co.co_name]["Global"][power][key];
+    }
+
+    // lookup unit specific data
+    lookupUnit(unit, key) {
+        const power = (unit.power === "N") ? "D2D" : (unit.power === "Y") ? "COP" : "SCOP";
+        return CO_DATA[unit.co.co_name]["Units"][unit.unit.units_id][power][key]
+    }
+
+    // get HP as displayed on map
+    getDisplayHP(unit) {
+        return Math.ceil(unit.hp/10);
+    }
+
+    // True if unit is an indirect
+    isIndirect(unit) {
+        // arty, rocket, missile, bship, piperunner, carrier
+        return [7, 8, 10, 15, 960900, 29].includes(unit.unit.units_id);
+    }
+
+    // True if unit terrain is a property
+    onProp(unit) {
+        return (unit.terrain.terrain_defense === 3 && !unit.unit.units_name.toLowerCase().includes("silo")) ||
+               (unit.terrain.terrain_defense === 4 && unit.unit.units_name.toLowerCase().includes("hq"));
+    }
+
+    // returns cost of unit damage (defender charge)
+    getDamageCost(unit, damage) {
+        if (damage <=0 ) {
+            return 0;
+        }
+
+        const old_hp = unit.hp;
+        const old_display = this.getDisplayHP(unit);
+        
+        let hp_delta;
+        if (damage >= old_hp) {
+            // unit killed
+            const hp_delta = old_display;
+        } else {
+            const new_hp = old_hp - damage;
+            unit.hp = new_hp;
+            const new_display = this.getDisplayHP(unit);
+            unit.hp = old_hp;
+            const hp_delta = old_display;
+        }
+        // get cost
+        const cost_per_hp = this.lookupGlobal(unit, "unit_cost") * UNIT_LIST[unit.unit.units_name.toLowerCase()].cost / 10;
+        return cost_per_hp * hp_delta;
     }
 }
 
