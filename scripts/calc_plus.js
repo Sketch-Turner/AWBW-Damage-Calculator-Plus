@@ -4999,19 +4999,28 @@ class DamageCalculator {
         this.safeModeToggleVisible = false;
         this.displaySlider = false;
         this.displaySliderToggleVisible = false;
+        this.overlay = null; // handled by buildCalculator()
+        this.zindex = Z_INDEX;
         this.addNewTree();
         this.buildCalculator();
         this.currentElement = null;
         this.currentNode = null;
-        this.zindex = Z_INDEX;
         this.clickSelectMode = 'N'; //N: None, A: Attacker, D: Defender
         this.clickedUnit = null;
-        this.clickEvent = false;
         this.isMenuOpen = {
             'select-co': false,
             'select-terrain': false,
             'select-unit': false
         };
+    }
+
+    // toggle overlay for input hooking
+    setOverlayHook(status) {
+        if (status) {
+            this.overlay.style.zIndex = Z_INDEX - 2;
+        } else {
+            this.overlay.style.zIndex = -1;
+        }
     }
 
     //toggle safe mode and swap out icon
@@ -5225,7 +5234,15 @@ class DamageCalculator {
     toggleCalculator() {
         this.bringToFront();
         const dc = document.getElementById('calc-plus');
-        dc.style.display = (dc.style.display !== 'flex') ? 'flex' : 'none';
+        if (dc.style.display === 'flex') {
+            // toggle off
+            this.clickSelectMode = 'N';
+            this.setOverlayHook(false);
+            dc.style.display = 'none';
+        } else {
+            // toggle on
+            dc.style.display = 'flex';
+        }
         for (const key in this.isMenuOpen) {
             this.closeMenu(key);
         }
@@ -5489,8 +5506,62 @@ class DamageCalculator {
         //Calc plus display
         const calcDisplay = document.getElementById("calc-plus-display"); 
 
-        // //Attack click listener to gamemap. Used to detect unit selections.
-        // const gamemap = document.getElementById('gamemap');
+        //Create overlay used for unit click detection. Used to detect unit selections.
+        const gamemap = document.getElementById('map-background');
+        const gamemap_rect = gamemap.getBoundingClientRect();
+        const overlay = document.createElement("div");
+        overlay.id = "calc-plus-overlay";
+        overlay.style.position = "fixed";
+        overlay.style.top = gamemap_rect.top + "px";
+        overlay.style.left = gamemap_rect.left + "px";
+        overlay.style.width = gamemap_rect.width + "px";
+        overlay.style.height = gamemap_rect.height + "px";
+        overlay.style.zIndex = -1;
+        overlay.style.pointerEvents = "auto";
+        overlay.style.background = "rgba(255, 0, 0, 0.5)";
+
+        // Get unit from click
+        const overlayClick = (event) => {
+            // Temporary unhook to get top element
+            this.setOverlayHook(false);
+            const underlying = document.elementFromPoint(
+                event.clientX,
+                event.clientY
+            );
+            this.setOverlayHook(true);
+            const clickTarget = underlying.closest('.game-unit') || underlying.closest('span[id^="unit"]'); 
+            console.log(clickTarget);
+            if (clickTarget) {
+                const id = clickTarget.getAttribute('data-unit-id') || clickTarget.id.replace('unit_', '');
+                this.getData(id); //set values of this.clickedUnit
+                console.log(this.clickedUnit);
+                if (this.clickSelectMode === 'A') {
+                    this.currentNode.attacker = JSON.parse(JSON.stringify(this.clickedUnit));
+                    this.currentNode.attacker.hp *= 10;
+                    this.currentNode.attackerAmmo = this.currentNode.attacker.unit.units_ammo;
+                    this.currentNode.attackerDisplayHP = this.currentNode.attacker.hp;
+                    this.currentNode.selectingAttacker = false;
+                }
+                else if (this.clickSelectMode === 'D') {
+                    this.currentNode.defender = JSON.parse(JSON.stringify(this.clickedUnit));
+                    this.currentNode.defender.hp *= 10;
+                    this.currentNode.defenderAmmo = this.currentNode.defender.unit.units_ammo;
+                    this.currentNode.defenderDisplayHP = this.currentNode.defender.hp;
+                    this.currentNode.selectingDefender = false;
+                }
+                this.clickSelectMode = 'N';
+                this.setOverlayHook(false);
+                this.currentNode.refactor(); //if current node calc has changed, need to update all children
+                this.orient();
+                calcDisplay.innerHTML = this.getInnerHTML(); // Update the display
+            }
+        };
+
+        // Add event listener
+        overlay.addEventListener('click', overlayClick, true); //move planner 
+        document.body.appendChild(overlay);
+        this.overlay = overlay;
+
         // const gamemapClick = async (event) => {
         //     if (this.clickSelectMode !== 'N') {
         //         event.stopPropagation();
@@ -5605,12 +5676,13 @@ class DamageCalculator {
                                 this.clickSelectMode = 'D';
                                 selectedNode.selectingDefender = true;
                             }
+                            this.setOverlayHook(true); // Bring overlay to front
                         } else {
                             this.clickSelectMode = 'N';
                             selectedNode.selectingAttacker = false;
                             selectedNode.selectingDefender = false;
+                            this.setOverlayHook(false); // Send overlay to back
                         }
-
                     } else if (toggleCOP && selectedNode.isValid) {
                         updateCalc = true;
                         updateDisplay = true;
