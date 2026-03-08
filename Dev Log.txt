@@ -1,0 +1,10 @@
+Bugs
+    unit attributes not updating correctly after input
+    Unit hp displaying incorrectly
+    Node does not return to correct size after Next attack, minimize, Next attack, maximize
+    Calc starts with undefined calc values
+    Luck slider doesn't work
+    README needs to be updated
+
+Todos
+    Copy damage calc button

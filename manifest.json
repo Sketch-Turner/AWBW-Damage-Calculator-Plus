@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "AWBW Damage Calculator +",
     "description": "Upgraded damage calculator for Advance Wars by Web. Allows comparison of multiple attacks side-by-side as well as sequential attacks for calculating breakthroughs.",
-    "version": "1.1",
+    "version": "1.1.0",
     "icons": {
         "16": "images/icon_16.png",
         "32": "images/icon_32.png",

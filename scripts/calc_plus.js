@@ -4789,7 +4789,7 @@ class BuiltinCalculator {
                 result.maxCounterFundsMax = this.getDamageCost(attacker, counter.max);
             }
         }
-        console.log(attacker, defender, result);
+        console.log("Attacker:", attacker, "\nDefender:", defender, "\nResult:", result);
         return result;
     }
 
@@ -5608,42 +5608,6 @@ class DamageCalculator {
         overlay.addEventListener('click', overlayClick, true); //move planner 
         document.body.appendChild(overlay);
         this.overlay = overlay;
-
-        // const gamemapClick = async (event) => {
-        //     if (this.clickSelectMode !== 'N') {
-        //         event.stopPropagation();
-        //         if (!this.clickEvent) {
-        //             this.clickEvent = true;
-    
-        //             let clickTarget = event.target.closest('.game-unit') || event.target.closest('span[id^="unit"]'); 
-        //             if (clickTarget) {
-        //                 const id = clickTarget.getAttribute('data-unit-id') || clickTarget.id.replace('unit_', '');
-        //                 this.getData(id); //set values of this.clickedUnit
-        //                 if (this.clickSelectMode === 'A') {
-        //                     this.currentNode.attacker = JSON.parse(JSON.stringify(this.clickedUnit));
-        //                     this.currentNode.attackerAmmo = this.currentNode.attacker.unit.units_ammo;
-        //                     this.currentNode.attackerDisplayHP = this.currentNode.attacker.hp * 10;
-        //                     this.currentNode.selectingAttacker = false;
-        //                 }
-        //                 else if (this.clickSelectMode === 'D') {
-        //                     this.currentNode.defender = JSON.parse(JSON.stringify(this.clickedUnit));
-        //                     this.currentNode.defenderAmmo = this.currentNode.defender.unit.units_ammo;
-        //                     this.currentNode.defenderDisplayHP = this.currentNode.defender.hp * 10;
-        //                     this.currentNode.selectingDefender = false;
-        //                 }
-        //                 this.clickSelectMode = 'N';
-        //                 await this.currentNode.refactor({'a_towers': true, 'a_cities': true, 'funds': true, 'power': true, 'co': true, 'd_towers': true, 'd_cities': true}); //if current node calc has changed, need to update all children
-        //                 this.orient();
-        //                 calcDisplay.innerHTML = this.getInnerHTML(); // Update the display
-        //             }
-        //             this.clickEvent = false;
-        //         }
-        //     }
-        // };
-        
-        // // Add event listeners for both mousedown and click events
-        // gamemap.addEventListener('mousedown', gamemapClick, true); //normal game
-        // gamemap.addEventListener('click', gamemapClick, true); //move planner 
       
         // Attach a single click event listener to the container  
         calcDisplay.addEventListener('click', async (event) => {
