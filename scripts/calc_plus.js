@@ -6,6 +6,7 @@ const SIZE_Y = 136;
 const SIZE_Y_FOCUSED = 250;
 const SCROLLBAR_WIDTH = 20;
 const Z_INDEX = 800;
+const TILE_SIZE = 16;
 
 //TODO better data import solution
 const CO_DATA = {
@@ -5000,6 +5001,7 @@ class DamageCalculator {
         this.displaySlider = false;
         this.displaySliderToggleVisible = false;
         this.overlay = null; // handled by buildCalculator()
+        this.tileInfo = null;
         this.zindex = Z_INDEX;
         this.addNewTree();
         this.buildCalculator();
@@ -5017,8 +5019,16 @@ class DamageCalculator {
     // toggle overlay for input hooking
     setOverlayHook(status) {
         if (status) {
+            const gamemap = document.getElementById('map-background');
+            const gamemap_rect = gamemap.getBoundingClientRect();
+            this.overlay.style.top = gamemap_rect.top + "px";
+            this.overlay.style.left = gamemap_rect.left + "px";
+            this.overlay.style.width = gamemap_rect.width + "px";
+            this.overlay.style.height = gamemap_rect.height + "px";
             this.overlay.style.zIndex = Z_INDEX - 2;
         } else {
+            this.overlay.style.width = "0px";
+            this.overlay.style.height = "0px";
             this.overlay.style.zIndex = -1;
         }
     }
@@ -5276,45 +5286,72 @@ class DamageCalculator {
         }
     }
 
-    getData(unitID) {
+    getData(unitElement) {
         //get game data
-        let regex = /unitsInfo = (.*?);/;
+        let regex = /terrainInfo = (.*?);/;
         let match = regex.exec(document.documentElement.innerHTML);
-        const units = JSON.parse(match[1]);
-
-        regex = /terrainInfo = (.*?);/;
-        match = regex.exec(document.documentElement.innerHTML);
-        const terrain = JSON.parse(match[1]);
+        const terrain = JSON.parse(match[1].replace("|| {}", ""));
 
         regex = /buildingsInfo = (.*?);/;
         match = regex.exec(document.documentElement.innerHTML);
-        const buildings = JSON.parse(match[1]);
+        const buildings = JSON.parse(match[1].replace("|| {}", ""));
 
         regex = /playersInfo = (.*?);/;
         match = regex.exec(document.documentElement.innerHTML);
-        const players = JSON.parse(match[1]);
+        const players = JSON.parse(match[1].replace("|| {}", ""));
 
-        //Get clicked unit
-        const unit = units[unitID];
+        // get unit position
+        const row = Math.trunc(parseInt(unitElement.style.top)/TILE_SIZE);
+        const col = Math.trunc(parseInt(unitElement.style.left)/TILE_SIZE);
+        // get unit data
+        let country;
+        let name;
+        let hp;
+        let ammo;
+        if (this.tileInfo) {
+            // use tile info element
+            const unit_img = this.tileInfo.querySelector(".unit-info-sprite img")?.src?.split("/").pop().split(".gif")[0];
+            country = unit_img.substring(0, 2);
+            name = unit_img.substring(2);
+            hp = parseInt(this.tileInfo.querySelector(".unit-info-hp .amount")?.textContent || "10") || 10;
+            ammo = parseInt(this.tileInfo.querySelector(".unit-info-ammo .amount")?.textContent || "1") || 1;
+        } else {
+            // use unit element
+            const img_sources = [...unitElement.innerHTML.matchAll(/\/([^\/]+?)\.gif/g)].map(m => m[1]);
+            for (const src of img_sources) {
+                if (src.length === 1 && (parseInt(src) || src === '?')) {
+                    hp = parseInt(src) || 10;
+                }
+                else if (Object.keys(UNIT_LIST).includes(src.substring(2))) {
+                    country = src.substring(0,2);
+                    name = src.substring(2);
+                }
+                if (name && ammo) {
+                    break;
+                }
+            }
+            // no way to get this, use default ammo value
+            ammo = UNIT_LIST[name].units_ammo;
+        }
+        // get player
+        const player = Object.values(players).find(v => v.countries_code === country);
+        // get tile
+        const tile = terrain[col][row] || buildings[col][row];
 
-        //Get clicked tile
-        const tile = terrain[unit.units_x][unit.units_y] || buildings[unit.units_x][unit.units_y];
-
-        //Get player
-        const player = players[unit.units_players_id];
-
-        if (unit && tile && player) {
-            this.clickedUnit = {
-                "cities": player.other_buildings-player.labs-player.towers,
+        if (country && name && player && tile) {
+            return {
+                "cities": parseInt(player.numProperties) || 0,
                 "co": {"co_name": player.co_name, "co_id": player.players_co_id},
                 "country": {"code": player.countries_code, "name": player.countries_name.replace(' ', '').toLowerCase()},
-                "funds": player.players_funds,
-                "hp": unit.units_hit_points,
+                "funds": parseInt(player.players_funds) || 0,
+                "hp": hp * 10,
                 "power": player.players_co_power_on,
                 "terrain": {"terrain_name": tile.terrain_name, "terrain_id": tile.terrain_id, "terrain_defense": tile.terrain_defense},
-                "towers": player.towers,
-                "unit": {"units_ammo": unit.units_ammo, "units_name": unit.units_name, "units_id": unit.generic_id}
+                "towers": parseInt(player.towers) || 0,
+                "unit": {"units_ammo": ammo, "units_name": name, "units_id": UNIT_LIST[name].units_id}
             };
+        } else {
+            return null
         }
     }
 
@@ -5507,15 +5544,9 @@ class DamageCalculator {
         const calcDisplay = document.getElementById("calc-plus-display"); 
 
         //Create overlay used for unit click detection. Used to detect unit selections.
-        const gamemap = document.getElementById('map-background');
-        const gamemap_rect = gamemap.getBoundingClientRect();
         const overlay = document.createElement("div");
         overlay.id = "calc-plus-overlay";
         overlay.style.position = "fixed";
-        overlay.style.top = gamemap_rect.top + "px";
-        overlay.style.left = gamemap_rect.left + "px";
-        overlay.style.width = gamemap_rect.width + "px";
-        overlay.style.height = gamemap_rect.height + "px";
         overlay.style.zIndex = -1;
         overlay.style.pointerEvents = "auto";
         overlay.style.background = "rgba(255, 0, 0, 0.5)";
@@ -5524,27 +5555,24 @@ class DamageCalculator {
         const overlayClick = (event) => {
             // Temporary unhook to get top element
             this.setOverlayHook(false);
-            const underlying = document.elementFromPoint(
-                event.clientX,
-                event.clientY
-            );
-            this.setOverlayHook(true);
+            // get unit element
+            const underlying = document.elementFromPoint(event.clientX, event.clientY);
             const clickTarget = underlying.closest('.game-unit') || underlying.closest('span[id^="unit"]'); 
-            console.log(clickTarget);
+            // get tile info
+            underlying.dispatchEvent(new MouseEvent("mousemove", {bubbles: true, clientX: event.clientX, clientY: event.clientY}));
+            this.tileInfo = document.getElementsByClassName("tile-info left-side")[0];
+            this.setOverlayHook(true);
             if (clickTarget) {
-                const id = clickTarget.getAttribute('data-unit-id') || clickTarget.id.replace('unit_', '');
-                this.getData(id); //set values of this.clickedUnit
+                this.clickedUnit = this.getData(clickTarget); //set values of this.clickedUnit
                 console.log(this.clickedUnit);
                 if (this.clickSelectMode === 'A') {
                     this.currentNode.attacker = JSON.parse(JSON.stringify(this.clickedUnit));
-                    this.currentNode.attacker.hp *= 10;
                     this.currentNode.attackerAmmo = this.currentNode.attacker.unit.units_ammo;
                     this.currentNode.attackerDisplayHP = this.currentNode.attacker.hp;
                     this.currentNode.selectingAttacker = false;
                 }
                 else if (this.clickSelectMode === 'D') {
                     this.currentNode.defender = JSON.parse(JSON.stringify(this.clickedUnit));
-                    this.currentNode.defender.hp *= 10;
                     this.currentNode.defenderAmmo = this.currentNode.defender.unit.units_ammo;
                     this.currentNode.defenderDisplayHP = this.currentNode.defender.hp;
                     this.currentNode.selectingDefender = false;
