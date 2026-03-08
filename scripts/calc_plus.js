@@ -4632,12 +4632,23 @@ class CalcNode {
         return newNode;
     }
 
+    // sets this.calcResults
+    updateCalcResults() {
+        const attacker_ammo = this.attacker.unit.units_ammo;
+        const defender_ammo = this.defender.unit.units_ammo;
+        this.attacker.unit.units_ammo = (this.attackerNoAmmoToggled) ? 0 : 1;
+        this.defender.unit.units_ammo = (this.defenderNoAmmoToggled) ? 0 : 1;
+        this.calcResults = this.calc.calculate(this.attacker, this.defender);
+        this.attacker.unit.units_ammo = attacker_ammo;
+        this.defender.unit.units_ammo = defender_ammo;
+    }
+
     refactor(displayLuckSlider) {
         if (!this.isValid) {
             this.removeFocus();
         }
         // await this.calculate(); //wait for calc
-        this.calcResults = this.calc.calculate(this.attacker, this.defender);
+        this.updateCalcResults();
         const newChild = this.genNextNode(-1, displayLuckSlider);//this is discarded so id doesnt matter???
         for (const child of this.children) {
             const oldDefender = JSON.parse(JSON.stringify(child.defender))
@@ -4741,6 +4752,9 @@ class BuiltinCalculator {
             'maxCounterFundsMin': 0,
             'maxCounterFundsMax': 0
         };
+        if (!this.canAttack(attacker, defender)) {
+            return result;
+        }
         let attack = this.calc(attacker, defender, false);
         result.attackDamageMin = attack.min;
         result.attackDamageMax = attack.max;
@@ -5304,17 +5318,18 @@ class DamageCalculator {
         const row = Math.trunc(parseInt(unitElement.style.top)/TILE_SIZE);
         const col = Math.trunc(parseInt(unitElement.style.left)/TILE_SIZE);
         // get unit data
-        let country;
-        let name;
-        let hp;
-        let ammo;
+        let country = null;
+        let name = null;
+        let hp = null;
+        let ammo = null;
         if (this.tileInfo) {
             // use tile info element
             const unit_img = this.tileInfo.querySelector(".unit-info-sprite img")?.src?.split("/").pop().split(".gif")[0];
             country = unit_img.substring(0, 2);
             name = unit_img.substring(2);
             hp = parseInt(this.tileInfo.querySelector(".unit-info-hp .amount")?.textContent || "10") || 10;
-            ammo = parseInt(this.tileInfo.querySelector(".unit-info-ammo .amount")?.textContent || "1") || 1;
+            const ammo_str = this.tileInfo.querySelector(".unit-info-ammo .amount")?.textContent;
+            ammo = Number.isNaN(parseInt(ammo_str)) ? 1 : parseInt(ammo_str);
         } else {
             // use unit element
             const img_sources = [...unitElement.innerHTML.matchAll(/\/([^\/]+?)\.gif/g)].map(m => m[1]);
@@ -5326,7 +5341,7 @@ class DamageCalculator {
                     country = src.substring(0,2);
                     name = src.substring(2);
                 }
-                if (name && ammo) {
+                if (name && hp) {
                     break;
                 }
             }
@@ -5564,24 +5579,28 @@ class DamageCalculator {
             this.setOverlayHook(true);
             if (clickTarget) {
                 this.clickedUnit = this.getData(clickTarget); //set values of this.clickedUnit
-                console.log(this.clickedUnit);
-                if (this.clickSelectMode === 'A') {
-                    this.currentNode.attacker = JSON.parse(JSON.stringify(this.clickedUnit));
-                    this.currentNode.attackerAmmo = this.currentNode.attacker.unit.units_ammo;
-                    this.currentNode.attackerDisplayHP = this.currentNode.attacker.hp;
-                    this.currentNode.selectingAttacker = false;
+                console.log("Clicked:", this.clickedUnit);
+                if (this.clickedUnit) {
+                    if (this.clickSelectMode === 'A') {
+                        this.currentNode.attacker = JSON.parse(JSON.stringify(this.clickedUnit));
+                        this.currentNode.attackerAmmo = this.currentNode.attacker.unit.units_ammo;
+                        this.currentNode.attackerDisplayHP = this.currentNode.attacker.hp;
+                        this.currentNode.selectingAttacker = false;
+                        this.currentNode.attackerNoAmmoToggled = (this.clickedUnit.unit.units_ammo === 0);
+                    }
+                    else if (this.clickSelectMode === 'D') {
+                        this.currentNode.defender = JSON.parse(JSON.stringify(this.clickedUnit));
+                        this.currentNode.defenderAmmo = this.currentNode.defender.unit.units_ammo;
+                        this.currentNode.defenderDisplayHP = this.currentNode.defender.hp;
+                        this.currentNode.selectingDefender = false;
+                        this.currentNode.defenderNoAmmoToggled = (this.clickedUnit.unit.units_ammo === 0);
+                    }
+                    this.clickSelectMode = 'N';
+                    this.setOverlayHook(false);
+                    this.currentNode.refactor(); //if current node calc has changed, need to update all children
+                    this.orient();
+                    calcDisplay.innerHTML = this.getInnerHTML(); // Update the display
                 }
-                else if (this.clickSelectMode === 'D') {
-                    this.currentNode.defender = JSON.parse(JSON.stringify(this.clickedUnit));
-                    this.currentNode.defenderAmmo = this.currentNode.defender.unit.units_ammo;
-                    this.currentNode.defenderDisplayHP = this.currentNode.defender.hp;
-                    this.currentNode.selectingDefender = false;
-                }
-                this.clickSelectMode = 'N';
-                this.setOverlayHook(false);
-                this.currentNode.refactor(); //if current node calc has changed, need to update all children
-                this.orient();
-                calcDisplay.innerHTML = this.getInnerHTML(); // Update the display
             }
         };
 
