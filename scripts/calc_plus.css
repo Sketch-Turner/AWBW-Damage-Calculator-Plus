@@ -64,11 +64,18 @@
     background-color: var(--calc-plus-invalid-button);
 }
 
-
+.calc-plus-ctrls-tray {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    gap: 2px;
+}
 
 /* Use the same class for both left and right options */
 .calc-plus-ctrls-del,
 .calc-plus-ctrls-add,
+.calc-plus-ctrls-copy,
 .calc-plus-ctrls-new {
     margin: 2px;
 }
@@ -77,14 +84,13 @@
     margin-left: auto;
 }
 
+.calc-plus-ctrls-copy,
 .calc-plus-ctrls-new {
-    position: absolute;
-    bottom: 0px;
-    left: 0px;
     width: 16px;
     height: 16px;
 }
 
+.calc-plus-ctrls-copy img:hover,
 .calc-plus-ctrls-new img:hover {
     transform: scale(1.2);
 }
