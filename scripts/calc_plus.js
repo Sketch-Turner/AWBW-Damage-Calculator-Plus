@@ -3971,7 +3971,7 @@ class CalcNode {
         this.parent = null; //set by add funct
         this.id = id;
         this.depth = 0; // set by add funct
-        this.calc = builtinCalc;
+        this.builtinCalc = builtinCalc;
 
         this.attackerNoAmmoToggled = false;
         this.defenderNoAmmoToggled = false;
@@ -3985,9 +3985,9 @@ class CalcNode {
         this.isValid = true;
         this.selectingAttacker = false;
         this.selectingDefender = false;
-        this.calcResults = {}; //set by add function
+        this.updateCalcResults();
     }
-       
+    
     //return offset based on index
     getOffsetY() {
         let index = 0;
@@ -4192,8 +4192,9 @@ class CalcNode {
         poly += p[0] + "," + p[1] + " ";
         return poly;
     }
-    
+   
     generateHTML(safeModeOn, displayLuckSlider) {
+        const colorNum = n => `<span style="color:${n < 0 ? 'red' : 'inherit'}">${n}%</span>`;
         const variableStyle = (!this.isValid) ? 'calc-plus-invalid' : (this.isFocused) ? 'calc-plus-focused' : 'calc-plus-unfocused'; 
         let optionsHtml = `
         <div class="calc-plus-node-ctrls">
@@ -4229,7 +4230,8 @@ class CalcNode {
                     </div>
                 </div>
             `;
-            const attckerNoSecondary = this.attacker.unit.units_name === 'Infantry' || this.attacker.unit.units_name === 'Recon' || this.attacker.unit.units_name === 'APC' ||this.attacker.unit.units_name === 'T-Copter' || this.attacker.unit.units_name === 'Lander'|| this.attacker.unit.units_name === 'BlackBomb' || this.attacker.unit.units_name === 'BlackBoat';
+            const attackerNoSecondary = [1, 5, 6, 14, 17, 968731].includes(this.attacker.unit.units_id); //inf, recon, apc, bboat, lander, bbomb
+            const attackerHP = this.builtinCalc.getDisplayHP(this.attacker);
             let attackerHtml = `
             <div class="calculator-attack" style="justify-content: flex-start; align-content: flex-start; width: ${this.width/2-3}px;">
                 <div class="co-options" id="calc-plus-options">
@@ -4243,7 +4245,7 @@ class CalcNode {
                     <div class="unit option">
                         <div class="selected-unit border">
                             <img src="terrain/ani/${this.attacker['country']['code']}${this.attacker['unit']['units_name'].toLowerCase()}.gif">
-                            ${(this.attacker['hp'] < 1 || this.attacker['hp'] > 9 || isNaN(parseInt(this.attacker['hp']))) ? '' : '<img src="terrain/aw2/' + this.attacker['hp'] + '.gif" class="hp-display">'}
+                            ${(attackerHP > 9) ? '' : '<img src="terrain/aw2/' + attackerHP + '.gif" class="hp-display">'}
                         </div>
                     </div>
                     <div class="hp-options" id="calc-plus-options">
@@ -4267,7 +4269,7 @@ class CalcNode {
                             <img src="terrain/aw2/bluestar.gif" ${((this.attacker['power'] === 'S') ? 'id="calc-plus-blue-border"' : '') + 'class="toggle-scop"'}>
                         </div>
                     </div> 
-                    <div class="ammo-options" id="calc-plus-ammo-options"${attckerNoSecondary ? 'style="visibility: hidden;"' : ''}>
+                    <div class="ammo-options" id="calc-plus-ammo-options"${attackerNoSecondary ? 'style="visibility: hidden;"' : ''}>
                         <div class="option">
                             <span class="red-border-strikethru" ${this.attackerNoAmmoToggled ? '' : 'style="display: none;"'}></span>
                             <img src="terrain/ammo_button.gif" ${this.attackerNoAmmoToggled ? 'class="red-border"' : ''}>
@@ -4290,7 +4292,8 @@ class CalcNode {
                 </div>
             </div>
             `;
-            const defenderNoSecondary = this.defender.unit.units_name === 'Infantry' || this.defender.unit.units_name === 'Recon' || this.defender.unit.units_name === 'APC' ||this.defender.unit.units_name === 'T-Copter' || this.defender.unit.units_name === 'Lander'|| this.defender.unit.units_name === 'BlackBomb' || this.defender.unit.units_name === 'BlackBoat';
+            const defenderNoSecondary = [1, 5, 6, 14, 17, 968731].includes(this.defender.unit.units_id); //inf, recon, apc, bboat, lander, bbomb
+            const defenderHP = this.builtinCalc.getDisplayHP(this.defender);
             let defenderHtml = `
             <div class="calculator-defend" style="justify-content: flex-start; align-content: flex-start; width: ${this.width/2-3}px;">
                 <div class="co-options" id="calc-plus-options">
@@ -4304,7 +4307,7 @@ class CalcNode {
                     <div class="unit option">
                         <div class="selected-unit border ${safeModeOn && !atRoot ? 'calc-plus-locked' : ''}">
                             <img src="terrain/ani/${this.defender['country']['code']}${this.defender['unit']['units_name'].toLowerCase()}.gif">
-                            ${(this.defender['hp'] < 1 || this.defender['hp'] > 9) ? '' : '<img src="terrain/aw2/' + this.defender['hp'] + '.gif" class="hp-display">'}
+                            ${(defenderHP > 9) ? '' : '<img src="terrain/aw2/' + defenderHP + '.gif" class="hp-display">'}
                         </div>
                     </div>
                     <div class="hp-options" id="calc-plus-options">
@@ -4365,13 +4368,13 @@ class CalcNode {
                     <img src="terrain/fire.gif" class="fire">
                     <span class="calc-plus-slider-value">${this.sliderDamage}%</span>
                 </div>
-                <span><img src="terrain/coin.gif" class="gold-coin"> ${this.getDefenderCharge()}</span>
+                <span><img src="terrain/coin.gif" class="gold-coin"> ${"TODO"}</span>
                 <span><img src="${chrome.runtime.getURL('/images/luck_icon.png')}">${(this.getProbability(this.sliderDamage).toFixed(4)).toString().slice(0,6)}%</span>
             </div>
             ` : `
             <div class="attacker-damage">
                 <img src="terrain/fire.gif" class="fire"> 
-                <span>${this.calcResults['attackDamageMin'] === this.calcResults['attackDamageMax'] ? this.calcResults['attackDamageMax'] + '%' : this.calcResults['attackDamageMin'] + '% - ' + this.calcResults['attackDamageMax'] + '%'}</span> 
+                <span>${this.calcResults['attackDamageMin'] === this.calcResults['attackDamageMax'] ? colorNum(this.calcResults['attackDamageMax']) : colorNum(this.calcResults['attackDamageMin']) + ' - ' + this.calcResults['attackDamageMax'] + '%'}</span> 
                 <img src="terrain/coin.gif" class="gold-coin"> 
                 <span class="funds-damage-display">${this.calcResults['attackFundsMin'] === this.calcResults['attackFundsMax'] ? this.calcResults['attackFundsMin'] : this.calcResults['attackFundsMin'] + ' - ' + this.calcResults['attackFundsMax']}</span>
             </div> `;
@@ -4382,10 +4385,10 @@ class CalcNode {
                     <div class="defender-damage">
                         <img src="terrain/fire.gif" class="fire">
                         <span><span class="bold">@${Math.max(0, Math.ceil((this.defenderDisplayHP - this.calcResults['attackDamageMax'])/10.0))}HP: </span>${this.calcResults['minCounterDamageMin'] === this.calcResults['minCounterDamageMax'] ? 
-                        this.calcResults['minCounterDamageMin'] + '%' : this.calcResults['minCounterDamageMin'] + '% - ' + this.calcResults['minCounterDamageMax'] + '%'}</span>
+                        colorNum(this.calcResults['minCounterDamageMin']) : colorNum(this.calcResults['minCounterDamageMin']) + ' - ' + this.calcResults['minCounterDamageMax'] + '%'}</span>
                         ${Math.max(0, Math.ceil((this.defenderDisplayHP - this.calcResults['attackDamageMax'])/10.0)) === Math.max(0, Math.ceil((this.defenderDisplayHP - this.calcResults['attackDamageMin'])/10.0)) ?
                             '' : '<span><span class="bold">@' + Math.max(0, Math.ceil((this.defenderDisplayHP - Math.max(0, this.calcResults['attackDamageMin']))/10.0)) + 'HP: </span>' + ((this.calcResults['maxCounterDamageMin'] === this.calcResults['maxCounterDamageMax']) ? 
-                            this.calcResults['maxCounterDamageMin'] + '%' : this.calcResults['maxCounterDamageMin'] + '% - ' + this.calcResults['maxCounterDamageMax'] + '%') + '</span>'}
+                            colorNum(this.calcResults['maxCounterDamageMin']) : colorNum(this.calcResults['maxCounterDamageMin']) + ' - ' + this.calcResults['maxCounterDamageMax'] + '%') + '</span>'}
                         <img src="terrain/coin.gif" class="gold-coin">
                         <span class="funds-damage-display">${this.calcResults['minCounterFundsMin'] === this.calcResults['maxCounterFundsMax'] ? this.calcResults['minCounterFundsMin'] : this.calcResults['minCounterFundsMin'] + ' - ' + this.calcResults['maxCounterFundsMax']}</span>
                     </div>
@@ -4623,7 +4626,7 @@ class CalcNode {
         const nextAttacker = JSON.parse(JSON.stringify(DEFAULT_ATTACKER));
         nextAttacker.country = this.attacker.country;
 
-        const newNode = new CalcNode(nextAttacker, nextDefender, id, this.calc);
+        const newNode = new CalcNode(nextAttacker, nextDefender, id, this.builtinCalc);
         newNode.defenderMaxHP = maxHP;
         newNode.defenderDisplayHP = maxHP;
 
@@ -4638,7 +4641,7 @@ class CalcNode {
         const defender_ammo = this.defender.unit.units_ammo;
         this.attacker.unit.units_ammo = (this.attackerNoAmmoToggled) ? 0 : 1;
         this.defender.unit.units_ammo = (this.defenderNoAmmoToggled) ? 0 : 1;
-        this.calcResults = this.calc.calculate(this.attacker, this.defender);
+        this.calcResults = this.builtinCalc.calculate(this.attacker, this.defender);
         this.attacker.unit.units_ammo = attacker_ammo;
         this.defender.unit.units_ammo = defender_ammo;
     }
@@ -4691,16 +4694,17 @@ class CalcNode {
 // CalcTree                                        // 
 /////////////////////////////////////////////////////
 class CalcTree {
-    constructor(id) {
-        this.root = new CalcNode(JSON.parse(JSON.stringify(DEFAULT_ATTACKER)), JSON.parse(JSON.stringify(DEFAULT_DEFENDER)), id, new BuiltinCalculator());
+    constructor(id, builtinCalc) {
+        this.builtinCalc = builtinCalc;
+        this.root = new CalcNode(JSON.parse(JSON.stringify(DEFAULT_ATTACKER)), JSON.parse(JSON.stringify(DEFAULT_DEFENDER)), id, builtinCalc);
         this.root.isRoot = true;
         this.activeNode = this.root;
         this.root.orient(0,0);
     }
 
     //refactor the active node
-    async refactor(displayLuckSlider) {
-        await this.activeNode.refactor(displayLuckSlider);
+    refactor(displayLuckSlider) {
+        this.activeNode.refactor(displayLuckSlider);
     }
 
     //returns html of each node
@@ -5017,6 +5021,7 @@ class DamageCalculator {
         this.overlay = null; // handled by buildCalculator()
         this.tileInfo = null;
         this.zindex = Z_INDEX;
+        this.builtinCalc = new BuiltinCalculator();
         this.addNewTree();
         this.buildCalculator();
         this.currentElement = null;
@@ -5099,8 +5104,8 @@ class DamageCalculator {
     }
 
     //refactor the active set
-    async refactor() {
-        await this.activeCalcTree.refactor();
+    refactor() {
+        this.activeCalcTree.refactor();
     }
 
     //finds node by id, sets as active and returns node
@@ -5159,7 +5164,7 @@ class DamageCalculator {
     }
 
     addNewTree() {
-        this.calcTreeList.push(new CalcTree(this.getNextID()));
+        this.calcTreeList.push(new CalcTree(this.getNextID(), this.builtinCalc));
         this.activeCalcTree = this.calcTreeList[this.calcTreeList.length-1];
         this.activeNode = this.activeCalcTree.root;
     }
@@ -5201,15 +5206,16 @@ class DamageCalculator {
         calc.style.height = height + 'px';
     }
 
-    async updateInputs(node, element) {
+    // read input values from node
+    updateInputs(node, element) {
         if (node && element) {
             //hp
             const hp = element.getElementsByClassName('hp-input');
             if (hp.length === 2) {
                 node.attackerDisplayHP = (isNaN(parseInt(hp[0].value))) ? 1 : Math.max(1, Math.min(parseInt(hp[0].value), 100));
                 node.defenderDisplayHP = (isNaN(parseInt(hp[1].value))) ? 1 : Math.max(1, Math.min(parseInt(hp[1].value), node.defenderMaxHP));
-                node.attacker['hp'] = Math.ceil(hp[0].value/10);
-                node.defender['hp'] = Math.ceil(hp[1].value/10);
+                node.attacker['hp'] = node.attackerDisplayHP;
+                node.defender['hp'] = node.defenderDisplayHP;
             }
             //cities
             const cities = element.getElementsByClassName('city-input');
@@ -5238,8 +5244,10 @@ class DamageCalculator {
                 node.defender['funds'] = (isNaN(parseInt(funds[1].value))) ? 0 : Math.max(0, parseInt(funds[1].value));
             }
             //slider
-            const slider = element.querySelector('.calc-plus-damage-slider');
-            node.sliderDamage = parseInt(slider.value);
+            if (this.displaySlider) {
+                const slider = element.querySelector('.calc-plus-damage-slider');
+                node.sliderDamage = parseInt(slider.value);
+            }
         }
         //return valueChanges;
     }
@@ -5610,7 +5618,7 @@ class DamageCalculator {
         this.overlay = overlay;
       
         // Attach a single click event listener to the container  
-        calcDisplay.addEventListener('click', async (event) => {
+        calcDisplay.addEventListener('click', (event) => {
             this.bringToFront();
         
             const addButton = event.target.closest('.calc-plus-ctrls-add');
@@ -5639,7 +5647,7 @@ class DamageCalculator {
                 }
                 this.addNewTree();
                 this.currentNode = this.activeCalcTree.activeNode;
-                await this.currentNode.refactor(); //update calc
+                this.currentNode.refactor(); //update calc
                 //this.orient();
                 this.updateWindowSize(); //resize window
                 calcDisplay.innerHTML = this.getInnerHTML();//update display
@@ -5662,7 +5670,7 @@ class DamageCalculator {
                         }
                         //selectedNode.delete();
                         this.deleteNode(id);
-                        //updateDisplay = true;
+                        updateDisplay = true;
                         updateWindow = true;
                     } else if (addButton && selectedNode.isValid) {
                         // Add
@@ -5920,13 +5928,14 @@ class DamageCalculator {
                                 }
                             }
                             updateWindow = true;
+                            updateDisplay = true;
                         }
 
                     }
                     //update new node values
                     //valueChanges = this.updateInputs(selectedNode, svgNode, valueChanges);
                     if (updateCalc) {
-                        await this.currentNode.refactor();//cascading update of current calc to all children
+                        this.currentNode.refactor();//cascading update of current calc to all children
                     }
                     if (updateDisplay) {
                         this.orient(); //position and size node and all children correctly
@@ -5955,7 +5964,7 @@ class DamageCalculator {
         });
 
         // Attach a input change event listener
-        calcDisplay.addEventListener("change", async (event) => {
+        calcDisplay.addEventListener("change", (event) => {
             const element = event.target.closest('.calc-plus-node');
             //let valueChanges = {'a_towers': false, 'a_cities': false, 'funds': false, 'power': false, 'co': false, 'd_towers': false, 'd_cities': false};
             if (element) {
@@ -5968,8 +5977,8 @@ class DamageCalculator {
                 if (node) {
                     //update current node values
                     //this.currentNode = selectedNode;
-                    await this.updateInputs(node, element);
-                    await node.refactor(); //get new calc with updated values (cascading)
+                    this.updateInputs(node, element);
+                    node.refactor(); //get new calc with updated values (cascading)
                     this.orient(); //position all nodes correctly
                     calcDisplay.innerHTML = this.getInnerHTML(); // Update the display
                 }
@@ -5978,7 +5987,7 @@ class DamageCalculator {
 
         //select co menu
         const selectCOMenu = document.getElementById('calc-plus-select-co');
-        selectCOMenu.addEventListener('click', async (event) => {
+        selectCOMenu.addEventListener('click', (event) => {
             //let valueChanges = {'a_towers': false, 'a_cities': false, 'funds': false, 'power': false, 'co': false, 'd_towers': false, 'd_cities': false};
             //detect co
             const co = event.target.closest('.co_portrait').src.split('/ds')[1].split('.')[0];
@@ -5992,14 +6001,14 @@ class DamageCalculator {
                 node.defender['co'] = CO_LIST[co];
             }
             this.closeMenu('select-co');
-            await this.currentNode.refactor();
+            this.currentNode.refactor();
             this.orient();
             calcDisplay.innerHTML = this.getInnerHTML(); // Update the display
         });
 
         //select terrain
         const selectTerrainMenu = document.getElementById('calc-plus-select-terrain');
-        selectTerrainMenu.addEventListener('click', async (event) => {
+        selectTerrainMenu.addEventListener('click', (event) => {
             //let valueChanges = {'a_towers': false, 'a_cities': false, 'funds': false, 'power': false, 'co': false, 'd_towers': false, 'd_cities': false};
             //detect terrain
             let terrain = event.target.closest('.calc-plus-terrain-image').src.split('ani/')[1].split('.')[0];
@@ -6018,14 +6027,14 @@ class DamageCalculator {
                 node.defender['terrain'] = TERRAIN_LIST[terrain];
             }
             this.closeMenu('select-terrain');
-            await this.currentNode.refactor();
+            this.currentNode.refactor();
             this.orient();
             calcDisplay.innerHTML = this.getInnerHTML(); // Update the display
         });
 
         //select unit menu
         const selectUnitMenu = document.getElementById('calc-plus-select-unit');
-        selectUnitMenu.addEventListener('click', async (event) => {
+        selectUnitMenu.addEventListener('click', (event) => {
             //let valueChanges = {'a_towers': false, 'a_cities': false, 'funds': false, 'power': false, 'co': false, 'd_towers': false, 'd_cities': false};
             //detect unit
             const unit = event.target.closest('.calc-plus-unit-image').src.split('ani/')[1].split('.gif')[0].slice(2);
@@ -6040,7 +6049,7 @@ class DamageCalculator {
                 node.defenderAmmo = node.defender.unit.units_ammo;
             }
             this.closeMenu('select-unit');
-            await this.currentNode.refactor();
+            this.currentNode.refactor();
             this.orient();
             calcDisplay.innerHTML = this.getInnerHTML(); // Update the display
         });
