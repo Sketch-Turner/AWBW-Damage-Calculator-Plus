@@ -5736,7 +5736,7 @@ class DamageCalculator {
                             <div class="info-box-text" style="right:0px; width:180px;">
                                 Damage Calculator Plus by Sketch_Turner<br>
                                 <a href="https://github.com/Sketch-Turner/AWBW-Damage-Calculator-Plus#table-of-contents" target="_blank">User Guide</a><br>
-                                <a href="https://discord.com/users/sketch_turner" target="_blank">Bug Reporting</a><br>
+                                <a href="https://github.com/Sketch-Turner/AWBW-Damage-Calculator-Plus?#bugs" target="_blank">Bug Reporting</a><br>
                                 See you on the Global League. Good luck, have fun!!
                             </div>
                         </div>
