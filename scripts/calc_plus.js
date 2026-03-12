@@ -4081,13 +4081,13 @@ const TERRAIN_LIST = {
     "plain": {"terrain_name":"Plain","terrain_id":1,"terrain_defense":1},
     "mountain": {"terrain_name":"Mountain","terrain_id":2,"terrain_defense":4},
     "wood": {"terrain_name":"Wood","terrain_id":3,"terrain_defense":2},
-    "hriver": {"terrain_name":"HRiver","terrain_id":4,"terrain_defense":0},
     "hroad": {"terrain_name":"HRoad","terrain_id":15,"terrain_defense":0},
+    "city": {"terrain_name":"?City","terrain_id":34,"terrain_defense":3},
+    "hriver": {"terrain_name":"HRiver","terrain_id":4,"terrain_defense":0},
     "hbridge": {"terrain_name":"HBridge","terrain_id":26,"terrain_defense":0},
     "sea": {"terrain_name":"Sea","terrain_id":28,"terrain_defense":0},
     "hshoal": {"terrain_name":"HShoal","terrain_id":29,"terrain_defense":0},
     "reef": {"terrain_name":"Reef","terrain_id":33,"terrain_defense":1},
-    "city": {"terrain_name":"?City","terrain_id":34,"terrain_defense":3},
     "base": {"terrain_name":"?Base","terrain_id":35,"terrain_defense":3},
     "airport": {"terrain_name":"?Airport","terrain_id":36,"terrain_defense":3},
     "port": {"terrain_name":"?Port","terrain_id":37,"terrain_defense":3},
@@ -4753,59 +4753,6 @@ class CalcNode {
         }
     }
 
-    // async calculate() {
-    //     //remove ammo if toggled else restore
-    //     if (this.attackerNoAmmoToggled) {
-    //         this.attacker.unit.units_ammo = 0;
-    //     } else {
-    //         this.attacker.unit.units_ammo = this.attackerAmmo;
-    //     }
-    //     if (this.defenderNoAmmoToggled) {
-    //         this.defender.unit.units_ammo = 0;
-    //     } else {
-    //         this.defender.unit.units_ammo = this.defenderAmmo;
-    //     }
-       
-    //     return new Promise((resolve, reject) => {
-    //         const request = new XMLHttpRequest();
-    //         request.open("POST", "api/calculator/calculate_new.php", true);
-    //         request.setRequestHeader("Content-Type", "application/json");
-    //         request.onreadystatechange = () => {
-    //             if (request.readyState === XMLHttpRequest.DONE) {
-    //                 if (request.status === 200) {
-    //                     const normalized = (this.sliderDamage - this.calcResults['attackDamageMin'])/(this.calcResults['attackDamageMax'] - this.calcResults['attackDamageMin']);
-    //                     const response = JSON.parse(request.responseText);
-    //                     this.calcResults['attackDamageMin'] = response['minInfo']['percent'];
-    //                     this.calcResults['attackDamageMax'] = response['maxInfo']['percent'];
-    //                     this.calcResults['attackFundsMin'] = response['minInfo']['fundsDamage'];
-    //                     this.calcResults['attackFundsMax'] = response['maxInfo']['fundsDamage'];
-    
-    //                     this.calcResults['minCounterDamageMin'] = response['minCounterInfo']['minLuck']['counterPercent'];
-    //                     this.calcResults['minCounterDamageMax'] = response['minCounterInfo']['maxLuck']['counterPercent'];
-    //                     this.calcResults['maxCounterDamageMin'] = response['maxCounterInfo']['minLuck']['counterPercent'];
-    //                     this.calcResults['maxCounterDamageMax'] = response['maxCounterInfo']['maxLuck']['counterPercent'];
-    
-    //                     this.calcResults['minCounterFundsMin'] = response['minCounterInfo']['minLuck']['counterFundsDamage'];
-    //                     this.calcResults['minCounterFundsMax'] = response['minCounterInfo']['maxLuck']['counterFundsDamage'];
-    //                     this.calcResults['maxCounterFundsMin'] = response['maxCounterInfo']['minLuck']['counterFundsDamage'];
-    //                     this.calcResults['maxCounterFundsMax'] = response['maxCounterInfo']['maxLuck']['counterFundsDamage'];
-
-    //                     //set value so that slider does not move
-    //                     const raw = response['minInfo']['percent'] + normalized * (response['maxInfo']['percent'] - response['minInfo']['percent']);
-    //                     this.sliderDamage = Math.min(Math.max(Math.floor(raw),response['minInfo']['percent']),response['maxInfo']['percent']);
-
-    //                     resolve(); // Resolve the Promise when the calculation is done
-    //                 } else {
-    //                     console.error("Calc-Plus Error:", request.status);
-    //                     reject(request.status); // Reject the Promise in case of an error
-    //                 }
-    //             }
-    //         };
-
-    //         request.send(JSON.stringify({'attacker': this.attacker, 'defender': this.defender}));
-    //     });
-    // }
-
     genNextNode(id, displayLuckSlider) { //returns node post attack
         let nextDefender = JSON.parse(JSON.stringify(this.defender));
         // Get damage the attack will do. If luck mode is on, use slider value; else use min value
@@ -4983,7 +4930,7 @@ class BuiltinCalculator {
                 result.maxCounterFundsMax = this.getDamageCost(attacker, counter.max);
             }
         }
-        console.log("Attacker:", attacker, "\nDefender:", defender, "\nResult:", result);
+        // console.log("Attacker:", attacker, "\nDefender:", defender, "\nResult:", result);
         return result;
     }
 
@@ -5225,19 +5172,47 @@ class DamageCalculator {
         };
     }
 
-    //copy attacker and defender from old DC
+    //copy attacker and defender from old DC. returns bool
     copyFromDC(node) {
         // get old dc data
         const data = this.getOldCalcValues();
-        console.log(data);
-        // selected-co src /(co).png 
-        // selected-unit border src /(unit).gif
+        if (data) {
+            // set attacker
+            node.attacker.cities = data.attacker.cities;
+            node.attacker.co = data.attacker.co;
+            node.attacker.country.code = data.attacker.country;
+            node.attacker.funds = data.attacker.funds;
+            node.attacker.hp = data.attacker.hp;
+            node.attacker.power = data.attacker.power;
+            node.attacker.terrain.terrain_name = data.attacker.terrainName;
+            node.attacker.terrain.terrain_defense = data.attacker.terrainStars;
+            node.attacker.towers = data.attacker.towers;
+            node.attacker.unit = data.attacker.unit;
+            node.attacker.unit.units_ammo = data.attacker.ammo;
+            // set defender
+            node.defender.cities = data.defender.cities;
+            node.defender.co = data.defender.co;
+            node.defender.country.code = data.defender.country;
+            node.defender.funds = data.defender.funds;
+            node.defender.hp = data.defender.hp;
+            node.defender.power = data.defender.power;
+            node.defender.terrain.terrain_name = data.defender.terrainName;
+            node.defender.terrain.terrain_defense = data.defender.terrainStars;
+            node.defender.towers = data.defender.towers;
+            node.defender.unit = data.defender.unit;
+            node.defender.unit.units_ammo = data.defender.ammo;
+        } else {
+            return false; //fail
+        }
+        return true;
     }   
 
     // get values from AWBW DC
     getOldCalcValues() {
         const sides = ["calculator-attack", "calculator-defend"];
         const data = {};
+
+        let valid = true;
 
         sides.forEach(sideClass => {
             const sideEl = document.querySelector(`.${sideClass}`);
@@ -5260,10 +5235,11 @@ class DamageCalculator {
             });
 
             // prepare data
-            const co = co_src.split("/").slice(-1)[0].split(".png")[0];
+            const coName = co_src.split("/").slice(-1)[0].split(".png")[0];
+            const co = CO_LIST[coName];
             const country = unit_base.substring(0,2);
-            const unit = unit_base.substring(2);
-            const terrain = this.terrainSignatureLookupElement(terrainEl.querySelector("img"));
+            const unit = UNIT_LIST[unit_base.substring(2)];
+            const terrainName = this.terrainSignatureLookupElement(terrainEl.querySelector("img")) || {0: "hshoal", 1: "plain", 2: "wood", 3: "neutralcity", 4: "mountain"}[terrainStars];
             const power = (cop_class) ? 'Y' : (scop_class) ? 'S' : 'N';
             const ammo = (ammo_display) ? 1 : 0;
             const hp = Math.max(1, (parseInt(inputs["hp-options"]) || 10) * 10);
@@ -5276,7 +5252,7 @@ class DamageCalculator {
                 co,
                 country,
                 unit,
-                terrain,
+                terrainName,
                 terrainStars,
                 power,
                 ammo,
@@ -5285,9 +5261,11 @@ class DamageCalculator {
                 funds,
                 towers
             };
+
+            valid = valid && co && country && unit;
         });
 
-        return data;
+        return (valid) ? data : null;
     }
 
     // look up image name from image element
@@ -5762,7 +5740,9 @@ class DamageCalculator {
                                 See you on the Global League. Good luck, have fun!!
                             </div>
                         </div>
+                        <!--
                         <div title="Luck display is ${this.displaySlider ? 'On' : 'Off'}. Click to toggle." id="calc-plus-slider-toggle" style="display: none; margin-top: 4px; margin-right: 9px; height: 16px;"><img src="${chrome.runtime.getURL('/images/' + (this.displaySlider ? 'showing_luck' : 'hiding_luck') + '_icon.png')}"></div>
+                        -->
                         <div title="Safe Mode is ${this.safeModeOn ? 'On' : 'Off'}. Click to toggle." id="calc-plus-safe" style="display: none; margin-top: 4px; margin-right: 9px; height: 16px;"><img src="${chrome.runtime.getURL('/images/' + (this.safeModeOn ? 'lock' : 'unlock') + '_icon.png')}"></div>
                         <div title="Shrink" id="calc-plus-shrink" style="margin-top: 4px; margin-right: 9px; height: 16px;"><img src="${chrome.runtime.getURL('/images/shrink_icon.png')}"></div>
                         <div title="Expand" id="calc-plus-grow" style="margin-top: 4px; margin-right: 9px; height: 16px;"><img src="${chrome.runtime.getURL('/images/grow_icon.png')}"></div>
@@ -5789,8 +5769,9 @@ class DamageCalculator {
         calculatorGrow.addEventListener("click", () => this.updateWindowSize());
         const calculatorSafe = document.getElementById("calc-plus-safe");
         calculatorSafe.addEventListener("click", () => this.toggleSafeMode());
-        const calculatorSlider = document.getElementById("calc-plus-slider-toggle");
-        calculatorSlider.addEventListener("click", () => this.toggleSlider());
+        // TODO luck slider
+        // const calculatorSlider = document.getElementById("calc-plus-slider-toggle");
+        // calculatorSlider.addEventListener("click", () => this.toggleSlider());
 
         const grabHeader = document.getElementById("calc-plus-header");
         const calcPlus = document.getElementById("calc-plus");
@@ -5798,12 +5779,13 @@ class DamageCalculator {
         //detect key press to show safe mode unlock
         document.addEventListener("keydown", (event) => {
             if (event.key === "+") {
-                this.displaySliderToggleVisible = !this.displaySliderToggleVisible;
+                //TODO slider
+                //this.displaySliderToggleVisible = !this.displaySliderToggleVisible;
                 this.safeModeToggleVisible = !this.safeModeToggleVisible;
-                this.displaySlider = true;
+                // this.displaySlider = true;
                 this.safeModeOn = false;
                 this.toggleSafeMode();
-                this.toggleSlider();
+                //this.toggleSlider();
             }
         });
 
@@ -5856,7 +5838,8 @@ class DamageCalculator {
         overlay.style.position = "fixed";
         overlay.style.zIndex = -1;
         overlay.style.pointerEvents = "auto";
-        overlay.style.background = "rgba(255, 0, 0, 0.5)";
+        // overlay.style.background = "rgba(255, 0, 0, 0.5)";
+        overlay.style.background = "transparent";
 
         // Get unit from click
         const overlayClick = (event) => {
@@ -5871,7 +5854,7 @@ class DamageCalculator {
             this.setOverlayHook(true);
             if (clickTarget) {
                 this.clickedUnit = this.getData(clickTarget); //set values of this.clickedUnit
-                console.log("Clicked:", this.clickedUnit);
+                // console.log("Clicked:", this.clickedUnit);
                 if (this.clickedUnit) {
                     if (this.clickSelectMode === 'A') {
                         this.currentNode.attacker = JSON.parse(JSON.stringify(this.clickedUnit));
@@ -5934,7 +5917,10 @@ class DamageCalculator {
                 this.currentNode = this.activeCalcTree.activeNode;
                 if (copyButton) {
                     // copy from old dc
-                    this.copyFromDC(this.currentNode);
+                    if (!this.copyFromDC(this.currentNode)) {
+                        // delete node if data could not be retrieved
+                        this.deleteNode(this.currentNode.id);
+                    }
                 }
                 this.currentNode.refactor(); //update calc
                 //this.orient();
