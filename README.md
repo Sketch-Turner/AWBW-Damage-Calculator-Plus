@@ -57,6 +57,15 @@ With a sacrifice of the 4 HP tank, it's possible to take out the enemy tank! Whi
 
 ![Move Order Calcs](images/tutorial/calc_comparison.png)
 
+<<<<<<< Updated upstream
+=======
+### Copy Calc Button
+![Copy Calc Button](images/copy_calc_icon_20x20.png)
+
+The Copy Calc Button allows you to copy the calculation currently displayed in the old Damage Calculator into Damage Calculator Plus.
+Make sure the old Damage Calculator is open before trying to copy it!
+
+>>>>>>> Stashed changes
 ### Focusing
 Clicking on the top of a calculation will minimize it and all follow-up attacks from that calculation. The minimized calc will show a summary that takes up less space.
 Minimized calculations will update if a previous calculation is changed. Clicking a minimized calculation will return it to full size.
