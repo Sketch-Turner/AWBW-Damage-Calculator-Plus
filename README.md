@@ -5,7 +5,7 @@
 2. [Installation](#installation)
 3. [Usage](#usage)
 4. [Experimental Features](#experimental)
-5. [Errors](#errors)
+5. [Bugs](#bugs)
 
 ## Introduction
 AWBW Damage Calculator Plus is a web extension that expands the functionality of the regular damage calculator by allowing calculation of sequential attacks and side-by-side comparison of different attacks. 
@@ -27,6 +27,17 @@ The value displayed is the unit's HP divided by 10 and rounded up. A unit with 1
 The display value effects the unit's attack power, luck rolls, and defense bonuses from terrain. 
 
 ![HP](images/tutorial/hp_display.png)
+
+### Damage Values
+COs with negative luck modifiers can roll damage values below zero. While it isn't possible to deal negative damage, these negative rolls still impact the average outcome of the attack. 
+
+In the example below, it appears that Flak will deal (0 + 90) / 2 = 45% damage on average. This is a bit misleading since negative damage rolls are hidden by the old Damage Calculator.
+
+![Negative Luck Hidden](images/tutorial/negative_luck_hidden.png)
+
+Damage Calculator Plus shows negative damage rolls in red. Below you can see that the actual value is (-37 + 90) / 2 = 26.5% damage on average. 
+
+![Negative Luck Shown](images/tutorial/negative_luck_shown.png)
 
 ### Add Button
 ![Add Button](images/add_icon.png)
@@ -58,6 +69,12 @@ With a sacrifice of the 4 HP tank, it's possible to take out the enemy tank! Whi
 
 ![Move Order Calcs](images/tutorial/calc_comparison.png)
 
+### Copy Calc Button
+![Copy Calc Button](imaages/copy_calc_icon_20x20.png)
+
+The Copy Calc Button allows you to copy the calculation currently displayed in the old Damage Calculator into Damage Calculator Plus.
+Make sure the old Damage Calculator is open before trying to copy it!
+
 ### Focusing
 Clicking on the top of a calculation will minimize it and all follow-up attacks from that calculation. The minimized calc will show a summary that takes up less space.
 Minimized calculations will update if a previous calculation is changed. Clicking a minimized calculation will return it to full size.
@@ -80,9 +97,6 @@ Invalid calculations can be deleted to save space or left alone.
 ## Experimental Features
 Experimental features can be accessed by using the Dev Settings shortcut. Use <img src="images/tutorial/keyboard_shortcut.png" width="128px" height="32px"/> to access the Dev Settings. Toggle buttons for the experimental features will appear at the top of the calculator.
 
-### Luck Display
-The slider may be used to see the probability that an attack will do damage greater than or equal to the selected value. 
-
 ### Safe Mode
 By default, changes to the defender or attackers that break game logic are not allowed. An alternate cursor will be used when hovering over an attribute that may not be altered.
 All attributes of the first attack may be changed.
@@ -104,6 +118,6 @@ Then, simply toggle Safe Mode on or off as you desire. Invalid inputs are locked
 When the Safe Mode Toggle is not visible, Safe Mode is always on.
 Be careful when using the calculator with Safe Mode off as illogical or unreliable results are possible.
 
-## Errors
-Report errors [here](https://forms.gle/zyKQuBn7xkgqtNSr5).
-Feel free to contribute! this is my first JS project an I could definately use some help.
+## Bugs
+Please feel free to report bugs and/or suggest improvements or new features! The best way to reach me is Discord (@sketch_turner).
+

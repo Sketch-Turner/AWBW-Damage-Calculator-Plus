@@ -1,7 +1,22 @@
 1.1.0 
-    Unable to click to select in fog/move planner/replay/etc.
-        - Added overlay to capture input
-    Fast clicking on the inc/dec arrows on input fields can overwhelm the server.
-        - Switched to BuiltinCalculator
-    Cost / Power charge is not calculated correctly for COs with non-standard unit cost.
-        - Switched to BuiltinCalculator
+    Features
+        1. Added display of negative damage values. Negative values are displayed with red text.
+        2. Added Copy damage calc button.
+
+    Fixes
+        1. Unable to click to select in fog/move planner/replay/etc.
+            - Added overlay to capture input
+        2. Fast clicking on the inc/dec arrows on input fields can overwhelm the server.
+            - Switched to BuiltinCalculator
+        3. Cost / Power charge is not calculated correctly for COs with non-standard unit cost.
+            - Switched to BuiltinCalculator
+        4. Ammo toggle displaying on units that don't use ammo
+            - Fixed
+        5. Unit hp displaying incorrectly
+            - Fixed
+        6. Unit attributes not updating correctly after input
+            - Fixed
+        7. Node does not return to correct size after Next attack, minimize, Next attack, maximize
+            - Fixed
+        8. Calc starts with undefined calc values
+            - Fixed
