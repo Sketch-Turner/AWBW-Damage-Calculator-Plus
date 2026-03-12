@@ -120,4 +120,3 @@ Be careful when using the calculator with Safe Mode off as illogical or unreliab
 
 ## Bugs
 Please feel free to report bugs and/or suggest improvements or new features! The best way to reach me is Discord (@sketch_turner).
-
