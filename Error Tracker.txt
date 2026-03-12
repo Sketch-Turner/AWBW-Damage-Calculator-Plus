@@ -1,8 +1,0 @@
-1. Unable to click to select in fog/move planner/replay/etc.
-    Click to select works in standard and hf but the others are coded differently for some reason. Maybe someone smart can fix this...
-
-2. Fast clicking on the inc/dec arrows on input fields can overwhelm the server.
-    Could be improved by catching the 503 and waiting before resubmitting.
-
-3. Cost / Power charge is not calculated correctly for COs with non-standard unit cost. 
-    AWBW API does not take this into account. Could be hard-coded.

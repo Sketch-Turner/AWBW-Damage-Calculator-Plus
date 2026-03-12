@@ -1,0 +1,6 @@
+Bugs
+    Luck slider doesn't work
+    Select unit after changing army color doesn't work unit refresh
+
+Todos
+    Save/load from cookie
