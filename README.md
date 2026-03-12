@@ -119,5 +119,5 @@ When the Safe Mode Toggle is not visible, Safe Mode is always on.
 Be careful when using the calculator with Safe Mode off as illogical or unreliable results are possible.
 
 ## Bugs
-Please feel free to report bugs and/or suggest improvements or new features! The best way to reach me is Discord (@sketch_turner).
+Please feel free to report bugs and/or suggest improvements or new features! Send a message to @sketch_turner on [Discord](https://discord.com/users/sketch_turner).
 
