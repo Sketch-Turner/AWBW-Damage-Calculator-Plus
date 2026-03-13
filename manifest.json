@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "AWBW Damage Calculator +",
     "description": "Upgraded damage calculator for AWBW. Compare multiple attacks side-by-side and view sequential attacks for breakthrough calcs.",
-    "version": "1.1.1",
+    "version": "1.1.2",
     "icons": {
         "16": "images/icon_16.png",
         "32": "images/icon_32.png",
