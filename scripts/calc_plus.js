@@ -8,6 +8,7 @@ const SCROLLBAR_WIDTH = 20;
 const Z_INDEX = 800;
 const TILE_SIZE = 16;
 const SIG_PIXELS = [15, 18, 71, 78, 220];
+const CURRENT_VERSION = "1.1.1";
 
 //TODO better data import solution
 const TERRAIN_SIGNATURES = {
@@ -5735,6 +5736,7 @@ class DamageCalculator {
                             ?
                             <div class="info-box-text" style="right:0px; width:180px;">
                                 Damage Calculator Plus by Sketch_Turner<br>
+                                Version ${CURRENT_VERSION}<br>
                                 <a href="https://github.com/Sketch-Turner/AWBW-Damage-Calculator-Plus#table-of-contents" target="_blank">User Guide</a><br>
                                 <a href="https://github.com/Sketch-Turner/AWBW-Damage-Calculator-Plus?#bugs" target="_blank">Bug Reporting</a><br>
                                 See you on the Global League. Good luck, have fun!!

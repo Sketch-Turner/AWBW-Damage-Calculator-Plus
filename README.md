@@ -119,4 +119,27 @@ When the Safe Mode Toggle is not visible, Safe Mode is always on.
 Be careful when using the calculator with Safe Mode off as illogical or unreliable results are possible.
 
 ## Bugs
-Please feel free to report bugs and/or suggest improvements or new features! Submit reports [here](mailto:awbw.damage.calculator.plus@gmail.com?subject=Damage%20Calculator%20Plus%20Bug%20Report&body=Issue:%0A%0ASteps%20to%20reproduce:%0A%0AExpected%20result:%0A%0AActual%20result:%0A%0AURL:%0A%0ABrowser:%0A%0AVersion:%0A%0A).
+Please feel free to report bugs and/or suggest improvements or new features!
+
+**Send bug reports to:** awbw.damage.calculator.plus@gmail.com
+
+Please include the following information:
+
+```
+Issue:
+
+Steps to reproduce:
+1.
+2.
+3.
+
+Expected result:
+
+Actual result:
+
+URL:
+
+Browser:
+
+Calc Plus Version (Hover over the ?):
+```
