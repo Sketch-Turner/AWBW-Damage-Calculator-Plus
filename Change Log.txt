@@ -1,3 +1,7 @@
+1.1.2
+    1. Switch copy calc to retrieve data from sessionStorage.
+1.1.1
+    1. Updated Bug Reporting contact info.
 1.1.0 
     Features
         1. Added display of negative damage values. Negative values are displayed with red text.

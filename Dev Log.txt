@@ -1,6 +1,6 @@
 Bugs
     Luck slider doesn't work
-    Select unit after changing army color doesn't work unit refresh
+    Select unit after changing army color doesn't work until refresh
 
 Todos
     Save/load from cookie

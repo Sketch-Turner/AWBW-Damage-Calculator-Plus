@@ -5176,122 +5176,39 @@ class DamageCalculator {
     //copy attacker and defender from old DC. returns bool
     copyFromDC(node) {
         // get old dc data
-        const data = this.getOldCalcValues();
+        let data = JSON.parse(sessionStorage.getItem("calculator"));
+        
         if (data) {
-            // set attacker
-            node.attacker.cities = data.attacker.cities;
-            node.attacker.co = data.attacker.co;
-            node.attacker.country.code = data.attacker.country;
-            node.attacker.funds = data.attacker.funds;
-            node.attacker.hp = data.attacker.hp;
-            node.attacker.power = data.attacker.power;
-            node.attacker.terrain.terrain_name = data.attacker.terrainName;
-            node.attacker.terrain.terrain_defense = data.attacker.terrainStars;
-            node.attacker.towers = data.attacker.towers;
-            node.attacker.unit = data.attacker.unit;
-            node.attacker.unit.units_ammo = data.attacker.ammo;
-            // set defender
-            node.defender.cities = data.defender.cities;
-            node.defender.co = data.defender.co;
-            node.defender.country.code = data.defender.country;
-            node.defender.funds = data.defender.funds;
-            node.defender.hp = data.defender.hp;
-            node.defender.power = data.defender.power;
-            node.defender.terrain.terrain_name = data.defender.terrainName;
-            node.defender.terrain.terrain_defense = data.defender.terrainStars;
-            node.defender.towers = data.defender.towers;
-            node.defender.unit = data.defender.unit;
-            node.defender.unit.units_ammo = data.defender.ammo;
+            // attacker
+            data.attacker.cities = parseInt(data.attacker.cities);
+            data.attacker.co.co_id = parseInt(data.attacker.co.co_id);
+            data.attacker.funds = parseInt(data.attacker.funds);
+            data.attacker.hp = 10 * parseInt(data.attacker.hp);
+            data.attacker.terrain.terrain_id = parseInt(data.attacker.terrain.terrain_id);
+            data.attacker.terrain.terrain_defense = parseInt(data.attacker.terrain.terrain_defense);
+            data.attacker.towers = parseInt(data.attacker.towers);
+            data.attacker.unit.units_ammo = parseInt(data.attacker.unit.units_ammo);
+            data.attacker.unit.units_id = parseInt(data.attacker.unit.units_id);
+            node.attackerNoAmmoToggled = !data.attacker.hasAmmo;
+            // defender
+            data.defender.cities = parseInt(data.defender.cities);
+            data.defender.co.co_id = parseInt(data.defender.co.co_id);
+            data.defender.funds = parseInt(data.defender.funds);
+            data.defender.hp = 10 * parseInt(data.defender.hp);
+            data.defender.terrain.terrain_id = parseInt(data.defender.terrain.terrain_id);
+            data.defender.terrain.terrain_defense = parseInt(data.defender.terrain.terrain_defense);
+            data.defender.towers = parseInt(data.defender.towers);
+            data.defender.unit.units_ammo = parseInt(data.defender.unit.units_ammo);
+            data.defender.unit.units_id = parseInt(data.defender.unit.units_id);
+            node.defenderNoAmmoToggled = !data.defender.hasAmmo;
+                        
+            node.attacker = data.attacker;
+            node.defender = data.defender;
         } else {
             return false; //fail
         }
         return true;
     }   
-
-    // get values from AWBW DC
-    getOldCalcValues() {
-        const sides = ["calculator-attack", "calculator-defend"];
-        const data = {};
-
-        let valid = true;
-
-        sides.forEach(sideClass => {
-            const sideEl = document.querySelector(`.${sideClass}`);
-
-            const co_src = sideEl.querySelector(".selected-co img")?.src || null;
-            const unit_src = sideEl.querySelector(".selected-unit img")?.src || null;
-            const unit_base = unit_src.split("/").slice(-1)[0].split(".gif")[0];
-            const terrainEl = sideEl.querySelector(".terrain.option");
-            const terrainStars = parseInt(terrainEl?.querySelector(".terrain-stars p")?.textContent || "0");
-            const powerImgs = Array.from(sideEl.querySelectorAll(".power-options img"));
-            const cop_class = powerImgs[0]?.className || null;
-            const scop_class = powerImgs[1]?.className || null;
-            const ammo_display = sideEl.querySelector(".red-border-strikethru")?.style.display || null;
-
-            // get all inputs and their values
-            const inputs = {};
-            sideEl.querySelectorAll("input").forEach(input => {
-                const key = input.closest("div")?.className || `input_${Math.random()}`;
-                inputs[key] = input.value;
-            });
-
-            // prepare data
-            const coName = co_src.split("/").slice(-1)[0].split(".png")[0];
-            const co = CO_LIST[coName];
-            const country = unit_base.substring(0,2);
-            const unit = UNIT_LIST[unit_base.substring(2)];
-            const terrainName = this.terrainSignatureLookupElement(terrainEl.querySelector("img")) || {0: "hshoal", 1: "plain", 2: "wood", 3: "neutralcity", 4: "mountain"}[terrainStars];
-            const power = (cop_class) ? 'Y' : (scop_class) ? 'S' : 'N';
-            const ammo = (ammo_display) ? 1 : 0;
-            const hp = Math.max(1, (parseInt(inputs["hp-options"]) || 10) * 10);
-            const cities = parseInt(inputs["city-options"]) || 0;
-            const funds = parseInt(inputs["fund-options"]) || 0;
-            const towers = parseInt(inputs["tower-options"]) || 0;
-
-            const k = sideClass.split("-")[1] + "er";
-            data[k] = {
-                co,
-                country,
-                unit,
-                terrainName,
-                terrainStars,
-                power,
-                ammo,
-                hp,
-                cities,
-                funds,
-                towers
-            };
-
-            valid = valid && co && country && unit;
-        });
-
-        return (valid) ? data : null;
-    }
-
-    // look up image name from image element
-    terrainSignatureLookupElement(element) {
-        const canvas = document.createElement('canvas');
-        canvas.width = element.naturalWidth;
-        canvas.height = element.naturalHeight;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(element, 0, 0);
-
-        const pixels = Array.from(ctx.getImageData(0, 0, canvas.width, canvas.height).data);
-        pixels.reverse(); // start from bottom right
-
-        const vals = [];
-        for (const idx of SIG_PIXELS) {
-            const i = idx * 4;
-            const r = pixels[i];
-            const g = pixels[i+1];
-            const b = pixels[i+2];
-            const a = pixels[i+3];
-            vals.push(`${idx}: [${r}, ${g}, ${b}, ${a}]`);
-        }
-        const sig = `{${vals.join(", ")}}`;
-        return TERRAIN_SIGNATURES[sig] || null;
-    }
 
     // toggle overlay for input hooking
     setOverlayHook(status) {
