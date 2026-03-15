@@ -4459,7 +4459,7 @@ class CalcNode {
             </div>
             `;
             // check if counter break, swap attacker / defender
-            const swap = (this.defender.power === 'S') && (this.defender.co.co_name === "Sonja");
+            const swap = (this.defender.power === 'S') && (this.defender.co.co_name === "Sonja") && (this.builtinCalc.canAttack(this.defender, this.attacker));
             resultsHtml = `
             <div class="calc-plus-results">
                 <div class="calculator-damage">
@@ -4661,7 +4661,7 @@ class CalcNode {
         this.attacker.unit.units_ammo = (this.attackerNoAmmoToggled) ? 0 : 1;
         this.defender.unit.units_ammo = (this.defenderNoAmmoToggled) ? 0 : 1;
         // check if counter break, swap attacker / defender
-        const swap = (this.defender.power === 'S') && (this.defender.co.co_name === "Sonja");
+        const swap = (this.defender.power === 'S') && (this.defender.co.co_name === "Sonja") && (this.builtinCalc.canAttack(this.defender, this.attacker));
         this.calcResults = swap ? this.builtinCalc.calculate(this.defender, this.attacker) : this.builtinCalc.calculate(this.attacker, this.defender);
         this.attacker.unit.units_ammo = attacker_ammo;
         this.defender.unit.units_ammo = defender_ammo;
