@@ -9,7 +9,7 @@ const Z_INDEX = 800;
 const TILE_SIZE = 16;
 const SIG_PIXELS = [15, 18, 71, 78, 220];
 const SESSION_DATA_KEY = "calc-plus-data";
-const CURRENT_VERSION = "1.2.0";
+const CURRENT_VERSION = "1.2.1";
 
 //TODO better data import solution
 const CO_DATA = {
@@ -3991,6 +3991,20 @@ class CalcNode {
         this.updateCalcResults();
     }
 
+    // returns true if:
+    // defender is sonja and SCOP active
+    // defender could attack attacker
+    doCounterBreakSwap() {
+        const attacker_ammo = this.attacker.unit.units_ammo;
+        const defender_ammo = this.defender.unit.units_ammo;
+        this.attacker.unit.units_ammo = (this.attackerNoAmmoToggled) ? 0 : 1;
+        this.defender.unit.units_ammo = (this.defenderNoAmmoToggled) ? 0 : 1;
+        const swap = (this.defender.power === 'S') && (this.defender.co.co_name === "Sonja") && (this.builtinCalc.canAttack(this.defender, this.attacker));
+        this.attacker.unit.units_ammo = attacker_ammo;
+        this.defender.unit.units_ammo = defender_ammo;
+        return swap;
+    }
+
     // load node from data
     load(data, displayLuckSlider) {
         if (data) {
@@ -4459,11 +4473,10 @@ class CalcNode {
             </div>
             `;
             // check if counter break, swap attacker / defender
-            const swap = (this.defender.power === 'S') && (this.defender.co.co_name === "Sonja") && (this.builtinCalc.canAttack(this.defender, this.attacker));
             resultsHtml = `
             <div class="calc-plus-results">
                 <div class="calculator-damage">
-                    ${swap ? defenderDamageHtml + attackerDamageHtml : attackerDamageHtml + defenderDamageHtml}
+                    ${this.doCounterBreakSwap() ? defenderDamageHtml + attackerDamageHtml : attackerDamageHtml + defenderDamageHtml}
                 </div>
             </div>
             `;
@@ -4661,8 +4674,7 @@ class CalcNode {
         this.attacker.unit.units_ammo = (this.attackerNoAmmoToggled) ? 0 : 1;
         this.defender.unit.units_ammo = (this.defenderNoAmmoToggled) ? 0 : 1;
         // check if counter break, swap attacker / defender
-        const swap = (this.defender.power === 'S') && (this.defender.co.co_name === "Sonja") && (this.builtinCalc.canAttack(this.defender, this.attacker));
-        this.calcResults = swap ? this.builtinCalc.calculate(this.defender, this.attacker) : this.builtinCalc.calculate(this.attacker, this.defender);
+        this.calcResults = this.doCounterBreakSwap() ? this.builtinCalc.calculate(this.defender, this.attacker) : this.builtinCalc.calculate(this.attacker, this.defender);
         this.attacker.unit.units_ammo = attacker_ammo;
         this.defender.unit.units_ammo = defender_ammo;
     }
@@ -5033,6 +5045,7 @@ class BuiltinCalculator {
                 return AMMO_USE[row][col];
         }
     }
+
 }
 
 /////////////////////////////////////////////////////

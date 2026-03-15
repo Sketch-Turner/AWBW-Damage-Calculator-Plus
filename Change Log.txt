@@ -1,6 +1,7 @@
 1.2.1
     Features
-        1. Added Sonja counter break 
+        1. Added Sonja counter break
+            - Attacker and defender will be swapped if defender is using counter break and is able to fire on attackery.
     Fixes
         1. Fixed bug where kindle urban bonus was given to colin instead.
         2. Fixed bug where kindle got high society bonus every without SCOP active.
