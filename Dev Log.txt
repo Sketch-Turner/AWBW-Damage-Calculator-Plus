@@ -1,6 +1,7 @@
 Bugs
     Luck slider doesn't work
     Select unit after changing army color doesn't work until refresh
+    sonja counter break
 
 Todos
     
