@@ -8,7 +8,8 @@ const SCROLLBAR_WIDTH = 20;
 const Z_INDEX = 800;
 const TILE_SIZE = 16;
 const SIG_PIXELS = [15, 18, 71, 78, 220];
-const CURRENT_VERSION = "1.1.1";
+const SESSION_DATA_KEY = "calc-plus-data";
+const CURRENT_VERSION = "1.2.0";
 
 //TODO better data import solution
 const TERRAIN_SIGNATURES = {
@@ -4178,6 +4179,71 @@ class CalcNode {
         this.selectingDefender = false;
         this.updateCalcResults();
     }
+
+    // load node from data
+    load(data, displayLuckSlider) {
+        if (data) {
+            this.attacker = data.attacker;
+            this.defender = data.defender;
+            this.attackerAmmo = data.attackerAmmo;
+            this.attackerDisplayHP = data.attackerDisplayHP;
+            this.attackerNoAmmoToggled = data.attackerNoAmmoToggled;
+            this.defenderAmmo = data.defenderAmmo;
+            this.defenderDisplayHP = data.defenderDisplayHP;
+            this.defenderMaxCities = data.defenderMaxCities;
+            this.defenderMaxHP = data.defenderMaxHP;
+            this.defenderMaxTowers = data.defenderMaxTowers;
+            this.defenderNoAmmoToggled = data.defenderNoAmmoToggled;
+            this.depth = data.depth;
+            this.height = data.height;
+            this.id = data.id;
+            this.isFocused = data.isFocused;
+            this.isValid = data.isValid;
+            this.width = data.width;
+            this.y = data.y;
+            this.x = data.x;
+
+            for (const child of data.children) {
+                const next = this.genNextNode(child.id, displayLuckSlider)
+                next.load(child);
+                this.add(next);
+            }
+        }
+    }
+
+    // dump data
+    dump() {
+        const data = {};
+        data.attacker = this.attacker;
+        data.defender = this.defender;
+
+        const children = [];
+        for (const child of this.children) {
+            children.push(child.dump());
+        }
+        data.children = children;
+
+        data.isFocused = this.isFocused;
+        data.x = this.x;
+        data.y = this.y;
+        data.width = this.width;
+        data.height = this.height;
+        data.id = this.id;
+        data.depth = this.depth;
+        data.isValid = this.isValid;
+
+        data.attackerNoAmmoToggled = this.attackerNoAmmoToggled;
+        data.defenderNoAmmoToggled = this.defenderNoAmmoToggled;
+        data.attackerAmmo = this.attackerAmmo;
+        data.defenderAmmo = this.defenderAmmo;
+        data.attackerDisplayHP = this.attackerDisplayHP;
+        data.defenderDisplayHP = this.defenderDisplayHP;
+        data.defenderMaxHP = this.defenderMaxHP;
+        data.defenderMaxCities = this.defenderMaxCities;
+        data.defenderMaxTowers = this.defenderMaxTowers;
+
+        return data;
+    }
     
     //return offset based on index
     getOffsetY() {
@@ -4840,6 +4906,11 @@ class CalcTree {
         this.root.orient(0,0);
     }
 
+    // get dict with tree data
+    dump() {
+        return {"root":this.root.dump()};
+    }
+
     //refactor the active node
     refactor(displayLuckSlider) {
         this.activeNode.refactor(displayLuckSlider);
@@ -5153,9 +5224,8 @@ class DamageCalculator {
         this.nextID = -1;
         this.calcTreeList = [];
         this.safeModeOn = true;
-        this.safeModeToggleVisible = false;
         this.displaySlider = false;
-        this.displaySliderToggleVisible = false;
+        this.displayDevOptions = false;
         this.overlay = null; // handled by buildCalculator()
         this.tileInfo = null;
         this.zindex = Z_INDEX;
@@ -5171,6 +5241,74 @@ class DamageCalculator {
             'select-terrain': false,
             'select-unit': false
         };
+    }
+
+    // load session
+    loadSession() {
+        const data = JSON.parse(sessionStorage.getItem(SESSION_DATA_KEY));
+        // console.log("Loading: ", data);
+        if (data) {
+            // clear default root
+            this.deleteNode(0);
+            // load data
+            this.nextID = data.nextID;
+            this.zindex = data.zindex;
+            // dev options
+            this.safeModeOn = !data.safeModeOn;
+            this.toggleSafeMode();
+            this.displaySlider = data.displaySlider;
+            this.displayDevOptions = data.displayDevOptions;
+            if (data.displayDevOptions) {
+                this.displayDevOptions = false;
+                this.toggleDevOptions();
+            }
+            // element data
+            const calc = document.getElementById("calc-plus");
+            calc.style.width = data.width;
+            calc.style.height = data.height;
+            calc.style.display = data.display;
+            // build trees
+            for (const tree of data.trees) {
+                this.addNewTree();
+                this.activeNode.load(tree.root, data.displaySlider);
+                this.activeCalcTree.length = tree.length;
+                this.activeCalcTree.root.refactor();
+                this.activeCalcTree.root.orient(0,0);
+            }
+            
+            const calcDisplay = document.getElementById("calc-plus-display");
+            calcDisplay.innerHTML = this.getInnerHTML();
+        }
+    }
+
+    // save session
+    saveSession() {
+        const data = {};
+        // calc data
+        data.nextID = this.nextID;
+        data.safeModeOn = this.safeModeOn;
+        data.displaySlider = this.displaySlider;
+        data.displayDevOptions = this.displayDevOptions;
+        data.zindex = this.zindex;
+        // element data
+        const calc = document.getElementById("calc-plus");
+        data.width = calc.style.width;
+        data.height = calc.style.height;
+        data.display = calc.style.display;
+        // trees
+        const trees = [];
+        for (const tree of this.calcTreeList) {
+            trees.push(tree.dump());
+        }
+        data.trees = trees;
+
+        // console.log("Saving: ", data);
+        sessionStorage.setItem(SESSION_DATA_KEY, JSON.stringify(data));
+    }
+
+    //clear session
+    clearSession() {
+        sessionStorage.removeItem(SESSION_DATA_KEY);
     }
 
     //copy attacker and defender from old DC. returns bool
@@ -5227,35 +5365,50 @@ class DamageCalculator {
         }
     }
 
-    //toggle safe mode and swap out icon
+    // toggle safe mode and swap out icon
     toggleSafeMode() {
         this.safeModeOn = !this.safeModeOn;
         const button = document.getElementById("calc-plus-safe");
-        if (!this.safeModeToggleVisible) {
-            button.style.display = "none";
-        } else {
-            button.style.display = "block";
-        }
+        // if (!this.safeModeToggleVisible) {
+        //     button.style.display = "none";
+        // } else {
+        //     button.style.display = "block";
+        // }
         button.title = `Safe Mode is ${this.safeModeOn ? 'On' : 'Off'}. Click to toggle.`;
         const img = button.querySelector("img");
         img.src = chrome.runtime.getURL('/images/' + (this.safeModeOn ? 'lock' : 'unlock') + '_icon.png');
         const display = document.getElementById("calc-plus-display");
         display.innerHTML = this.getInnerHTML(); //refresh display
+        this.saveSession(); //save session data
     }
 
     toggleSlider() {
         this.displaySlider = !this.displaySlider;
         const button = document.getElementById("calc-plus-slider-toggle");
-        if (!this.displaySliderToggleVisible) {
-            button.style.display = "none";
-        } else {
-            button.style.display = "block";
-        }
+        // if (!this.displaySliderToggleVisible) {
+        //     button.style.display = "none";
+        // } else {
+        //     button.style.display = "block";
+        // }
         button.title = `Luck display is ${this.displaySlider ? 'On' : 'Off'}. Click to toggle.`;
         const img = button.querySelector("img");
         img.src = chrome.runtime.getURL('/images/' + (this.displaySlider ? 'showing_luck' : 'hiding_luck') + '_icon.png');
         const display = document.getElementById("calc-plus-display");
         display.innerHTML = this.getInnerHTML(); //refresh display
+        this.saveSession(); //save session data
+    }
+
+    // show/hide dev options
+    toggleDevOptions() {
+        this.displayDevOptions = !this.displayDevOptions;
+        for (const id of ["calc-plus-safe", "calc-plus-clear"]) {
+            const button = document.getElementById(id);
+            button.style.display = this.displayDevOptions ? "block" : "none";
+        }
+
+        const display = document.getElementById("calc-plus-display");
+        display.innerHTML = this.getInnerHTML(); //refresh display
+        this.saveSession(); //save session data
     }
 
     //shrink to default size
@@ -5663,6 +5816,7 @@ class DamageCalculator {
                         <div title="Luck display is ${this.displaySlider ? 'On' : 'Off'}. Click to toggle." id="calc-plus-slider-toggle" style="display: none; margin-top: 4px; margin-right: 9px; height: 16px;"><img src="${chrome.runtime.getURL('/images/' + (this.displaySlider ? 'showing_luck' : 'hiding_luck') + '_icon.png')}"></div>
                         -->
                         <div title="Safe Mode is ${this.safeModeOn ? 'On' : 'Off'}. Click to toggle." id="calc-plus-safe" style="display: none; margin-top: 4px; margin-right: 9px; height: 16px;"><img src="${chrome.runtime.getURL('/images/' + (this.safeModeOn ? 'lock' : 'unlock') + '_icon.png')}"></div>
+                        <div title="Clear Session Data" id="calc-plus-clear" style="display: none; margin-top: 4px; margin-right: 9px; height: 16px;"><img src="${chrome.runtime.getURL('/images/clear_session_icon.png')}"></div>                        
                         <div title="Shrink" id="calc-plus-shrink" style="margin-top: 4px; margin-right: 9px; height: 16px;"><img src="${chrome.runtime.getURL('/images/shrink_icon.png')}"></div>
                         <div title="Expand" id="calc-plus-grow" style="margin-top: 4px; margin-right: 9px; height: 16px;"><img src="${chrome.runtime.getURL('/images/grow_icon.png')}"></div>
                         <div title="Hide" class="close-calc-plus">&#10005;</div>
@@ -5681,13 +5835,30 @@ class DamageCalculator {
 
         //Header options
         const calculatorClose = document.querySelector(".close-calc-plus");
-        calculatorClose.addEventListener("click", () => this.toggleCalculator());
+        calculatorClose.addEventListener("click", () => {
+            this.toggleCalculator();
+            this.saveSession(); //save session data
+        });
         const calculatorShrink = document.getElementById("calc-plus-shrink");
-        calculatorShrink.addEventListener("click", () => this.shrinkCalculator());
+        calculatorShrink.addEventListener("click", () => {
+            this.shrinkCalculator();
+            this.saveSession(); //save session data
+        });
         const calculatorGrow = document.getElementById("calc-plus-grow");
-        calculatorGrow.addEventListener("click", () => this.updateWindowSize());
+        calculatorGrow.addEventListener("click", () => {
+            this.updateWindowSize();
+            this.saveSession(); //save session data
+        });
         const calculatorSafe = document.getElementById("calc-plus-safe");
-        calculatorSafe.addEventListener("click", () => this.toggleSafeMode());
+        calculatorSafe.addEventListener("click", () => {
+            this.toggleSafeMode();
+            this.saveSession(); //save session data
+        });
+        const calculatorClear = document.getElementById("calc-plus-clear");
+        calculatorClear.addEventListener("click", () => {
+            this.clearSession();
+        });
+
         // TODO luck slider
         // const calculatorSlider = document.getElementById("calc-plus-slider-toggle");
         // calculatorSlider.addEventListener("click", () => this.toggleSlider());
@@ -5700,11 +5871,16 @@ class DamageCalculator {
             if (event.key === "+") {
                 //TODO slider
                 //this.displaySliderToggleVisible = !this.displaySliderToggleVisible;
-                this.safeModeToggleVisible = !this.safeModeToggleVisible;
                 // this.displaySlider = true;
-                this.safeModeOn = false;
-                this.toggleSafeMode();
                 //this.toggleSlider();
+
+                // turn safe mode on when dev options are hidden
+                if (this.displayDevOptions) {
+                    this.safeModeOn = false; 
+                    this.toggleSafeMode();                    
+                }
+
+                this.toggleDevOptions();
             }
         });
 
@@ -5794,6 +5970,7 @@ class DamageCalculator {
                     this.currentNode.refactor(); //if current node calc has changed, need to update all children
                     this.orient();
                     calcDisplay.innerHTML = this.getInnerHTML(); // Update the display
+                    this.saveSession(); //save session data
                 }
             }
         };
@@ -5845,6 +6022,7 @@ class DamageCalculator {
                 //this.orient();
                 this.updateWindowSize(); //resize window
                 calcDisplay.innerHTML = this.getInnerHTML();//update display
+                this.saveSession(); //save session data
             } else if (svgNode) {
                 //valueChanges = this.updateInputs(this.currentNode, this.currentElement, valueChanges);
                 this.currentElement = svgNode;
@@ -5993,9 +6171,9 @@ class DamageCalculator {
                             const menu = document.getElementById('calc-plus-select-terrain');
                             let newCountry;
                             if (selectTerrain.parentNode.parentNode.parentNode.classList[0].replace('calculator-', '') === 'attack') {
-                                newCountry = this.currentNode.attacker['country']['name'];
+                                newCountry = this.currentNode.attacker['country']['name'].toLowerCase();
                             } else {
-                                newCountry = this.currentNode.defender['country']['name'];
+                                newCountry = this.currentNode.defender['country']['name'].toLowerCase();
                             }
     
                             // use lab to find current country
@@ -6138,6 +6316,7 @@ class DamageCalculator {
                     }
                     if (updateCalc || updateDisplay || updateWindow || updateHTML) {
                         calcDisplay.innerHTML = this.getInnerHTML(); // update display
+                        this.saveSession(); //save session data
                     }
                 }
             }
@@ -6174,6 +6353,7 @@ class DamageCalculator {
                     node.refactor(); //get new calc with updated values (cascading)
                     this.orient(); //position all nodes correctly
                     calcDisplay.innerHTML = this.getInnerHTML(); // Update the display
+                    this.saveSession(); //save session data
                 }
             }
         });
@@ -6196,7 +6376,8 @@ class DamageCalculator {
             this.closeMenu('select-co');
             this.currentNode.refactor();
             this.orient();
-            calcDisplay.innerHTML = this.getInnerHTML(); // Update the display
+            calcDisplay.innerHTML = this.getInnerHTML(); // Update the display\
+            this.saveSession(); //save session data
         });
 
         //select terrain
@@ -6204,13 +6385,13 @@ class DamageCalculator {
         selectTerrainMenu.addEventListener('click', (event) => {
             //let valueChanges = {'a_towers': false, 'a_cities': false, 'funds': false, 'power': false, 'co': false, 'd_towers': false, 'd_cities': false};
             //detect terrain
-            let terrain = event.target.closest('.calc-plus-terrain-image').src.split('ani/')[1].split('.')[0];
+            let terrain = event.target.closest('.calc-plus-terrain-image').src.split('ani/')[1].split('.')[0].toLowerCase();
 
             //detect node
             const node = this.currentNode;
             //check for building
-            if (terrain.includes(node.attacker['country']['name']) || terrain.includes(node.defender['country']['name'])) {
-                terrain = terrain.replace(node.attacker['country']['name'], '').replace(node.defender['country']['name'], '');
+            if (terrain.includes(node.attacker['country']['name'].toLowerCase()) || terrain.includes(node.defender['country']['name'].toLowerCase())) {
+                terrain = terrain.replace(node.attacker['country']['name'].toLowerCase(), '').replace(node.defender['country']['name'].toLowerCase(), '');
             }
 
             //detect attacker/defender and set node
@@ -6223,6 +6404,7 @@ class DamageCalculator {
             this.currentNode.refactor();
             this.orient();
             calcDisplay.innerHTML = this.getInnerHTML(); // Update the display
+            this.saveSession(); //save session data
         });
 
         //select unit menu
@@ -6245,6 +6427,7 @@ class DamageCalculator {
             this.currentNode.refactor();
             this.orient();
             calcDisplay.innerHTML = this.getInnerHTML(); // Update the display
+            this.saveSession(); //save session data
         });
     }
 }
@@ -6276,6 +6459,9 @@ if (old_dc_button) {
 
     //Add calculator
     let DCP = new DamageCalculator();
+
+    //Add session load
+    DCP.loadSession();
 
     //If old calc is opened, send dc+ to back
     old_dc_button.addEventListener('click', () => DCP.sendToBack());

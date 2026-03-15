@@ -4,7 +4,7 @@
 1. [Introduction](#introduction)
 2. [Installation](#installation)
 3. [Usage](#usage)
-4. [Experimental Features](#experimental)
+4. [Dev Settings](#dev)
 5. [Bugs](#bugs)
 
 ## Introduction
@@ -93,8 +93,8 @@ After changing the unit used in the first attack to an Anti-Air, the follow-up a
 
 Invalid calculations can be deleted to save space or left alone.
 
-## Experimental Features
-Experimental features can be accessed by using the Dev Settings shortcut. Use <img src="images/tutorial/keyboard_shortcut.png" width="128px" height="32px"/> to access the Dev Settings. Toggle buttons for the experimental features will appear at the top of the calculator.
+## Dev Settings
+Dev settings and experimental features can be accessed by using the Dev Settings shortcut. Use <img src="images/tutorial/keyboard_shortcut.png" width="128px" height="32px"/> to access the Dev Settings. Toggle buttons for the experimental features will appear at the top of the calculator.
 
 ### Safe Mode
 By default, changes to the defender or attackers that break game logic are not allowed. An alternate cursor will be used when hovering over an attribute that may not be altered.
@@ -116,6 +116,15 @@ Then, simply toggle Safe Mode on or off as you desire. Invalid inputs are locked
 
 When the Safe Mode Toggle is not visible, Safe Mode is always on.
 Be careful when using the calculator with Safe Mode off as illogical or unreliable results are possible.
+
+### Clear Session Data
+Damage Calculator Plus uses session storage to save the calculator state. 
+Session data will be cleared when the browser is closed. 
+
+If you would like to clear data without closing the browser, use the Dev Settings shortcut to access the Clear Session Data button.
+![Clear Session Data Button](images/clear_session_icon.png)
+
+Once the data is cleared, the current calc will revert to the default.
 
 ## Bugs
 Please feel free to report bugs and/or suggest improvements or new features!

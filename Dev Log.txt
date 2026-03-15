@@ -3,4 +3,4 @@ Bugs
     Select unit after changing army color doesn't work until refresh
 
 Todos
-    Save/load from cookie
+    
