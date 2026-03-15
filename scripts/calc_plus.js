@@ -4877,7 +4877,9 @@ class BuiltinCalculator {
             // urban bonus
             coBonus += (this.onProp(attacker)) ? this.lookupGlobal(attacker, "attack_bonus_prop") : 0;
             // high society
-            coBonus += 3 * attacker.cities / 100;
+            if (attacker.power === "S") {
+                coBonus += 3 * attacker.cities / 100;    
+            }
         }
         // koal
         else if (attacker.co.co_name === "Koal") {
