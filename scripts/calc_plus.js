@@ -4446,20 +4446,24 @@ class CalcNode {
                 <img src="terrain/coin.gif" class="gold-coin"> 
                 <span class="funds-damage-display">${this.calcResults['attackFundsMin'] === this.calcResults['attackFundsMax'] ? this.calcResults['attackFundsMin'] : this.calcResults['attackFundsMin'] + ' - ' + this.calcResults['attackFundsMax']}</span>
             </div> `;
+            const defenderDamageHtml = `
+            <div class="defender-damage">
+                <img src="terrain/fire.gif" class="fire">
+                <span><span class="bold">@${Math.max(0, Math.ceil((this.defenderDisplayHP - this.calcResults['attackDamageMax'])/10.0))}HP: </span>${this.calcResults['minCounterDamageMin'] === this.calcResults['minCounterDamageMax'] ? 
+                colorNum(this.calcResults['minCounterDamageMin']) : colorNum(this.calcResults['minCounterDamageMin']) + ' - ' + this.calcResults['minCounterDamageMax'] + '%'}</span>
+                ${Math.max(0, Math.ceil((this.defenderDisplayHP - this.calcResults['attackDamageMax'])/10.0)) === Math.max(0, Math.ceil((this.defenderDisplayHP - this.calcResults['attackDamageMin'])/10.0)) ?
+                    '' : '<span><span class="bold">@' + Math.max(0, Math.ceil((this.defenderDisplayHP - Math.max(0, this.calcResults['attackDamageMin']))/10.0)) + 'HP: </span>' + ((this.calcResults['maxCounterDamageMin'] === this.calcResults['maxCounterDamageMax']) ? 
+                    colorNum(this.calcResults['maxCounterDamageMin']) : colorNum(this.calcResults['maxCounterDamageMin']) + ' - ' + this.calcResults['maxCounterDamageMax'] + '%') + '</span>'}
+                <img src="terrain/coin.gif" class="gold-coin">
+                <span class="funds-damage-display">${this.calcResults['minCounterFundsMin'] === this.calcResults['maxCounterFundsMax'] ? this.calcResults['minCounterFundsMin'] : this.calcResults['minCounterFundsMin'] + ' - ' + this.calcResults['maxCounterFundsMax']}</span>
+            </div>
+            `;
+            // check if counter break, swap attacker / defender
+            const swap = (this.defender.power === 'S') && (this.defender.co.co_name === "Sonja");
             resultsHtml = `
             <div class="calc-plus-results">
                 <div class="calculator-damage">
-                    ${attackerDamageHtml}
-                    <div class="defender-damage">
-                        <img src="terrain/fire.gif" class="fire">
-                        <span><span class="bold">@${Math.max(0, Math.ceil((this.defenderDisplayHP - this.calcResults['attackDamageMax'])/10.0))}HP: </span>${this.calcResults['minCounterDamageMin'] === this.calcResults['minCounterDamageMax'] ? 
-                        colorNum(this.calcResults['minCounterDamageMin']) : colorNum(this.calcResults['minCounterDamageMin']) + ' - ' + this.calcResults['minCounterDamageMax'] + '%'}</span>
-                        ${Math.max(0, Math.ceil((this.defenderDisplayHP - this.calcResults['attackDamageMax'])/10.0)) === Math.max(0, Math.ceil((this.defenderDisplayHP - this.calcResults['attackDamageMin'])/10.0)) ?
-                            '' : '<span><span class="bold">@' + Math.max(0, Math.ceil((this.defenderDisplayHP - Math.max(0, this.calcResults['attackDamageMin']))/10.0)) + 'HP: </span>' + ((this.calcResults['maxCounterDamageMin'] === this.calcResults['maxCounterDamageMax']) ? 
-                            colorNum(this.calcResults['maxCounterDamageMin']) : colorNum(this.calcResults['maxCounterDamageMin']) + ' - ' + this.calcResults['maxCounterDamageMax'] + '%') + '</span>'}
-                        <img src="terrain/coin.gif" class="gold-coin">
-                        <span class="funds-damage-display">${this.calcResults['minCounterFundsMin'] === this.calcResults['maxCounterFundsMax'] ? this.calcResults['minCounterFundsMin'] : this.calcResults['minCounterFundsMin'] + ' - ' + this.calcResults['maxCounterFundsMax']}</span>
-                    </div>
+                    ${swap ? defenderDamageHtml + attackerDamageHtml : attackerDamageHtml + defenderDamageHtml}
                 </div>
             </div>
             `;
@@ -4656,7 +4660,9 @@ class CalcNode {
         const defender_ammo = this.defender.unit.units_ammo;
         this.attacker.unit.units_ammo = (this.attackerNoAmmoToggled) ? 0 : 1;
         this.defender.unit.units_ammo = (this.defenderNoAmmoToggled) ? 0 : 1;
-        this.calcResults = this.builtinCalc.calculate(this.attacker, this.defender);
+        // check if counter break, swap attacker / defender
+        const swap = (this.defender.power === 'S') && (this.defender.co.co_name === "Sonja");
+        this.calcResults = swap ? this.builtinCalc.calculate(this.defender, this.attacker) : this.builtinCalc.calculate(this.attacker, this.defender);
         this.attacker.unit.units_ammo = attacker_ammo;
         this.defender.unit.units_ammo = defender_ammo;
     }
