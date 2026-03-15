@@ -4848,6 +4848,8 @@ class BuiltinCalculator {
         
         const minDamage = (base * attackValue / 100 - minLuck) * (attackerHP / 10) * ((200 - defenseValue) / 100);
         const maxDamage = (base * attackValue / 100 + maxLuck) * (attackerHP / 10) * ((200 - defenseValue) / 100);
+        console.log("\nminDamage = (base * attackValue / 100 - minLuck) * (attackerHP / 10) * ((200 - defenseValue) / 100)");
+        console.log(`${minDamage} = (${base} * ${attackValue} / 100 - ${minLuck}) * (${attackerHP} / 10) * ((200 - ${defenseValue}) / 100)`);
 
         // rounding rule
         const minRounded = Math.trunc(Math.ceil(minDamage / 0.05 + 0.00001) * 0.05);
@@ -4935,7 +4937,7 @@ class BuiltinCalculator {
     }
 
     // get defense as percentage. 100 = no defense boost
-    getDefense(defender, attacker_direct) {
+    getDefense(defender, attacker_indirect) {
         // CO D2D/COP/SCOP
         let coBonus = this.lookupUnit(defender, "defense");
 
@@ -4946,7 +4948,7 @@ class BuiltinCalculator {
             coBonus += tower_defense;
 
             // indirect defense
-            if (!attacker_direct) {
+            if (attacker_indirect) {
                 coBonus += this.lookupGlobal(defender, "indirect_defense");
             }
         }
@@ -4964,6 +4966,7 @@ class BuiltinCalculator {
             }
         }
 
+        console.log(`100 + ${coBonus} * 100 + ${terrain_def} * 100`);
         return Math.trunc(100 + coBonus * 100 + terrain_def * 100);
     }
 

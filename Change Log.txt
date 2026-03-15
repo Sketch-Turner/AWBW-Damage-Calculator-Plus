@@ -5,6 +5,7 @@
     Fixes
         1. Fixed bug where kindle urban bonus was given to colin instead.
         2. Fixed bug where kindle got high society bonus every without SCOP active.
+        3. Fixed bug where javier indirect defense was applied to direct units instead.
 1.2.0
     Features
         1. Added Save/load from sessionStorage
