@@ -121,9 +121,7 @@ Be careful when using the calculator with Safe Mode off as illogical or unreliab
 Damage Calculator Plus uses session storage to save the calculator state. 
 Session data will be cleared when the browser is closed. 
 
-If you would like to clear data without closing the browser, use the Dev Settings shortcut to access the Clear Session Data button.
-
-![Clear Session Data Button](images/clear_session_icon.png)
+If you would like to clear data without closing the browser, use the Dev Settings shortcut to access the Clear Session Data button ( ![Clear Session Data Button](images/clear_session_icon.png) ).
 
 Once the data is cleared, the current calc will revert to the default.
 
