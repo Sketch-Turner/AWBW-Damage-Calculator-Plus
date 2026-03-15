@@ -4,7 +4,7 @@
             - Attacker and defender will be swapped if defender is using counter break and is able to fire on attacker.
     Fixes
         1. Fixed bug where kindle urban bonus was given to colin instead.
-        2. Fixed bug where kindle got high society bonus every without SCOP active.
+        2. Fixed bug where kindle got high society bonus every attack without SCOP active.
         3. Fixed bug where javier indirect defense was applied to direct units instead.
         4. Fixed bug where colin power of money bonus was applied to every attack.
 1.2.0
