@@ -4848,8 +4848,6 @@ class BuiltinCalculator {
         
         const minDamage = (base * attackValue / 100 - minLuck) * (attackerHP / 10) * ((200 - defenseValue) / 100);
         const maxDamage = (base * attackValue / 100 + maxLuck) * (attackerHP / 10) * ((200 - defenseValue) / 100);
-        console.log("\nminDamage = (base * attackValue / 100 - minLuck) * (attackerHP / 10) * ((200 - defenseValue) / 100)");
-        console.log(`${minDamage} = (${base} * ${attackValue} / 100 - ${minLuck}) * (${attackerHP} / 10) * ((200 - ${defenseValue}) / 100)`);
 
         // rounding rule
         const minRounded = Math.trunc(Math.ceil(minDamage / 0.05 + 0.00001) * 0.05);
@@ -4966,7 +4964,6 @@ class BuiltinCalculator {
             }
         }
 
-        console.log(`100 + ${coBonus} * 100 + ${terrain_def} * 100`);
         return Math.trunc(100 + coBonus * 100 + terrain_def * 100);
     }
 
