@@ -4889,7 +4889,7 @@ class BuiltinCalculator {
             coBonus += ["plain", "hpiperubble", "vpiperubble"].includes(attacker.terrain.terrain_name.toLowerCase()) ? this.lookupGlobal(attacker, "attack_bonus_plain") : 0;
         } 
         // colin power of money
-        else if (attacker.co.co_name === "Colin") {
+        else if (attacker.co.co_name === "Colin" && attacker.power === "S") {
             coBonus += 3 * attacker.funds / 100000;
         }
         // kindle
