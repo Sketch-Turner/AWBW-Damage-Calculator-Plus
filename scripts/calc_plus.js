@@ -9,7 +9,7 @@ const Z_INDEX = 800;
 const TILE_SIZE = 16;
 const SIG_PIXELS = [15, 18, 71, 78, 220];
 const SESSION_DATA_KEY = "calc-plus-data";
-const CURRENT_VERSION = "1.2.1";
+const CURRENT_VERSION = "1.2.2";
 
 //TODO better data import solution
 const CO_DATA = {
@@ -3999,7 +3999,7 @@ class CalcNode {
         const defender_ammo = this.defender.unit.units_ammo;
         this.attacker.unit.units_ammo = (this.attackerNoAmmoToggled) ? 0 : 1;
         this.defender.unit.units_ammo = (this.defenderNoAmmoToggled) ? 0 : 1;
-        const swap = (this.defender.power === 'S') && (this.defender.co.co_name === "Sonja") && (this.builtinCalc.canAttack(this.defender, this.attacker));
+        const swap = (this.defender.power === 'S') && (this.defender.co.co_name === "Sonja") && (this.builtinCalc.canCounter(this.attacker, this.defender));
         this.attacker.unit.units_ammo = attacker_ammo;
         this.defender.unit.units_ammo = defender_ammo;
         return swap;
@@ -5160,6 +5160,7 @@ class DamageCalculator {
             data.attacker.unit.units_ammo = parseInt(data.attacker.unit.units_ammo);
             data.attacker.unit.units_id = parseInt(data.attacker.unit.units_id);
             node.attackerNoAmmoToggled = !data.attacker.hasAmmo;
+            node.attackerDisplayHP = data.attacker.hp;
             // defender
             data.defender.cities = parseInt(data.defender.cities);
             data.defender.co.co_id = parseInt(data.defender.co.co_id);
@@ -5171,6 +5172,7 @@ class DamageCalculator {
             data.defender.unit.units_ammo = parseInt(data.defender.unit.units_ammo);
             data.defender.unit.units_id = parseInt(data.defender.unit.units_id);
             node.defenderNoAmmoToggled = !data.defender.hasAmmo;
+            node.defenderDisplayHP = data.defender.hp;
                         
             node.attacker = data.attacker;
             node.defender = data.defender;
