@@ -113,6 +113,7 @@
 
 input.calc-plus-damage-slider {
     width: 50%; 
+    transform: scaleX(-1);
 }
 
 .calc-plus {

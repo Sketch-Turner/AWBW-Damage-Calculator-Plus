@@ -3988,6 +3988,7 @@ class CalcNode {
         this.isValid = true;
         this.selectingAttacker = false;
         this.selectingDefender = false;
+        this.sliderDamage = 0;
         this.updateCalcResults();
     }
 
@@ -4443,7 +4444,7 @@ class CalcNode {
                 <div class="calc-plus-slider-display">
                     ${this.calcResults['attackDamageMin'] === this.calcResults['attackDamageMax'] ? '' : `
                     ${this.calcResults['attackDamageMin']}% 
-                    <input type="range" class="calc-plus-damage-slider" min="${this.calcResults['attackDamageMin']}" max="${this.calcResults['attackDamageMax']}" value="${this.sliderDamage}">`}
+                    <input type="range" class="calc-plus-damage-slider" min="${this.calcResults['attackDamageMin']}" max="${this.calcResults['attackDamageMax']}" value="${this.calcResults.attackDamageMin + this.calcResults.attackDamageMax - this.sliderDamage}">`}
                     ${this.calcResults['attackDamageMax']}%
                 </div>
                 <div>
@@ -4451,7 +4452,7 @@ class CalcNode {
                     <span class="calc-plus-slider-value">${this.sliderDamage}%</span>
                 </div>
                 <span><img src="terrain/coin.gif" class="gold-coin"> ${"TODO"}</span>
-                <span><img src="${chrome.runtime.getURL('/images/luck_icon.png')}">${(this.getProbability(this.sliderDamage).toFixed(4)).toString().slice(0,6)}%</span>
+                <span><img src="${chrome.runtime.getURL('/images/luck_icon.png')}">${this.calcResults.attackProbability.toFixed(4).toString().slice(0,6)}%</span>
             </div>
             ` : `
             <div class="attacker-damage">
@@ -4668,13 +4669,13 @@ class CalcNode {
     }
 
     // sets this.calcResults
-    updateCalcResults() {
+    updateCalcResults(displayLuckSlider) {
         const attacker_ammo = this.attacker.unit.units_ammo;
         const defender_ammo = this.defender.unit.units_ammo;
         this.attacker.unit.units_ammo = (this.attackerNoAmmoToggled) ? 0 : 1;
         this.defender.unit.units_ammo = (this.defenderNoAmmoToggled) ? 0 : 1;
         // check if counter break, swap attacker / defender
-        this.calcResults = this.doCounterBreakSwap() ? this.builtinCalc.calculate(this.defender, this.attacker) : this.builtinCalc.calculate(this.attacker, this.defender);
+        this.calcResults = this.doCounterBreakSwap() ? this.builtinCalc.calculate(this.defender, this.attacker, displayLuckSlider, this.sliderDamage) : this.builtinCalc.calculate(this.attacker, this.defender, displayLuckSlider, this.sliderDamage);
         this.attacker.unit.units_ammo = attacker_ammo;
         this.defender.unit.units_ammo = defender_ammo;
     }
@@ -4684,7 +4685,7 @@ class CalcNode {
             this.removeFocus();
         }
         // await this.calculate(); //wait for calc
-        this.updateCalcResults();
+        this.updateCalcResults(displayLuckSlider);
         const newChild = this.genNextNode(-1, displayLuckSlider);//this is discarded so id doesnt matter???
         for (const child of this.children) {
             const oldDefender = JSON.parse(JSON.stringify(child.defender))
@@ -4777,12 +4778,13 @@ class BuiltinCalculator {
     constructor() {}
     
     // return dict containing min/max attack and counter damage
-    calculate(attacker, defender) {
+    calculate(attacker, defender, calc_probability=false, probability_target=0) {
         let result = {
             'attackDamageMin': 0, 
             'attackDamageMax': 0, 
             'attackFundsMin': 0,
             'attackFundsMax': 0,
+            'attackProbability': 0,
 
             'minCounterDamageMin': 0,
             'minCounterDamageMax': 0,
@@ -4797,38 +4799,53 @@ class BuiltinCalculator {
         if (!this.canAttack(attacker, defender)) {
             return result;
         }
-        let attack = this.calc(attacker, defender, false);
+        let attack = this.calc(attacker, defender, false, calc_probability, probability_target);
         result.attackDamageMin = attack.min;
         result.attackDamageMax = attack.max;
         result.attackFundsMin = this.getDamageCost(defender, attack.min);
         result.attackFundsMax = this.getDamageCost(defender, attack.max);
+        result.attackProbability = attack.probability;
 
         let counter = {"max":0, "min":0};
         const attack_min = Math.max(attack.max, 0);
         const attack_max = Math.max(attack.min, 0);
         if (this.canCounter(attacker, defender)) {
-            // min attack (min counter)
-            if (attack_min < defender.hp) {
-                defender.hp -= attack_min;
-                counter = this.calc(defender, attacker, true);
-                defender.hp += attack_min;
-                
-                result.minCounterDamageMin = counter.min;
-                result.minCounterDamageMax = counter.max;
-                result.minCounterFundsMin = this.getDamageCost(attacker, counter.min);
-                result.minCounterFundsMax = this.getDamageCost(attacker, counter.max);
-            }
+            if (calc_probability) {
+                // counter with set damage
+                if (probability_target < defender.hp) {
+                    defender.hp -= probability_target;
+                    counter = this.calc(defender, attacker, true);
+                    defender.hp += probability_target;
+                    
+                    result.minCounterDamageMin = counter.min;
+                    result.minCounterDamageMax = counter.max;
+                    result.minCounterFundsMin = this.getDamageCost(attacker, counter.min);
+                    result.minCounterFundsMax = this.getDamageCost(attacker, counter.max);
+                }
+            } else {
+                // min attack (min counter)
+                if (attack_min < defender.hp) {
+                    defender.hp -= attack_min;
+                    counter = this.calc(defender, attacker, true);
+                    defender.hp += attack_min;
+                    
+                    result.minCounterDamageMin = counter.min;
+                    result.minCounterDamageMax = counter.max;
+                    result.minCounterFundsMin = this.getDamageCost(attacker, counter.min);
+                    result.minCounterFundsMax = this.getDamageCost(attacker, counter.max);
+                }
 
-            // max attack (max counter)
-            if (attack_max < defender.hp) {
-                defender.hp -= attack_max;
-                counter = this.calc(defender, attacker, true);
-                defender.hp += attack_max;
+                // max attack (max counter)
+                if (attack_max < defender.hp) {
+                    defender.hp -= attack_max;
+                    counter = this.calc(defender, attacker, true);
+                    defender.hp += attack_max;
 
-                result.maxCounterDamageMin = counter.min;
-                result.maxCounterDamageMax = counter.max;
-                result.maxCounterFundsMin = this.getDamageCost(attacker, counter.min);
-                result.maxCounterFundsMax = this.getDamageCost(attacker, counter.max);
+                    result.maxCounterDamageMin = counter.min;
+                    result.maxCounterDamageMax = counter.max;
+                    result.maxCounterFundsMin = this.getDamageCost(attacker, counter.min);
+                    result.maxCounterFundsMax = this.getDamageCost(attacker, counter.max);
+                }
             }
         }
         // console.log("Attacker:", attacker, "\nDefender:", defender, "\nResult:", result);
@@ -4837,7 +4854,7 @@ class BuiltinCalculator {
 
     // get min/max damage values of an attack
     // negative values can result from negative luck
-    calc(attacker, defender, is_counter) {
+    calc(attacker, defender, is_counter, calc_probability=false, probability_target=0) {
         // Damage% = (B*Av/100 + L-Lb)*(HPa/10)*((200-(Dv+Dtr*HPd))/100)
         const base = this.getBase(attacker, defender);
         const attackValue = this.getAttack(attacker, is_counter);
@@ -4850,10 +4867,69 @@ class BuiltinCalculator {
         const maxDamage = (base * attackValue / 100 + maxLuck) * (attackerHP / 10) * ((200 - defenseValue) / 100);
 
         // rounding rule
-        const minRounded = Math.trunc(Math.ceil(minDamage / 0.05 + 0.00001) * 0.05);
-        const maxRounded = Math.trunc(Math.ceil(maxDamage / 0.05 + 0.00001) * 0.05);
+        const minRounded = Math.trunc(Math.ceil(minDamage * 20) / 20);
+        const maxRounded = Math.trunc(Math.ceil(maxDamage * 20) / 20);
 
-        return {"min": minRounded, "max": maxRounded};
+        // probability calc
+        let probability = 0;
+        if (calc_probability) {
+            probability = 100 * this.calcDamageProbability(probability_target, base, attackValue, attackerHP, defenseValue, minLuck, maxLuck);
+        }
+
+        return {"min": minRounded, "max": maxRounded, "probability": probability};
+    }
+
+    // calc the probability of damage being >= a given %
+    calcDamageProbability(target, base, attackValue, attackerHP, defenseValue, minLuck, maxLuck) {
+        /*
+        AWBW damage uses luck L ∈ [0,maxLuck] and bad luck Lb ∈ [0,minLuck]:
+
+            raw = (A + L - Lb) * C
+            A = base * attackValue / 100
+            C = (attackerHP / 10) * ((200 - defenseValue) / 100)
+
+        Damage is rounded up to the nearest 0.05:
+
+            Damage = ceil(raw / 0.05) * 0.05
+
+        To compute P(Damage ≥ x), convert the rounded comparison back to raw damage:
+
+            ceil(raw/0.05) ≥ x/0.05  ⇔  raw > (x/0.05 − 1) * 0.05
+
+        Let x' = (x/0.05 − 1)*0.05. Substituting raw:
+
+            (A + L - Lb)C > x'  →  L ≥ Lb + k
+            k = floor(x'/C - A) + 1
+
+        With L ∈ [0,maxLuck], Lb ∈ [0,minLuck], the number of total outcomes is (maxLuck+1)(minLuck+1). 
+
+            istart = max(0,-k)
+            iend   = min(minLuck, maxLuck-k)
+            n      = iend - istart + 1
+
+        If iend < istart → 0 outcomes, otherwise:
+
+            count = n*(maxLuck-k+1) - n*(istart+iend)/2
+
+        This yields the exact number of luck combinations producing Damage ≥ x
+        */       
+        const A = base * attackValue / 100;
+        const C = (attackerHP / 10) * ((200 - defenseValue) / 100);
+
+        const t = Math.ceil(target * 20);
+
+        const k = Math.floor(((t - 1) / (20 * C)) - A) + 1;
+
+        const istart = Math.max(0, -k);
+        const iend = Math.min(minLuck, maxLuck - k);
+
+        if (iend < istart) return 0;
+
+        const n = iend - istart + 1;
+
+        const total = (minLuck + 1) * (maxLuck + 1);
+        console.log(`${(n * (maxLuck - k + 1) - n * (istart + iend) / 2)} / ${total}`);
+        return (n * (maxLuck - k + 1) - n * (istart + iend) / 2) / total;
     }
 
     // returns true if defender can counter attacker
@@ -5088,7 +5164,8 @@ class DamageCalculator {
             // dev options
             this.safeModeOn = !data.safeModeOn;
             this.toggleSafeMode();
-            this.displaySlider = data.displaySlider;
+            this.displaySlider = !data.displaySlider;
+            this.toggleSlider();
             this.displayDevOptions = data.displayDevOptions;
             if (data.displayDevOptions) {
                 this.displayDevOptions = false;
@@ -5104,7 +5181,7 @@ class DamageCalculator {
                 this.addNewTree();
                 this.activeNode.load(tree.root, data.displaySlider);
                 this.activeCalcTree.length = tree.length;
-                this.activeCalcTree.root.refactor();
+                this.activeCalcTree.root.refactor(data.displaySlider);
                 this.activeCalcTree.root.orient(0,0);
             }
             
@@ -5235,7 +5312,7 @@ class DamageCalculator {
     // show/hide dev options
     toggleDevOptions() {
         this.displayDevOptions = !this.displayDevOptions;
-        for (const id of ["calc-plus-safe", "calc-plus-clear"]) {
+        for (const id of ["calc-plus-safe", "calc-plus-clear", "calc-plus-slider-toggle"]) {
             const button = document.getElementById(id);
             button.style.display = this.displayDevOptions ? "block" : "none";
         }
@@ -5267,7 +5344,7 @@ class DamageCalculator {
 
     //refactor the active set
     refactor() {
-        this.activeCalcTree.refactor();
+        this.activeCalcTree.refactor(this.displaySlider);
     }
 
     //finds node by id, sets as active and returns node
@@ -5413,7 +5490,9 @@ class DamageCalculator {
             //slider
             if (this.displaySlider) {
                 const slider = element.querySelector('.calc-plus-damage-slider');
-                node.sliderDamage = parseInt(slider.value);
+                // reverse value since slider is reversed
+                console.log(`${parseInt(slider.min)} + ${parseInt(slider.max)} - ${parseInt(slider.value)}`);
+                node.sliderDamage = parseInt(slider.min) + parseInt(slider.max) - parseInt(slider.value);
             }
         }
         //return valueChanges;
@@ -5646,9 +5725,7 @@ class DamageCalculator {
                                 See you on the Global League. Good luck, have fun!!
                             </div>
                         </div>
-                        <!--
                         <div title="Luck display is ${this.displaySlider ? 'On' : 'Off'}. Click to toggle." id="calc-plus-slider-toggle" style="display: none; margin-top: 4px; margin-right: 9px; height: 16px;"><img src="${chrome.runtime.getURL('/images/' + (this.displaySlider ? 'showing_luck' : 'hiding_luck') + '_icon.png')}"></div>
-                        -->
                         <div title="Safe Mode is ${this.safeModeOn ? 'On' : 'Off'}. Click to toggle." id="calc-plus-safe" style="display: none; margin-top: 4px; margin-right: 9px; height: 16px;"><img src="${chrome.runtime.getURL('/images/' + (this.safeModeOn ? 'lock' : 'unlock') + '_icon.png')}"></div>
                         <div title="Clear Session Data" id="calc-plus-clear" style="display: none; margin-top: 4px; margin-right: 9px; height: 16px;"><img src="${chrome.runtime.getURL('/images/clear_session_icon.png')}"></div>                        
                         <div title="Shrink" id="calc-plus-shrink" style="margin-top: 4px; margin-right: 9px; height: 16px;"><img src="${chrome.runtime.getURL('/images/shrink_icon.png')}"></div>
@@ -5693,9 +5770,9 @@ class DamageCalculator {
             this.clearSession();
         });
 
-        // TODO luck slider
-        // const calculatorSlider = document.getElementById("calc-plus-slider-toggle");
-        // calculatorSlider.addEventListener("click", () => this.toggleSlider());
+        // luck slider
+        const calculatorSlider = document.getElementById("calc-plus-slider-toggle");
+        calculatorSlider.addEventListener("click", () => this.toggleSlider());
 
         const grabHeader = document.getElementById("calc-plus-header");
         const calcPlus = document.getElementById("calc-plus");
@@ -5711,7 +5788,7 @@ class DamageCalculator {
                 // turn safe mode on when dev options are hidden
                 if (this.displayDevOptions) {
                     this.safeModeOn = false; 
-                    this.toggleSafeMode();                    
+                    this.toggleSafeMode();  
                 }
 
                 this.toggleDevOptions();
@@ -5801,7 +5878,7 @@ class DamageCalculator {
                     }
                     this.clickSelectMode = 'N';
                     this.setOverlayHook(false);
-                    this.currentNode.refactor(); //if current node calc has changed, need to update all children
+                    this.currentNode.refactor(this.displaySlider); //if current node calc has changed, need to update all children
                     this.orient();
                     calcDisplay.innerHTML = this.getInnerHTML(); // Update the display
                     this.saveSession(); //save session data
@@ -5852,7 +5929,7 @@ class DamageCalculator {
                         this.deleteNode(this.currentNode.id);
                     }
                 }
-                this.currentNode.refactor(); //update calc
+                this.currentNode.refactor(this.displaySlider); //update calc
                 //this.orient();
                 this.updateWindowSize(); //resize window
                 calcDisplay.innerHTML = this.getInnerHTML();//update display
@@ -6098,23 +6175,17 @@ class DamageCalculator {
                         
                     } else if (inputField && selectedNode.isValid) {
                         // updateCalc = true;
-                        // for (const key in this.isMenuOpen) {
-                        //     this.closeMenu(key);//close all menus
-                        // }
+                        for (const key in this.isMenuOpen) {
+                            this.closeMenu(key);//close all menus
+                        }
                         
                         // valueChanges = this.updateInputs(this.currentNode, this.currentElement, valueChanges);
 
                     } else if (damageSlider && selectedNode.isValid) {
-                        // updateHTML = true;
-                        // for (const key in this.isMenuOpen) {
-                        //     this.closeMenu(key);//close all menus
-                        // }
-                        // console.log('event1:' + this.currentNode.sliderDamage);
-
-                        // this.currentNode.sliderDamage = damageSlider.value;
-                        // console.log('event2:' + this.currentNode.sliderDamage);
-
-
+                        updateHTML = true;
+                        for (const key in this.isMenuOpen) {
+                            this.closeMenu(key);//close all menus
+                        }
                     } else { //click
                         // Focus node
                         for (const key in this.isMenuOpen) {
@@ -6140,7 +6211,7 @@ class DamageCalculator {
                     //update new node values
                     //valueChanges = this.updateInputs(selectedNode, svgNode, valueChanges);
                     if (updateCalc) {
-                        this.currentNode.refactor();//cascading update of current calc to all children
+                        this.currentNode.refactor(this.displaySlider);//cascading update of current calc to all children
                     }
                     if (updateDisplay) {
                         this.orient(); //position and size node and all children correctly
@@ -6163,7 +6234,9 @@ class DamageCalculator {
                 if (parentElement) {
                     const displaySpan = parentElement.querySelector('.calc-plus-slider-value');
                     if (displaySpan) {
-                        displaySpan.textContent = event.target.value+'%';
+                        // flip value since slider is reversed
+                        const val = parseInt(event.target.min) + parseInt(event.target.max) - parseInt(event.target.value);
+                        displaySpan.textContent = `${val}%`;
                     }
                 }
             }
@@ -6184,7 +6257,7 @@ class DamageCalculator {
                     //update current node values
                     //this.currentNode = selectedNode;
                     this.updateInputs(node, element);
-                    node.refactor(); //get new calc with updated values (cascading)
+                    node.refactor(this.displaySlider); //get new calc with updated values (cascading)
                     this.orient(); //position all nodes correctly
                     calcDisplay.innerHTML = this.getInnerHTML(); // Update the display
                     this.saveSession(); //save session data
@@ -6208,7 +6281,7 @@ class DamageCalculator {
                 node.defender['co'] = CO_LIST[co];
             }
             this.closeMenu('select-co');
-            this.currentNode.refactor();
+            this.currentNode.refactor(this.displaySlider);
             this.orient();
             calcDisplay.innerHTML = this.getInnerHTML(); // Update the display\
             this.saveSession(); //save session data
@@ -6235,7 +6308,7 @@ class DamageCalculator {
                 node.defender['terrain'] = TERRAIN_LIST[terrain];
             }
             this.closeMenu('select-terrain');
-            this.currentNode.refactor();
+            this.currentNode.refactor(this.displaySlider);
             this.orient();
             calcDisplay.innerHTML = this.getInnerHTML(); // Update the display
             this.saveSession(); //save session data
@@ -6258,7 +6331,7 @@ class DamageCalculator {
                 node.defenderAmmo = node.defender.unit.units_ammo;
             }
             this.closeMenu('select-unit');
-            this.currentNode.refactor();
+            this.currentNode.refactor(this.displaySlider);
             this.orient();
             calcDisplay.innerHTML = this.getInnerHTML(); // Update the display
             this.saveSession(); //save session data
