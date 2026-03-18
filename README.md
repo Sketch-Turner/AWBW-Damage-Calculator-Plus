@@ -124,6 +124,10 @@ If you would like to clear data without closing the browser, use the Dev Setting
 
 Refreshing the page after clearing session data will revert to the default calc.
 
+### Luck Mode
+This feature is currently under development. 
+Set the damage value for each attack, then see the probability of getting that roll. Allows precise calculation of luck roll odds.
+
 ## Bugs
 Please feel free to report bugs and/or suggest improvements or new features!
 
