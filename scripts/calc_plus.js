@@ -4408,7 +4408,7 @@ class CalcNode {
                 <div class="co-options" id="calc-plus-options">
                     <div class="co option">
                         <div class="selected-co ${safeModeOn && !atRoot ? 'calc-plus-locked' : ''}">
-                            <img src="terrain/aw2/ds${this.attacker['co']['co_name'].toLowerCase()}.png?v=1" class="border co_portrait">
+                            <img src="terrain/aw2/ds${this.attacker['co']['co_name'].toLowerCase().replace(' ', '')}.png?v=1" class="border co_portrait">
                         </div>
                     </div>
                 </div>
@@ -4471,7 +4471,7 @@ class CalcNode {
                 <div class="co-options" id="calc-plus-options">
                     <div class="co option">
                         <div class="selected-co ${safeModeOn && !atRoot ? 'calc-plus-locked' : ''}">
-                            <img src="terrain/aw2/ds${this.defender['co']['co_name'].toLowerCase()}.png?v=1" class="border co_portrait">
+                            <img src="terrain/aw2/ds${this.defender['co']['co_name'].toLowerCase().replace(' ', '')}.png?v=1" class="border co_portrait">
                         </div>
                     </div>
                 </div>
@@ -4554,7 +4554,7 @@ class CalcNode {
                             </span>
                         </div>
                         <div class="calc-plus-summary-image ${variableStyle}">
-                            <img src="terrain/aw2/ds${this.attacker['co']['co_name'].toLowerCase()}.png?v=1" style="width: 34px">
+                            <img src="terrain/aw2/ds${this.attacker['co']['co_name'].toLowerCase().replace(' ', '')}.png?v=1" style="width: 34px">
                         </div>
                         <div class="calc-plus-summary-image ${variableStyle}" ${this.attacker.power === 'N' ? 'style="display: none;"' : 'style="border: none;"'}>
                             ${this.attacker.power === 'Y' ? '<img src="terrain/aw2/redstar.gif" style="width: 23px">' : 
@@ -4583,7 +4583,7 @@ class CalcNode {
                             </span>
                         </div>
                         <div class="calc-plus-summary-image ${variableStyle}">
-                            <img src="terrain/aw2/ds${this.defender['co']['co_name'].toLowerCase()}.png?v=1" style="width: 34px">
+                            <img src="terrain/aw2/ds${this.defender['co']['co_name'].toLowerCase().replace(' ', '')}.png?v=1" style="width: 34px">
                         </div>
                         <div class="calc-plus-summary-image ${variableStyle}" ${this.defender.power === 'N' ? 'style="display: none;"' : 'style="border: none;"'}>
                             ${this.defender.power === 'Y' ? '<img src="terrain/aw2/redstar.gif" style="width: 23px">' : 
@@ -5097,14 +5097,18 @@ class BuiltinCalculator {
     
     // lookup global data
     lookupGlobal(unit, key) {
+        const lname = unit.co.co_name.toLowerCase().replace(' ', '');
+        const name = lname.charAt(0).toUpperCase() + lname.slice(1);
         const power = (unit.power === "N") ? "D2D" : (unit.power === "Y") ? "COP" : "SCOP";
-        return CO_DATA[unit.co.co_name]["Global"][power][key];
+        return CO_DATA[name]["Global"][power][key];
     }
 
     // lookup unit specific data
     lookupUnit(unit, key) {
+        const lname = unit.co.co_name.toLowerCase().replace(' ', '');
+        const name = lname.charAt(0).toUpperCase() + lname.slice(1);
         const power = (unit.power === "N") ? "D2D" : (unit.power === "Y") ? "COP" : "SCOP";
-        return CO_DATA[unit.co.co_name]["Units"][unit.unit.units_id][power][key]
+        return CO_DATA[name]["Units"][unit.unit.units_id][power][key]
     }
 
     // get HP as displayed on map
