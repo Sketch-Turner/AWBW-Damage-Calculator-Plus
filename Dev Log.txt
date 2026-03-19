@@ -3,4 +3,5 @@ Bugs
     Select unit after changing army color doesn't work until refresh
 
 Todos
+    Safari/Firefox/Edge port?
     
