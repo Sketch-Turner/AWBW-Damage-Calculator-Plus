@@ -12,7 +12,7 @@ AWBW Damage Calculator Plus is a web extension that expands the functionality of
 Functionality and availability of the original Damage Calculator is unchanged.
 
 ## Installation
-The extension is currently available for Chrome on the Chrome web store.
+[Chrome Extension](https://chromewebstore.google.com/detail/awbw-damage-calculator-+/gddlojgohoodggfkimeooapmfmfkgjpb)
 
 ## Usage
 The icon can be found next to the original Damage Calculator.
