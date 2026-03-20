@@ -9,9 +9,60 @@ const Z_INDEX = 800;
 const TILE_SIZE = 16;
 const SIG_PIXELS = [15, 18, 71, 78, 220];
 const SESSION_DATA_KEY = "calc-plus-data";
-const CURRENT_VERSION = "1.2.2";
+const CURRENT_VERSION = "1.2.3";
 
 //TODO better data import solution
+const LUCK_DATA = {
+    "Normal": [
+        {"a": 0.0, "b": -10.0, "c": 100.0, "lower": 0, "upper": 9}
+    ],
+    "Sonja": [
+        {"a": -0.5, "b": -9.5, "c": 55.0, "lower": -9, "upper": 0},
+        {"a": 0.5, "b": -10.5, "c": 55.0, "lower": 0, "upper": 9}
+    ],
+    "Rachel_COP": [
+        {"a": 0.0, "b": -2.5, "c": 100.0, "lower": 0, "upper": 39}
+    ],
+    "Nell_D2D": [
+        {"a": 0.0, "b": -5.0, "c": 100.0, "lower": 0, "upper": 19}
+    ],
+    "Nell_COP": [
+        {"a": 0.0, "b": -1.66666667, "c": 100.0, "lower": 0, "upper": 59}
+    ],
+    "Nell_SCOP": [
+        {"a": 0.0, "b": -1.0, "c": 100.0, "lower": 0, "upper": 99}
+    ],
+    "Flak_D2D": [
+        {"a": -0.2, "b": -3.8, "c": 82.0, "lower": -9, "upper": 0},
+        {"a": 0.0, "b": -4.0, "c": 82.0, "lower": 0, "upper": 15},
+        {"a": 0.2, "b": -10.2, "c": 130.0, "lower": 15, "upper": 24}
+    ],
+    "Flak_COP": [
+        {"a": -0.05, "b": -1.95, "c": 81.0, "lower": -19, "upper": 0},
+        {"a": 0.0, "b": -2.0, "c": 81.0, "lower": 0, "upper": 30},
+        {"a": 0.05, "b": -5.05, "c": 127.5, "lower": 30, "upper": 49}
+    ],
+    "Flak_SCOP": [
+        {"a": -0.01388889, "b": -1.09722222, "c": 78.33333333, "lower": -39, "upper": 0},
+        {"a": 0.0, "b": -1.11111111, "c": 78.33333333, "lower": 0, "upper": 50},
+        {"a": 0.01388889, "b": -2.51388889, "c": 113.75, "lower": 50, "upper": 89}
+    ],
+    "Jugger_D2D": [
+        {"a": -0.11111111, "b": -3.22222222, "c": 76.66666667, "lower": -14, "upper": 0},
+        {"a": 0.0, "b": -3.33333333, "c": 76.66666667, "lower": 0, "upper": 15},
+        {"a": 0.11111111, "b": -6.77777778, "c": 103.33333333, "lower": 15, "upper": 29}
+    ],
+    "Jugger_COP": [
+        {"a": -0.03636364, "b": -1.78181818, "c": 78.18181818, "lower": -24, "upper": 0},
+        {"a": 0.0, "b": -1.81818182, "c": 78.18181818, "lower": 0, "upper": 30},
+        {"a": 0.03636364, "b": -4.03636364, "c": 112.0, "lower": 30, "upper": 54}
+    ],
+    "Jugger_SCOP": [
+        {"a": -0.01169591, "b": -1.04093567, "c": 76.84210526, "lower": -44, "upper": 0},
+        {"a": 0.0, "b": -1.05263158, "c": 76.84210526, "lower": 0, "upper": 50},
+        {"a": 0.01169591, "b": -2.23391813, "c": 106.66666667, "lower": 50, "upper": 94}
+    ]
+}
 const CO_DATA = {
     "Andy": {
         "Global": {
@@ -3962,7 +4013,7 @@ const DEFAULT_DEFENDER = {
 // CalcNode                                        // 
 /////////////////////////////////////////////////////
 class CalcNode {
-    constructor(attacker, defender, id, builtinCalc) {
+    constructor(attacker, defender, id, builtinCalc, displayLuckSlider) {
         this.attacker = attacker;
         this.defender = defender;
         this.children = [];
@@ -3988,8 +4039,36 @@ class CalcNode {
         this.isValid = true;
         this.selectingAttacker = false;
         this.selectingDefender = false;
+        this.sliderLuck = 0;
         this.sliderDamage = 0;
-        this.updateCalcResults();
+        this.sliderFunds = 0;
+        this.sliderProbability = 0;
+        this.updateCalcResults(displayLuckSlider);
+    }
+
+    // get probability of getting >= luck roll (approximation)
+    calcLuckRollProbability(unit, luck) {
+        let key = '';
+        const name = unit.co.co_name;
+        if (["Nell", "Flak", "Jugger"].includes(name)) {
+            key = name + '_' + ((unit.power === 'Y') ? "COP" : (unit.power === 'S') ? "SCOP" : "D2D");
+        } else if (name === "Sonja") {
+            key = "Sonja";
+        } else if (name === "Rachel" && unit.power === 'Y') {
+            key = name + "_COP";
+        } else {
+            key = "Normal";
+        }
+        
+        const data = LUCK_DATA[key];
+        let probability = 0;
+        for (const f of data) {
+            if (luck >= f.lower && luck <= f.upper) {
+                probability = f.a * luck ** 2 + f.b * luck + f.c;
+                break;
+            }
+        }
+        return probability;
     }
 
     // returns true if:
@@ -4322,21 +4401,30 @@ class CalcNode {
     generateAttackerDamageHTML(displayLuckSlider) {
         const colorNum = n => `<span style="color:${n < 0 ? 'red' : 'inherit'}">${n}%</span>`;
         let attackerDamageHtml = '';
+        const sliderMin = -this.builtinCalc.lookupGlobal(this.attacker, "bad_luck");
+        const sliderMax = this.builtinCalc.lookupGlobal(this.attacker, "good_luck");
         if (displayLuckSlider) {
             attackerDamageHtml = `
             <div class="attacker-damage">
                 <div class="calc-plus-slider-display">
-                    ${this.calcResults['attackDamageMin'] === this.calcResults['attackDamageMax'] ? '' : `
-                    ${this.calcResults['attackDamageMin']}% 
-                    <input type="range" class="calc-plus-damage-slider" min="${this.calcResults['attackDamageMin']}" max="${this.calcResults['attackDamageMax']}" value="${this.sliderDamage}">`}
-                    ${this.calcResults['attackDamageMax']}%
+                    ${sliderMin}
+                    <input type="range" class="calc-plus-damage-slider" min="${sliderMin}" max="${sliderMax}" value="${this.sliderLuck}">
+                    ${sliderMax}
                 </div>
                 <div>
-                    <img src="terrain/fire.gif" class="fire">
-                    <span class="calc-plus-slider-value">${this.sliderDamage}%</span>
+                    <img src="${chrome.runtime.getURL('/images/luck_icon.png')}">
+                    <span class="calc-plus-slider-value"> <b>≥</b> ${this.sliderLuck} (${this.sliderProbability.toFixed(2)}%)</span>
                 </div>
-                <span><img src="terrain/coin.gif" class="gold-coin"> ${"TODO"}</span>
-                <span><img src="${chrome.runtime.getURL('/images/luck_icon.png')}">${this.calcResults.attackProbability.toFixed(4).toString().slice(0,6)}%</span>
+                <span style="display:flex; width:100%;">
+                    <span style="flex:1; display:flex; justify-content:center; align-items:center; gap:4px;">
+                        <img src="terrain/fire.gif" class="fire">
+                        <span class="calc-plus-slider-damage">${this.sliderDamage}%</span>
+                    </span>
+                    <span style="flex:1; display:flex; justify-content:center; align-items:center; gap:4px;">
+                        <img src="terrain/coin.gif" class="gold-coin">
+                        <span class="calc-plus-slider-funds">${this.sliderFunds}</span>
+                    </span>
+                </span>
             </div>
             `
         } else {
@@ -4693,14 +4781,14 @@ class CalcNode {
     genNextNode(id, displayLuckSlider) { //returns node post attack
         let nextDefender = JSON.parse(JSON.stringify(this.defender));
         // Get damage the attack will do. If luck mode is on, use slider value; else use min value
-        const attackerDamage = (displayLuckSlider) ? this.sliderDamage : Math.max(0, this.calcResults['attackDamageMin']);
+        const attackerDamage = (displayLuckSlider) ? this.sliderLuck : Math.max(0, this.calcResults['attackDamageMin']);
         const maxHP = Math.max(0, this.defenderDisplayHP - attackerDamage);
 
         nextDefender['hp'] = maxHP;
         const nextAttacker = JSON.parse(JSON.stringify(DEFAULT_ATTACKER));
         nextAttacker.country = this.attacker.country;
 
-        const newNode = new CalcNode(nextAttacker, nextDefender, id, this.builtinCalc);
+        const newNode = new CalcNode(nextAttacker, nextDefender, id, this.builtinCalc, displayLuckSlider);
         newNode.defenderMaxHP = maxHP;
         newNode.defenderDisplayHP = maxHP;
 
@@ -4716,7 +4804,8 @@ class CalcNode {
         this.attacker.unit.units_ammo = (this.attackerNoAmmoToggled) ? 0 : 1;
         this.defender.unit.units_ammo = (this.defenderNoAmmoToggled) ? 0 : 1;
         // check if counter break, swap attacker / defender
-        this.calcResults = this.doCounterBreakSwap() ? this.builtinCalc.calculate(this.defender, this.attacker, displayLuckSlider, this.sliderDamage) : this.builtinCalc.calculate(this.attacker, this.defender, displayLuckSlider, this.sliderDamage);
+        this.calcResults = this.doCounterBreakSwap() ? this.builtinCalc.calculate(this.defender, this.attacker, displayLuckSlider ? this.sliderLuck : null) :
+                                                       this.builtinCalc.calculate(this.attacker, this.defender, displayLuckSlider ? this.sliderLuck : null);
         this.attacker.unit.units_ammo = attacker_ammo;
         this.defender.unit.units_ammo = defender_ammo;
     }
@@ -4725,7 +4814,6 @@ class CalcNode {
         if (!this.isValid) {
             this.removeFocus();
         }
-        // await this.calculate(); //wait for calc
         this.updateCalcResults(displayLuckSlider);
         const newChild = this.genNextNode(-1, displayLuckSlider);//this is discarded so id doesnt matter???
         for (const child of this.children) {
@@ -4769,9 +4857,9 @@ class CalcNode {
 // CalcTree                                        // 
 /////////////////////////////////////////////////////
 class CalcTree {
-    constructor(id, builtinCalc) {
+    constructor(id, builtinCalc, displayLuckSlider) {
         this.builtinCalc = builtinCalc;
-        this.root = new CalcNode(JSON.parse(JSON.stringify(DEFAULT_ATTACKER)), JSON.parse(JSON.stringify(DEFAULT_DEFENDER)), id, builtinCalc);
+        this.root = new CalcNode(JSON.parse(JSON.stringify(DEFAULT_ATTACKER)), JSON.parse(JSON.stringify(DEFAULT_DEFENDER)), id, builtinCalc, displayLuckSlider);
         this.root.isRoot = true;
         this.activeNode = this.root;
         this.root.orient(0,0);
@@ -4819,13 +4907,12 @@ class BuiltinCalculator {
     constructor() {}
     
     // return dict containing min/max attack and counter damage
-    calculate(attacker, defender, calc_probability=false, probability_target=0) {
+    calculate(attacker, defender, luck=null) {
         let result = {
             'attackDamageMin': 0, 
             'attackDamageMax': 0, 
             'attackFundsMin': 0,
             'attackFundsMax': 0,
-            'attackProbability': 0,
 
             'minCounterDamageMin': 0,
             'minCounterDamageMax': 0,
@@ -4840,7 +4927,7 @@ class BuiltinCalculator {
         if (!this.canAttack(attacker, defender)) {
             return result;
         }
-        let attack = this.calc(attacker, defender, false, calc_probability, probability_target);
+        let attack = this.calc(attacker, defender, false, luck);
         result.attackDamageMin = attack.min;
         result.attackDamageMax = attack.max;
         result.attackFundsMin = this.getDamageCost(defender, attack.min);
@@ -4851,42 +4938,28 @@ class BuiltinCalculator {
         const attack_min = Math.max(attack.max, 0);
         const attack_max = Math.max(attack.min, 0);
         if (this.canCounter(attacker, defender)) {
-            if (calc_probability) {
-                // counter with set damage
-                if (probability_target < defender.hp) {
-                    defender.hp -= probability_target;
-                    counter = this.calc(defender, attacker, true);
-                    defender.hp += probability_target;
-                    
-                    result.minCounterDamageMin = counter.min;
-                    result.minCounterDamageMax = counter.max;
-                    result.minCounterFundsMin = this.getDamageCost(attacker, counter.min);
-                    result.minCounterFundsMax = this.getDamageCost(attacker, counter.max);
-                }
-            } else {
-                // min attack (min counter)
-                if (attack_min < defender.hp) {
-                    defender.hp -= attack_min;
-                    counter = this.calc(defender, attacker, true);
-                    defender.hp += attack_min;
-                    
-                    result.minCounterDamageMin = counter.min;
-                    result.minCounterDamageMax = counter.max;
-                    result.minCounterFundsMin = this.getDamageCost(attacker, counter.min);
-                    result.minCounterFundsMax = this.getDamageCost(attacker, counter.max);
-                }
+            // min attack (min counter)
+            if (attack_min < defender.hp) {
+                defender.hp -= attack_min;
+                counter = this.calc(defender, attacker, true);
+                defender.hp += attack_min;
+                
+                result.minCounterDamageMin = counter.min;
+                result.minCounterDamageMax = counter.max;
+                result.minCounterFundsMin = this.getDamageCost(attacker, counter.min);
+                result.minCounterFundsMax = this.getDamageCost(attacker, counter.max);
+            }
 
-                // max attack (max counter)
-                if (attack_max < defender.hp) {
-                    defender.hp -= attack_max;
-                    counter = this.calc(defender, attacker, true);
-                    defender.hp += attack_max;
+            // max attack (max counter)
+            if (attack_max < defender.hp) {
+                defender.hp -= attack_max;
+                counter = this.calc(defender, attacker, true);
+                defender.hp += attack_max;
 
-                    result.maxCounterDamageMin = counter.min;
-                    result.maxCounterDamageMax = counter.max;
-                    result.maxCounterFundsMin = this.getDamageCost(attacker, counter.min);
-                    result.maxCounterFundsMax = this.getDamageCost(attacker, counter.max);
-                }
+                result.maxCounterDamageMin = counter.min;
+                result.maxCounterDamageMax = counter.max;
+                result.maxCounterFundsMin = this.getDamageCost(attacker, counter.min);
+                result.maxCounterFundsMax = this.getDamageCost(attacker, counter.max);
             }
         }
         // console.log("Attacker:", attacker, "\nDefender:", defender, "\nResult:", result);
@@ -4895,7 +4968,7 @@ class BuiltinCalculator {
 
     // get min/max damage values of an attack
     // negative values can result from negative luck
-    calc(attacker, defender, is_counter, calc_probability=false, probability_target=0) {
+    calc(attacker, defender, is_counter, luck=null) {
         // Damage% = (B*Av/100 + L-Lb)*(HPa/10)*((200-(Dv+Dtr*HPd))/100)
         const base = this.getBase(attacker, defender);
         const attackValue = this.getAttack(attacker, is_counter);
@@ -4904,73 +4977,24 @@ class BuiltinCalculator {
         const attackerHP = this.getDisplayHP(attacker);
         const defenseValue = this.getDefense(defender, this.isIndirect(attacker));
         
-        const minDamage = (base * attackValue / 100 - minLuck) * (attackerHP / 10) * ((200 - defenseValue) / 100);
-        const maxDamage = (base * attackValue / 100 + maxLuck) * (attackerHP / 10) * ((200 - defenseValue) / 100);
+        let minDamage = 0;
+        let maxDamage = 0;
+
+        if (Number.isInteger(luck)) {
+            // calc with set luck roll
+            minDamage = (base * attackValue / 100 - luck) * (attackerHP / 10) * ((200 - defenseValue) / 100);
+            maxDamage = minDamage;
+        } else {
+            // calc with min and max luck
+            minDamage = (base * attackValue / 100 - minLuck) * (attackerHP / 10) * ((200 - defenseValue) / 100);
+            maxDamage = (base * attackValue / 100 + maxLuck) * (attackerHP / 10) * ((200 - defenseValue) / 100);            
+        }
 
         // rounding rule
         const minRounded = Math.trunc(Math.ceil(minDamage * 20) / 20);
         const maxRounded = Math.trunc(Math.ceil(maxDamage * 20) / 20);
 
-        // probability calc
-        let probability = 0;
-        if (calc_probability) {
-            probability = 100 * this.calcDamageProbability(probability_target, base, attackValue, attackerHP, defenseValue, minLuck, maxLuck);
-        }
-
-        return {"min": minRounded, "max": maxRounded, "probability": probability};
-    }
-
-    // calc the probability of damage being >= a given %
-    calcDamageProbability(target, base, attackValue, attackerHP, defenseValue, minLuck, maxLuck) {
-        /*
-        AWBW damage uses luck L ∈ [0,maxLuck] and bad luck Lb ∈ [0,minLuck]:
-
-            raw = (A + L - Lb) * C
-            A = base * attackValue / 100
-            C = (attackerHP / 10) * ((200 - defenseValue) / 100)
-
-        Damage is rounded up to the nearest 0.05:
-
-            Damage = ceil(raw / 0.05) * 0.05
-
-        To compute P(Damage ≥ x), convert the rounded comparison back to raw damage:
-
-            ceil(raw/0.05) ≥ x/0.05  ⇔  raw > (x/0.05 − 1) * 0.05
-
-        Let x' = (x/0.05 − 1)*0.05. Substituting raw:
-
-            (A + L - Lb)C > x'  →  L ≥ Lb + k
-            k = floor(x'/C - A) + 1
-
-        With L ∈ [0,maxLuck], Lb ∈ [0,minLuck], the number of total outcomes is (maxLuck+1)(minLuck+1). 
-
-            istart = max(0,-k)
-            iend   = min(minLuck, maxLuck-k)
-            n      = iend - istart + 1
-
-        If iend < istart → 0 outcomes, otherwise:
-
-            count = n*(maxLuck-k+1) - n*(istart+iend)/2
-
-        This yields the exact number of luck combinations producing Damage ≥ x
-        */       
-        const A = base * attackValue / 100;
-        const C = (attackerHP / 10) * ((200 - defenseValue) / 100);
-
-        const t = Math.ceil(target * 20);
-
-        const k = Math.floor(((t - 1) / (20 * C)) - A) + 1;
-
-        const istart = Math.max(0, -k);
-        const iend = Math.min(minLuck, maxLuck - k);
-
-        if (iend < istart) return 0;
-
-        const n = iend - istart + 1;
-
-        const total = (minLuck + 1) * (maxLuck + 1);
-        console.log(`${(n * (maxLuck - k + 1) - n * (istart + iend) / 2)} / ${total}`);
-        return (n * (maxLuck - k + 1) - n * (istart + iend) / 2) / total;
+        return {"min": minRounded, "max": maxRounded};
     }
 
     // returns true if defender can counter attacker
@@ -5350,6 +5374,13 @@ class DamageCalculator {
         const img = button.querySelector("img");
         img.src = chrome.runtime.getURL('/images/' + (this.displaySlider ? 'showing_luck' : 'hiding_luck') + '_icon.png');
         const display = document.getElementById("calc-plus-display");
+
+        // update calcs if any exist
+        if (this.activeCalcTree) {
+            this.refactor(); //update calcs
+            this.orient(0, 0); //orient nodes            
+        }
+
         display.innerHTML = this.getInnerHTML(); //refresh display
         this.saveSession(); //save session data
     }
@@ -5453,7 +5484,7 @@ class DamageCalculator {
     }
 
     addNewTree() {
-        this.calcTreeList.push(new CalcTree(this.getNextID(), this.builtinCalc));
+        this.calcTreeList.push(new CalcTree(this.getNextID(), this.builtinCalc, this.displaySlider));
         this.activeCalcTree = this.calcTreeList[this.calcTreeList.length-1];
         this.activeNode = this.activeCalcTree.root;
     }
@@ -5535,9 +5566,7 @@ class DamageCalculator {
             //slider
             if (this.displaySlider) {
                 const slider = element.querySelector('.calc-plus-damage-slider');
-                // reverse value since slider is reversed
-                console.log(`${parseInt(slider.min)} + ${parseInt(slider.max)} - ${parseInt(slider.value)}`);
-                node.sliderDamage = parseInt(slider.min) + parseInt(slider.max) - parseInt(slider.value);
+                node.sliderLuck = parseInt(slider.value);
             }
         }
         //return valueChanges;
@@ -6274,15 +6303,17 @@ class DamageCalculator {
 
         //update slider val only
         calcDisplay.addEventListener("input", (event) => {
+            const luck = parseInt(event.target.value);
+            const probability = this.activeNode.calcLuckRollProbability(this.activeNode.attacker, luck);
+
+            this.activeNode.sliderLuck = luck;
+            this.activeNode.sliderProbability = probability;
+
             if (event.target.classList.contains('calc-plus-damage-slider')) {
                 const parentElement = event.target.closest('.attacker-damage');
                 if (parentElement) {
-                    const displaySpan = parentElement.querySelector('.calc-plus-slider-value');
-                    if (displaySpan) {
-                        // flip value since slider is reversed
-                        const val = parseInt(event.target.min) + parseInt(event.target.max) - parseInt(event.target.value);
-                        displaySpan.textContent = `${val}%`;
-                    }
+                    const valueSpan = parentElement.querySelector('.calc-plus-slider-value');
+                    valueSpan.innerHTML = ` <b>≥</b> ${luck} (${probability.toFixed(2)}%)`;
                 }
             }
         });
