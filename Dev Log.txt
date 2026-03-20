@@ -4,4 +4,5 @@ Bugs
 
 Todos
     Safari/Firefox/Edge port?
+    Rework extra calcs in genNextNode
     
