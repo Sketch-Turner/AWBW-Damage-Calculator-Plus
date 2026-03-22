@@ -4107,6 +4107,10 @@ class CalcNode {
             this.width = data.width;
             this.y = data.y;
             this.x = data.x;
+            this.sliderLuck = data.sliderLuck;
+            this.sliderDamage = data.sliderDamage;
+            this.sliderFunds = data.sliderFunds;
+            this.sliderProbability = data.sliderProbability;
 
             for (const child of data.children) {
                 const next = this.genNextNode(child.id, displayLuckSlider)
@@ -4136,6 +4140,10 @@ class CalcNode {
         data.id = this.id;
         data.depth = this.depth;
         data.isValid = this.isValid;
+        data.sliderLuck = this.sliderLuck;
+        data.sliderDamage = this.sliderDamage;
+        data.sliderFunds = this.sliderFunds;
+        data.sliderProbability = this.sliderProbability;
 
         data.attackerNoAmmoToggled = this.attackerNoAmmoToggled;
         data.defenderNoAmmoToggled = this.defenderNoAmmoToggled;
@@ -4411,19 +4419,17 @@ class CalcNode {
                     <input type="range" class="calc-plus-damage-slider" min="${sliderMin}" max="${sliderMax}" value="${this.sliderLuck}">
                     ${sliderMax}
                 </div>
-                <div>
+                <span>
                     <img src="${chrome.runtime.getURL('/images/luck_icon.png')}">
                     <span class="calc-plus-slider-value"> <b>≥</b> ${this.sliderLuck} (${this.sliderProbability.toFixed(2)}%)</span>
-                </div>
-                <span style="display:flex; width:100%;">
-                    <span style="flex:1; display:flex; justify-content:center; align-items:center; gap:4px;">
-                        <img src="terrain/fire.gif" class="fire">
-                        <span class="calc-plus-slider-damage">${this.sliderDamage}%</span>
-                    </span>
-                    <span style="flex:1; display:flex; justify-content:center; align-items:center; gap:4px;">
-                        <img src="terrain/coin.gif" class="gold-coin">
-                        <span class="calc-plus-slider-funds">${this.sliderFunds}</span>
-                    </span>
+                </span>
+                <span>
+                    <img src="terrain/fire.gif" class="fire">
+                    <span class="calc-plus-slider-damage">${this.sliderDamage}%</span>
+                </span>
+                <span>
+                    <img src="terrain/coin.gif" class="gold-coin">
+                    <span class="calc-plus-slider-funds">${this.sliderFunds}</span>
                 </span>
             </div>
             `
@@ -4781,7 +4787,7 @@ class CalcNode {
     genNextNode(id, displayLuckSlider) { //returns node post attack
         let nextDefender = JSON.parse(JSON.stringify(this.defender));
         // Get damage the attack will do. If luck mode is on, use slider value; else use min value
-        const attackerDamage = (displayLuckSlider) ? this.sliderLuck : Math.max(0, this.calcResults['attackDamageMin']);
+        const attackerDamage = (displayLuckSlider) ? this.sliderDamage : Math.max(0, this.calcResults['attackDamageMin']);
         const maxHP = Math.max(0, this.defenderDisplayHP - attackerDamage);
 
         nextDefender['hp'] = maxHP;
@@ -4937,6 +4943,7 @@ class BuiltinCalculator {
         let counter = {"max":0, "min":0};
         const attack_min = Math.max(attack.max, 0);
         const attack_max = Math.max(attack.min, 0);
+
         if (this.canCounter(attacker, defender)) {
             // min attack (min counter)
             if (attack_min < defender.hp) {
@@ -4982,7 +4989,7 @@ class BuiltinCalculator {
 
         if (Number.isInteger(luck)) {
             // calc with set luck roll
-            minDamage = (base * attackValue / 100 - luck) * (attackerHP / 10) * ((200 - defenseValue) / 100);
+            minDamage = (base * attackValue / 100 + luck) * (attackerHP / 10) * ((200 - defenseValue) / 100);
             maxDamage = minDamage;
         } else {
             // calc with min and max luck
@@ -6257,6 +6264,7 @@ class DamageCalculator {
 
                     } else if (damageSlider && selectedNode.isValid) {
                         updateHTML = true;
+                        updateCalc = true;
                         for (const key in this.isMenuOpen) {
                             this.closeMenu(key);//close all menus
                         }
@@ -6301,19 +6309,35 @@ class DamageCalculator {
             }
         });
 
-        //update slider val only
+        //update slider val in real time
         calcDisplay.addEventListener("input", (event) => {
-            const luck = parseInt(event.target.value);
-            const probability = this.activeNode.calcLuckRollProbability(this.activeNode.attacker, luck);
-
-            this.activeNode.sliderLuck = luck;
-            this.activeNode.sliderProbability = probability;
-
-            if (event.target.classList.contains('calc-plus-damage-slider')) {
-                const parentElement = event.target.closest('.attacker-damage');
-                if (parentElement) {
-                    const valueSpan = parentElement.querySelector('.calc-plus-slider-value');
-                    valueSpan.innerHTML = ` <b>≥</b> ${luck} (${probability.toFixed(2)}%)`;
+            const element = event.target.closest('.calc-plus-node');
+            if (element) {
+                const id = parseInt(element.getAttribute('data-id'));
+                const node = this.selectNode(id);
+                if (node) {
+                    //update current node values
+                    if (event.target.classList.contains('calc-plus-damage-slider')) {
+                        const luck = parseInt(event.target.value);
+                        const probability = node.calcLuckRollProbability(node.attacker, luck);
+                        node.sliderLuck = luck;
+                        node.sliderProbability = probability;
+                        node.updateCalcResults(this.displaySlider);
+                        const damage = node.calcResults.attackDamageMin;
+                        const funds = node.calcResults.attackFundsMin;
+                        node.sliderDamage = damage;
+                        node.sliderFunds = funds;
+                        // update html
+                        const parentElement = event.target.closest('.attacker-damage');
+                        if (parentElement) {
+                            const valueSpan = parentElement.querySelector('.calc-plus-slider-value');
+                            valueSpan.innerHTML = ` <b>≥</b> ${luck} (${probability.toFixed(2)}%)`;
+                            const damageSpan = parentElement.querySelector('.calc-plus-slider-damage');
+                            damageSpan.textContent = `${damage}%`;
+                            const fundsSpan = parentElement.querySelector('.calc-plus-slider-funds');
+                            fundsSpan.textContent = funds;
+                        }
+                    }
                 }
             }
         });
