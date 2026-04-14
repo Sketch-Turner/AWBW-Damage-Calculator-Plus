@@ -1,3 +1,7 @@
+1.2.4
+    Fixes
+        1. Fixed bug where scrolling screen caused attacker/defender click select to fail.
+        2. Fixed bug where selecting full hp unit in move planner read as 0 hp.
 1.2.3
     Fixes
         1. Fixed bug displaying vonbolt portrait.

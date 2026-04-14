@@ -9,7 +9,7 @@ const Z_INDEX = 800;
 const TILE_SIZE = 16;
 const SIG_PIXELS = [15, 18, 71, 78, 220];
 const SESSION_DATA_KEY = "calc-plus-data";
-const CURRENT_VERSION = "1.2.3";
+const CURRENT_VERSION = "1.2.4";
 
 //TODO better data import solution
 const LUCK_DATA = {
@@ -5669,7 +5669,7 @@ class DamageCalculator {
             // use unit element
             const img_sources = [...unitElement.innerHTML.matchAll(/\/([^\/]+?)\.gif/g)].map(m => m[1]);
             for (const src of img_sources) {
-                if (src.length === 1 && (parseInt(src) || src === '?')) {
+                if (Number(src) || src === '?') {
                     hp = parseInt(src) || 10;
                 }
                 else if (Object.keys(UNIT_LIST).includes(src.substring(2))) {
@@ -5936,7 +5936,7 @@ class DamageCalculator {
             const underlying = document.elementFromPoint(event.clientX, event.clientY);
             const clickTarget = underlying.closest('.game-unit') || underlying.closest('span[id^="unit"]'); 
             // get tile info
-            underlying.dispatchEvent(new MouseEvent("mousemove", {bubbles: true, clientX: event.clientX, clientY: event.clientY}));
+            underlying.dispatchEvent(new MouseEvent("mousemove", {bubbles: true, clientX: event.clientX + window.scrollX, clientY: event.clientY + window.scrollY}));
             this.tileInfo = document.getElementsByClassName("tile-info left-side")[0];
             this.setOverlayHook(true);
             if (clickTarget) {
