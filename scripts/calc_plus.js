@@ -5,11 +5,10 @@ const SIZE_X = 340;
 const SIZE_Y = 136;
 const SIZE_Y_FOCUSED = 250;
 const SCROLLBAR_WIDTH = 20;
-const Z_INDEX = 800;
+let Z_INDEX; //assigned in main
 const TILE_SIZE = 16;
-const SIG_PIXELS = [15, 18, 71, 78, 220];
 const SESSION_DATA_KEY = "calc-plus-data";
-const CURRENT_VERSION = "1.2.4";
+const CURRENT_VERSION = "1.2.5";
 
 //TODO better data import solution
 const LUCK_DATA = {
@@ -4198,7 +4197,7 @@ class CalcNode {
     removeFocus() {
         this.isFocused = false;
         this.children.forEach(child => {
-            child.removeFocus(true);
+            child.removeFocus();
         });
     }
 
@@ -4214,7 +4213,7 @@ class CalcNode {
         child.parent = this;
         child.depth = this.depth + 1;
         child.index = this.children.length;
-        this.getRoot().removeFocus();
+        // this.getRoot().removeFocus();
         child.setFocus(true);
         this.children.push(child);
     }
@@ -4374,9 +4373,9 @@ class CalcNode {
             defenderCountry = this.defender['country']['name'].toLowerCase();
         }
         const atRoot = this.id === this.getRoot().id;
-        const defenderNoSecondary = [1, 5, 6, 14, 17, 968731].includes(this.defender.unit.units_id); //inf, recon, apc, bboat, lander, bbomb
+        const defenderNoSecondary = [1, 5, 6, 14, 17, 28, 968731].includes(this.defender.unit.units_id); //inf, recon, apc, bboat, lander, tcopter, bbomb
         const defenderHP = this.builtinCalc.getDisplayHP(this.defender);
-        const attackerNoSecondary = [1, 5, 6, 14, 17, 968731].includes(this.attacker.unit.units_id); //inf, recon, apc, bboat, lander, bbomb
+        const attackerNoSecondary = [1, 5, 6, 14, 17, 28, 968731].includes(this.attacker.unit.units_id); //inf, recon, apc, bboat, lander, tcopter, bbomb
         const attackerHP = this.builtinCalc.getDisplayHP(this.attacker);
         return `
         <svg class="calc-plus-node" data-id="${this.id}" style="width: ${this.children === null ? this.width : this.width + INDENT}px; height: ${this.height}px; left: ${this.x + this.getOffsetX()}px; top: ${this.y + this.getOffsetY()}px;">
@@ -4779,7 +4778,6 @@ class CalcNode {
             html += focused;
             return html;
         } catch (error) {
-            // Handle the error here if needed
             console.error("Error in getHTML:", error);
         }
     }
@@ -5497,19 +5495,15 @@ class DamageCalculator {
     }
 
     bringToFront() {
-        if (this.zindex < Z_INDEX) {
-            this.zindex += 1;
-            const calcPlus = document.getElementById("calc-plus");
-            calcPlus.style.zIndex = this.zindex;
-        }
+        this.zindex = Z_INDEX;
+        const calcPlus = document.getElementById("calc-plus");
+        calcPlus.style.zIndex = this.zindex;
     }
 
     sendToBack() {
-        if (this.zindex >= Z_INDEX) {
-            this.zindex -= 1;
-            const calcPlus = document.getElementById("calc-plus");
-            calcPlus.style.zIndex = this.zindex;
-        }
+        this.zindex -= 1;
+        const calcPlus = document.getElementById("calc-plus");
+        calcPlus.style.zIndex = this.zindex;
     }
 
     //returns the max depth out of all sets
@@ -5711,7 +5705,7 @@ class DamageCalculator {
 
         //insert html
         const co_menu = `
-        <div class="co-menu" id="calc-plus-select-co" node-id="00" player-id="?" style="display: none; position: absolute; z-index: 900; top:0px; left:0px; width:166px;">
+        <div class="co-menu" id="calc-plus-select-co" node-id="00" player-id="?" style="display: none; position: absolute; z-index: ${Z_INDEX}; top:0px; left:0px; width:166px;">
             <img src="terrain/aw2/dsandy.png?v=1" class="co_portrait">
             <img src="terrain/aw2/dsgrit.png?v=1" class="co_portrait">
             <img src="terrain/aw2/dskanbei.png?v=1" class="co_portrait">
@@ -5743,7 +5737,7 @@ class DamageCalculator {
         </div>
         `;
         const terrain_menu = `
-        <div class="terrain terrain-menu" id="calc-plus-select-terrain" node-id="00" player-id="?" style="display: none; position: absolute; z-index: 900; top:0px; left:0px; width:135px;">
+        <div class="terrain terrain-menu" id="calc-plus-select-terrain" node-id="00" player-id="?" style="display: none; position: absolute; z-index: ${Z_INDEX}; top:0px; left:0px; width:135px;">
             <img class="calc-plus-terrain-image" src="terrain/ani/plain.gif">
             <img class="calc-plus-terrain-image" src="terrain/ani/mountain.gif">
             <img class="calc-plus-terrain-image" src="terrain/ani/wood.gif">
@@ -5763,7 +5757,7 @@ class DamageCalculator {
         </div>
         `; 
         const unit_menu = `
-        <div class="unit unit-menu" id="calc-plus-select-unit" node-id="00" player-id="?" style="display: none; position: absolute; z-index: 900; top:0px; left:0px; width:166px;">
+        <div class="unit unit-menu" id="calc-plus-select-unit" node-id="00" player-id="?" style="display: none; position: absolute; z-index: ${Z_INDEX}; top:0px; left:0px; width:166px;">
             <img class="calc-plus-unit-image" src="terrain/ani/osinfantry.gif">
             <img class="calc-plus-unit-image" src="terrain/ani/osmech.gif">
             <img class="calc-plus-unit-image" src="terrain/ani/osmd.tank.gif">
@@ -6449,6 +6443,11 @@ link.rel = 'stylesheet';
 link.type = 'text/css';
 link.href = chrome.runtime.getURL('/scripts/calc_plus.css');
 document.head.appendChild(link);
+
+//Set Z_INDEX
+const old_dc = document.getElementById('calculator');
+const computedStyle = window.getComputedStyle(old_dc);
+Z_INDEX = parseInt(computedStyle.zIndex) - 1;
 
 //Add calc plus button
 const old_dc_button = document.querySelector('.calculator-toggle.game-tools-btn') || document.querySelector('.calculator-toggle.planner-calc-toggle');
