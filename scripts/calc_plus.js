@@ -8,7 +8,7 @@ const SCROLLBAR_WIDTH = 20;
 let Z_INDEX; //assigned in main
 const TILE_SIZE = 16;
 const SESSION_DATA_KEY = "calc-plus-data";
-const CURRENT_VERSION = "1.2.5";
+const CURRENT_VERSION = "1.2.6";
 
 //TODO better data import solution
 const LUCK_DATA = {
@@ -4408,91 +4408,103 @@ class CalcNode {
     generateAttackerDamageHTML(displayLuckSlider) {
         const colorNum = n => `<span style="color:${n < 0 ? 'red' : 'inherit'}">${n}%</span>`;
         let attackerDamageHtml = '';
-        const sliderMin = -this.builtinCalc.lookupGlobal(this.attacker, "bad_luck");
-        const sliderMax = this.builtinCalc.lookupGlobal(this.attacker, "good_luck");
-        if (displayLuckSlider) {
-            attackerDamageHtml = `
-            <div class="attacker-damage">
-                <div class="calc-plus-slider-display">
-                    ${sliderMin}
-                    <input type="range" class="calc-plus-damage-slider" min="${sliderMin}" max="${sliderMax}" value="${this.sliderLuck}">
-                    ${sliderMax}
+        if (this.isFocused) {
+            const sliderMin = -this.builtinCalc.lookupGlobal(this.attacker, "bad_luck");
+            const sliderMax = this.builtinCalc.lookupGlobal(this.attacker, "good_luck");
+            if (displayLuckSlider) {
+                attackerDamageHtml = `
+                <div class="attacker-damage">
+                    <div class="calc-plus-slider-display">
+                        ${sliderMin}
+                        <input type="range" class="calc-plus-damage-slider" min="${sliderMin}" max="${sliderMax}" value="${this.sliderLuck}">
+                        ${sliderMax}
+                    </div>
+                    <span>
+                        <img src="${chrome.runtime.getURL('/images/luck_icon.png')}">
+                        <span class="calc-plus-slider-value"> <b>≥</b> ${this.sliderLuck} (${this.sliderProbability.toFixed(2)}%)</span>
+                    </span>
+                    <span>
+                        <img src="terrain/fire.gif" class="fire">
+                        <span class="calc-plus-slider-damage">${this.sliderDamage}%</span>
+                    </span>
+                    <span>
+                        <img src="terrain/coin.gif" class="gold-coin">
+                        <span class="calc-plus-slider-funds">${this.sliderFunds}</span>
+                    </span>
                 </div>
-                <span>
-                    <img src="${chrome.runtime.getURL('/images/luck_icon.png')}">
-                    <span class="calc-plus-slider-value"> <b>≥</b> ${this.sliderLuck} (${this.sliderProbability.toFixed(2)}%)</span>
-                </span>
-                <span>
-                    <img src="terrain/fire.gif" class="fire">
-                    <span class="calc-plus-slider-damage">${this.sliderDamage}%</span>
-                </span>
-                <span>
-                    <img src="terrain/coin.gif" class="gold-coin">
-                    <span class="calc-plus-slider-funds">${this.sliderFunds}</span>
-                </span>
-            </div>
-            `
+                `
+            } else {
+                attackerDamageHtml = `
+                <div class="attacker-damage">
+                    <img src="terrain/fire.gif" class="fire"> 
+                    <span>${this.calcResults['attackDamageMin'] === this.calcResults['attackDamageMax'] ? colorNum(this.calcResults['attackDamageMax']) : colorNum(this.calcResults['attackDamageMin']) + ' - ' + this.calcResults['attackDamageMax'] + '%'}</span> 
+                    <img src="terrain/coin.gif" class="gold-coin"> 
+                    <span class="funds-damage-display">${this.calcResults['attackFundsMin'] === this.calcResults['attackFundsMax'] ? this.calcResults['attackFundsMin'] : this.calcResults['attackFundsMin'] + ' - ' + this.calcResults['attackFundsMax']}</span>
+                </div> 
+                `;
+            }
         } else {
             attackerDamageHtml = `
-            <div class="attacker-damage">
-                <img src="terrain/fire.gif" class="fire"> 
-                <span>${this.calcResults['attackDamageMin'] === this.calcResults['attackDamageMax'] ? colorNum(this.calcResults['attackDamageMax']) : colorNum(this.calcResults['attackDamageMin']) + ' - ' + this.calcResults['attackDamageMax'] + '%'}</span> 
-                <img src="terrain/coin.gif" class="gold-coin"> 
-                <span class="funds-damage-display">${this.calcResults['attackFundsMin'] === this.calcResults['attackFundsMax'] ? this.calcResults['attackFundsMin'] : this.calcResults['attackFundsMin'] + ' - ' + this.calcResults['attackFundsMax']}</span>
-            </div> 
-            `;
+                <div class="attacker-damage">
+                    <span>${this.calcResults['attackDamageMin'] === this.calcResults['attackDamageMax'] ? colorNum(this.calcResults['attackDamageMax']) : colorNum(this.calcResults['attackDamageMin']) + ' - ' + this.calcResults['attackDamageMax'] + '%'}</span>
+                </div> 
+                `;
         }
+
         return attackerDamageHtml;
     }
 
     generateDefenderDamageHTML() {
         const colorNum = n => `<span style="color:${n < 0 ? 'red' : 'inherit'}">${n}%</span>`;
-        return `
-        <div class="defender-damage">
-            <img src="terrain/fire.gif" class="fire">
-            <span><span class="bold">@${Math.max(0, Math.ceil((this.defenderDisplayHP - this.calcResults['attackDamageMax'])/10.0))}HP: </span>${this.calcResults['minCounterDamageMin'] === this.calcResults['minCounterDamageMax'] ? 
-            colorNum(this.calcResults['minCounterDamageMin']) : colorNum(this.calcResults['minCounterDamageMin']) + ' - ' + this.calcResults['minCounterDamageMax'] + '%'}</span>
-            ${Math.max(0, Math.ceil((this.defenderDisplayHP - this.calcResults['attackDamageMax'])/10.0)) === Math.max(0, Math.ceil((this.defenderDisplayHP - this.calcResults['attackDamageMin'])/10.0)) ?
-                '' : '<span><span class="bold">@' + Math.max(0, Math.ceil((this.defenderDisplayHP - Math.max(0, this.calcResults['attackDamageMin']))/10.0)) + 'HP: </span>' + ((this.calcResults['maxCounterDamageMin'] === this.calcResults['maxCounterDamageMax']) ? 
-                colorNum(this.calcResults['maxCounterDamageMin']) : colorNum(this.calcResults['maxCounterDamageMin']) + ' - ' + this.calcResults['maxCounterDamageMax'] + '%') + '</span>'}
-            <img src="terrain/coin.gif" class="gold-coin">
-            <span class="funds-damage-display">${this.calcResults['minCounterFundsMin'] === this.calcResults['maxCounterFundsMax'] ? this.calcResults['minCounterFundsMin'] : this.calcResults['minCounterFundsMin'] + ' - ' + this.calcResults['maxCounterFundsMax']}</span>
-        </div>
-        `;
-    }
-
-    generateResultsHTML(displayLuckSlider) {
-        let resultsHtml = '';
+        let minHP;
+        let maxHP;
+        if (this.doCounterBreakSwap()) {
+            // counter break
+            minHP = Math.max(0, Math.ceil((this.attackerDisplayHP - this.calcResults['attackDamageMax'])/10.0))
+            maxHP = Math.max(0, Math.ceil((this.attackerDisplayHP - Math.max(0, this.calcResults['attackDamageMin']))/10.0))
+        } else {
+            // normal
+            minHP = Math.max(0, Math.ceil((this.defenderDisplayHP - this.calcResults['attackDamageMax'])/10.0))
+            maxHP = Math.max(0, Math.ceil((this.defenderDisplayHP - Math.max(0, this.calcResults['attackDamageMin']))/10.0))
+        }
+        let defenderDamageHtml = '';
         if (this.isFocused) {
-            const attackerDamageHtml = this.generateAttackerDamageHTML(displayLuckSlider);
-            const defenderDamageHtml = this.generateDefenderDamageHTML();
-            // check if counter break, swap attacker / defender
-            resultsHtml = `
-            <div class="calc-plus-results">
-                <div class="calculator-damage">
-                    ${this.doCounterBreakSwap() ? defenderDamageHtml + attackerDamageHtml : attackerDamageHtml + defenderDamageHtml}
-                </div>
+            defenderDamageHtml = `
+            <div class="defender-damage">
+                <img src="terrain/fire.gif" class="fire">
+                <span><span class="bold">@${minHP}HP: </span>${this.calcResults['minCounterDamageMin'] === this.calcResults['minCounterDamageMax'] ? 
+                colorNum(this.calcResults['minCounterDamageMin']) : colorNum(this.calcResults['minCounterDamageMin']) + ' - ' + this.calcResults['minCounterDamageMax'] + '%'}</span>
+                ${ (minHP === maxHP) ? '' : '<span><span class="bold">@' + maxHP + 'HP: </span>' + ((this.calcResults['maxCounterDamageMin'] === this.calcResults['maxCounterDamageMax']) ? 
+                    colorNum(this.calcResults['maxCounterDamageMin']) : colorNum(this.calcResults['maxCounterDamageMin']) + ' - ' + this.calcResults['maxCounterDamageMax'] + '%') + '</span>'}
+                <img src="terrain/coin.gif" class="gold-coin">
+                <span class="funds-damage-display">${this.calcResults['minCounterFundsMin'] === this.calcResults['maxCounterFundsMax'] ? this.calcResults['minCounterFundsMin'] : this.calcResults['minCounterFundsMin'] + ' - ' + this.calcResults['maxCounterFundsMax']}</span>
             </div>
             `;
         } else {
-            resultsHtml = `
-            <div class="calc-plus-results">
-                <div class="calculator-damage">
-                    <div class="attacker-damage" style="justify-content: center;">
-                        <span>${this.calcResults['attackDamageMin'] === this.calcResults['attackDamageMax'] ? this.calcResults['attackDamageMax'] + '%' : this.calcResults['attackDamageMin'] + '% - ' + this.calcResults['attackDamageMax'] + '%'}</span> 
-                    </div> 
-                    <div class="defender-damage" style="justify-content: center;">
-                        <span><span class="bold">@${Math.max(0, Math.ceil((this.defenderDisplayHP - this.calcResults['attackDamageMax'])/10.0))}HP: </span>${this.calcResults['minCounterDamageMin'] === this.calcResults['minCounterDamageMax'] ? 
-                        this.calcResults['minCounterDamageMin'] + '%' : this.calcResults['minCounterDamageMin'] + '% - ' + this.calcResults['minCounterDamageMax'] + '%'}</span>
-                        ${Math.max(0, Math.ceil((this.defenderDisplayHP - this.calcResults['attackDamageMax'])/10.0)) === Math.max(0, Math.ceil((this.defenderDisplayHP - this.calcResults['attackDamageMin'])/10.0)) ?
-                            '' : '<span><span class="bold">@' + Math.max(0, Math.ceil((this.defenderDisplayHP - Math.max(0, this.calcResults['attackDamageMin']))/10.0)) + 'HP: </span>' + ((this.calcResults['maxCounterDamageMin'] === this.calcResults['maxCounterDamageMax']) ? 
-                            this.calcResults['maxCounterDamageMin'] + '%' : this.calcResults['maxCounterDamageMin'] + '% - ' + this.calcResults['maxCounterDamageMax'] + '%') + '</span>'}
-                    </div>
-                </div>
+            defenderDamageHtml = `
+            <div class="defender-damage">
+                <span><span class="bold">@${minHP}HP: </span>${this.calcResults['minCounterDamageMin'] === this.calcResults['minCounterDamageMax'] ? 
+                colorNum(this.calcResults['minCounterDamageMin']) : colorNum(this.calcResults['minCounterDamageMin']) + ' - ' + this.calcResults['minCounterDamageMax'] + '%'}</span>
+                ${ (minHP === maxHP) ? '' : '<span><span class="bold">@' + maxHP + 'HP: </span>' + ((this.calcResults['maxCounterDamageMin'] === this.calcResults['maxCounterDamageMax']) ? 
+                    colorNum(this.calcResults['maxCounterDamageMin']) : colorNum(this.calcResults['maxCounterDamageMin']) + ' - ' + this.calcResults['maxCounterDamageMax'] + '%') + '</span>'}
             </div>
             `;
         }
-        return resultsHtml;
+
+        return defenderDamageHtml;
+    }
+
+    generateResultsHTML(displayLuckSlider) {
+        const attackerDamageHtml = this.generateAttackerDamageHTML(displayLuckSlider);
+        const defenderDamageHtml = this.generateDefenderDamageHTML();
+        // check if counter break, swap attacker / defender
+        return `
+        <div class="calc-plus-results">
+            <div class="calculator-damage">
+                ${this.doCounterBreakSwap() ? defenderDamageHtml + attackerDamageHtml : attackerDamageHtml + defenderDamageHtml}
+            </div>
+        </div>
+        `;
     }
 
     generateAttackerHTML(safeModeOn, atRoot, attackerHP, attackerCountry, attackerNoSecondary) {
@@ -4783,13 +4795,22 @@ class CalcNode {
     }
 
     genNextNode(id, displayLuckSlider) { //returns node post attack
-        let nextDefender = JSON.parse(JSON.stringify(this.defender));
+        const nextDefender = JSON.parse(JSON.stringify(this.defender));
+        const nextAttacker = JSON.parse(JSON.stringify(DEFAULT_ATTACKER));
         // Get damage the attack will do. If luck mode is on, use slider value; else use min value
-        const attackerDamage = (displayLuckSlider) ? this.sliderDamage : Math.max(0, this.calcResults['attackDamageMin']);
-        const maxHP = Math.max(0, this.defenderDisplayHP - attackerDamage);
+        let attackerDamage;
+        let maxHP;
+        if (this.doCounterBreakSwap()) {
+            // use min counter
+            attackerDamage = (displayLuckSlider) ? this.sliderDamage : Math.max(0, this.calcResults['minCounterDamageMin']);
+            maxHP = Math.max(0, this.attackerDisplayHP - attackerDamage);
+        } else {
+            // no swap
+            attackerDamage = (displayLuckSlider) ? this.sliderDamage : Math.max(0, this.calcResults['attackDamageMin']);
+            maxHP = Math.max(0, this.defenderDisplayHP - attackerDamage);
+        }
 
         nextDefender['hp'] = maxHP;
-        const nextAttacker = JSON.parse(JSON.stringify(DEFAULT_ATTACKER));
         nextAttacker.country = this.attacker.country;
 
         const newNode = new CalcNode(nextAttacker, nextDefender, id, this.builtinCalc, displayLuckSlider);
@@ -4913,8 +4934,8 @@ class BuiltinCalculator {
     // return dict containing min/max attack and counter damage
     calculate(attacker, defender, luck=null) {
         let result = {
-            'attackDamageMin': 0, 
-            'attackDamageMax': 0, 
+            'attackDamageMin': 0,
+            'attackDamageMax': 0,
             'attackFundsMin': 0,
             'attackFundsMax': 0,
 
@@ -4948,7 +4969,7 @@ class BuiltinCalculator {
                 defender.hp -= attack_min;
                 counter = this.calc(defender, attacker, true);
                 defender.hp += attack_min;
-                
+
                 result.minCounterDamageMin = counter.min;
                 result.minCounterDamageMax = counter.max;
                 result.minCounterFundsMin = this.getDamageCost(attacker, counter.min);
@@ -5195,6 +5216,8 @@ class BuiltinCalculator {
                 return AMMO_USE[row][col];
         }
     }
+
+    // returns true if unit has ammo
 
 }
 
@@ -5677,6 +5700,10 @@ class DamageCalculator {
             // no way to get this, use default ammo value
             ammo = UNIT_LIST[name].units_ammo;
         }
+        // unit id
+        const units_id = UNIT_LIST[name].units_id;
+        // set ammo to 1 if unit has no ammo
+        ammo = ([1, 5, 6, 14, 17, 28, 968731].includes(units_id)) ? 1 : ammo;
         // get player
         const player = Object.values(players).find(v => v.countries_code === country);
         // get tile
@@ -5692,7 +5719,7 @@ class DamageCalculator {
                 "power": player.players_co_power_on,
                 "terrain": {"terrain_name": tile.terrain_name, "terrain_id": tile.terrain_id, "terrain_defense": tile.terrain_defense},
                 "towers": parseInt(player.towers) || 0,
-                "unit": {"units_ammo": ammo, "units_name": name, "units_id": UNIT_LIST[name].units_id}
+                "unit": {"units_ammo": ammo, "units_name": name, "units_id": units_id}
             };
         } else {
             return null

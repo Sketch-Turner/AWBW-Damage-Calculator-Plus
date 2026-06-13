@@ -2,8 +2,6 @@ Bugs
     luck slider - unfocused hp incorrect 
         funds sometimes wrong too
     Select unit after changing army color doesn't work until refresh
-    click to select inf, switch to tank = no ammo
-    sonja SCOP units follow up calced with defender 1st strike instead of attacker
 Todos
     Safari/Firefox/Edge port?
     Rework extra calcs in genNextNode
