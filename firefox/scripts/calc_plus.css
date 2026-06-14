@@ -1,0 +1,358 @@
+:root {
+    --calc-plus-window:	#0066cc;
+    --calc-plus-background: #fafadd;
+	
+    --calc-plus-focused-poly: #ffffff;
+    --calc-plus-focused-poly-border: #000000;	
+    --calc-plus-focused-panel: #dddddd;
+    --calc-plus-focused-panel-border: #888888;
+    --calc-plus-focused-header-text: #ffffff;
+    --calc-plus-focused-header-bg: #0066cc;
+    --calc-plus-focused-header-border: #888888;
+    --calc-plus-focused-text: #000000;
+    --calc-plus-focused-button: #000000;
+
+    --calc-plus-unfocused-poly:	#ffffff;
+    --calc-plus-unfocused-poly-border: #000000;	
+    --calc-plus-unfocused-panel: #e1e1e1;
+    --calc-plus-unfocused-panel-border: #959595;
+    --calc-plus-unfocused-header-text: #ffffff;
+    --calc-plus-unfocused-header-bg: #4075d2;
+    --calc-plus-unfocused-header-border: #959595;
+    --calc-plus-unfocused-text: #000000;
+    --calc-plus-unfocused-button: #000000;
+
+    --calc-plus-invalid-poly: #fe755f;	
+    --calc-plus-invalid-poly-border: #000000;	
+    --calc-plus-invalid-panel: #e1e1e1;
+    --calc-plus-invalid-panel-border: #959595;
+    --calc-plus-invalid-header-text: #ffffff;
+    --calc-plus-invalid-header-bg: #f44336;
+    --calc-plus-invalid-header-border: #959595;
+    --calc-plus-invalid-text: #000000;
+    --calc-plus-invalid-button: #000000;
+}
+
+
+
+
+.calc-plus-node-ctrls {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 100%;
+}
+
+.calc-plus-ctrls {
+    padding: 2px; /* Adjust padding for smaller buttons */
+    cursor: pointer;
+    border-radius: 4px;
+    width: 16px; /* Adjust width for smaller buttons */
+    display: inline-flex;
+}
+.calc-plus-ctrls.calc-plus-focused {
+    background-color: var(--calc-plus-focused-button);
+}
+.calc-plus-ctrls.calc-plus-unfocused {
+    background-color: var(--calc-plus-unfocused-button);
+}
+.calc-plus-ctrls.calc-plus-invalid {
+    background-color: var(--calc-plus-invalid-button);
+}
+
+.calc-plus-ctrls-tray {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    gap: 2px;
+}
+
+/* Use the same class for both left and right options */
+.calc-plus-ctrls-del,
+.calc-plus-ctrls-add,
+.calc-plus-ctrls-copy,
+.calc-plus-ctrls-new {
+    margin: 2px;
+}
+
+.calc-plus-ctrls-add {
+    margin-left: auto;
+}
+
+.calc-plus-ctrls-copy,
+.calc-plus-ctrls-new {
+    width: 16px;
+    height: 16px;
+}
+
+.calc-plus-ctrls-copy img:hover,
+.calc-plus-ctrls-new img:hover {
+    transform: scale(1.2);
+}
+
+.calc-plus-main-display {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.calc-plus-damage {
+    display: flex;
+    justify-content: space-around;
+}
+
+.calculator-damage .calc-plus-slider-display {
+    display: inline-block;
+    width: 100%
+}
+
+input.calc-plus-damage-slider {
+    width: 50%; 
+}
+
+.calc-plus {
+    background: white; 
+    border: 1px solid black; 
+    display: none; 
+    flex-direction: column;
+    font-family: sans-serif; 
+    font-size: 14px; 
+    left: 200px; 
+    position: absolute; 
+    top: 200px; 
+    -webkit-user-select: none; 
+    -moz-user-select: none; 
+    -ms-user-select: none; 
+    user-select: none; 
+    min-width: 360px;
+    min-height: 317px;
+    resize: both;
+    overflow: auto;
+}
+
+.calc-plus-header { /*grab header*/
+    align-items: center;
+    cursor: grab;
+    display: flex;
+    background-color: var(--calc-plus-window);
+    color: var(--calc-plus-focused-header-text);
+    font-weight: bold;
+    padding: 2px;
+}
+
+.calc-plus-header span {
+    cursor: pointer;
+    font-size: 16px;
+    margin-left: auto;
+    margin-right: 8px;
+}
+
+/* Make sure .calc-plus-display is positioned relatively */
+.calc-plus-display {
+    background: var(--calc-plus-background);
+    position: relative;
+    min-height: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* Align items to the start of the main axis */
+    align-items: flex-start;
+    overflow: scroll;
+}
+
+.calc-plus-tree {
+    position: absolute;
+    display: inline-block;
+    white-space: nowrap;
+}
+
+.calc-plus-node {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100px;
+    height: 100px;
+    overflow: hidden;
+}
+
+.calc-plus-node-headers {
+    display: flex;
+    justify-content: space-evenly;
+    align-content: center;
+    flex-wrap: wrap;
+    font-weight: bold;
+}
+.calc-plus-node-headers.calc-plus-focused {
+    color: var(--calc-plus-focused-header-text);
+}
+.calc-plus-node-headers.calc-plus-unfocused {
+    color: var(--calc-plus-unfocused-header-text);
+}
+.calc-plus-node-headers.calc-plus-invalid {
+    color: var(--calc-plus-invalid-header-text);
+}
+
+
+.calc-plus-node-header-poly {
+    stroke-width: 1px;
+    shape-rendering: crispEdges;
+    z-index: 1;
+}
+.calc-plus-node-header-poly.calc-plus-focused {
+    fill: var(--calc-plus-focused-header-bg);
+    stroke: var(--calc-plus-focused-panel-border);
+}
+.calc-plus-node-header-poly.calc-plus-unfocused{
+    fill: var(--calc-plus-unfocused-header-bg);
+    color: var(--calc-plus-unfocused-header-text);
+    stroke: var(--calc-plus-unfocused-panel-border);
+}
+.calc-plus-node-header-poly.calc-plus-invalid {
+    fill: var(--calc-plus-invalid-header-bg);
+    color: var(--calc-plus-invalid-header-text);
+    stroke: var(--calc-plus-invalid-panel-border);
+}
+
+.calc-plus-poly {
+    stroke-width: 1px;
+    shape-rendering: crispEdges;
+}
+.calc-plus-poly.calc-plus-focused{
+    fill: var(--calc-plus-focused-poly);
+    stroke: var(--calc-plus-focused-poly-border)
+}
+.calc-plus-poly.calc-plus-unfocused{
+    fill: var(--calc-plus-unfocused-poly);
+    stroke: var(--calc-plus-unfocused-poly-border)
+}
+.calc-plus-poly.calc-plus-invalid{
+    fill: var(--calc-plus-invalid-poly);
+    stroke: var(--calc-plus-invalid-poly-border)
+}
+
+.calc-plus-main {
+    display: flex;
+    flex-direction: row;
+}
+
+.calc-plus-summary-display{
+    align-items: center;
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    margin-top: 5px;
+    margin-left: 1px;
+    margin-right: 1px;
+}
+
+.calc-plus-select-attacker, .calc-plus-select-defender {
+    position: relative;
+    cursor: pointer;
+    font-size: 10px;
+    font-weight: 400;
+}
+.calc-plus-select-attacker:hover, .calc-plus-select-defender:hover {
+    font-weight: bold;
+}
+.calc-plus-select-attacker.clicked, .calc-plus-select-defender.clicked {
+    font-weight: bolder;
+}
+.calc-plus-select-attacker.calc-plus-focused, .calc-plus-select-defender.calc-plus-focused {
+    color: var(--calc-plus-focused-header-text)
+}
+.calc-plus-select-attacker.calc-plus-unfocused, .calc-plus-select-defender.calc-plus-unfocused {
+    color: var(--calc-plus-unfocused-header-text)
+}
+
+.calc-plus-summary-image {
+    background-color: white;
+    display: flex;
+    align-items: flex-end;
+    position: relative;
+    margin: 2px;
+}
+.calc-plus-summary-image.calc-plus-focused {
+    border: 1px solid var(--calc-plus-focused-panel-border);
+}
+.calc-plus-summary-image.calc-plus-unfocused {
+    border: 1px solid var(--calc-plus-unfocused-panel-border);
+}
+.calc-plus-summary-image.calc-plus-invalid {
+    border: 1px solid var(--calc-plus-invalid-panel-border);
+}
+
+.calc-plus-summary-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    position: relative;
+    margin: 2px;
+}
+
+.calc-plus-summary-attack, .calc-plus-summary-defend {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50%;
+    height: 100%;
+}
+.calc-plus-summary-attack.calc-plus-focused, 
+.calc-plus-summary-defend.calc-plus-focused {
+    background: var(--calc-plus-focused-panel);
+    border: 1px solid var(--calc-plus-focused-panel-border);
+}
+.calc-plus-summary-attack.calc-plus-unfocused, 
+.calc-plus-summary-defend.calc-plus-unfocused {
+    background: var(--calc-plus-unfocused-panel);
+    border: 1px solid var(--calc-plus-unfocused-panel-border);
+}
+.calc-plus-summary-attack.calc-plus-invalid, 
+.calc-plus-summary-defend.calc-plus-invalid {
+    background: var(--calc-plus-invalid-panel);
+    border: 1px solid var(--calc-plus-invalid-panel-border);
+}
+
+.calc-plus-locked:hover,
+.calc-plus-locked div:hover,
+.calc-plus-locked img:hover,
+.calc-plus-locked span:hover {
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+.calc-plus-locked.red-border:hover {
+    transform: scale(1.2) !important;
+}
+
+#calc-plus-blue-border {
+    border-color: #29B5E9 !important;
+    transform: scale(1.2) !important;
+}
+
+#calc-plus-options {
+    margin-right: 4px;
+    margin-top: 4px;
+}
+
+#calc-plus-city-options, #calc-plus-tower-options {
+    width: 47%;
+    margin-right: 0px;
+}
+
+#calc-plus-fund-options {
+    margin-top: 4px;
+    margin-left: 0px;
+    margin-bottom: 0px;
+    width: 106px;
+}
+
+#calc-plus-ammo-options {
+    margin-top: 4px;
+    margin-bottom: 0px;
+}
