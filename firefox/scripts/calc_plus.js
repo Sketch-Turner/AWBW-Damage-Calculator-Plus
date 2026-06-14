@@ -4399,8 +4399,8 @@ class CalcNode {
     generateOptionsHTML(variableStyle) {
         return `
         <div class="calc-plus-node-ctrls">
-            ${'<div class="calc-plus-ctrls calc-plus-ctrls-del ' + variableStyle +'" title="Delete"><img src="' + chrome.runtime.getURL('/images/delete_icon.png') + '"></div>'}
-            ${(this.defenderDisplayHP - this.calcResults['attackDamageMin'] > 0) ? '<div class="calc-plus-ctrls calc-plus-ctrls-add ' + variableStyle + '" title="Add Attack"><img src="' + chrome.runtime.getURL('/images/add_icon.png') + '"></div>' : ''}
+            ${'<div class="calc-plus-ctrls calc-plus-ctrls-del ' + variableStyle +'" title="Delete"><img src="' + browser.runtime.getURL('/images/delete_icon.png') + '"></div>'}
+            ${(this.defenderDisplayHP - this.calcResults['attackDamageMin'] > 0) ? '<div class="calc-plus-ctrls calc-plus-ctrls-add ' + variableStyle + '" title="Add Attack"><img src="' + browser.runtime.getURL('/images/add_icon.png') + '"></div>' : ''}
         </div>
         `;
     }
@@ -4420,7 +4420,7 @@ class CalcNode {
                         ${sliderMax}
                     </div>
                     <span>
-                        <img src="${chrome.runtime.getURL('/images/luck_icon.png')}">
+                        <img src="${browser.runtime.getURL('/images/luck_icon.png')}">
                         <span class="calc-plus-slider-value"> <b>≥</b> ${this.sliderLuck} (${this.sliderProbability.toFixed(2)}%)</span>
                     </span>
                     <span>
@@ -5384,7 +5384,7 @@ class DamageCalculator {
         // }
         button.title = `Safe Mode is ${this.safeModeOn ? 'On' : 'Off'}. Click to toggle.`;
         const img = button.querySelector("img");
-        img.src = chrome.runtime.getURL('/images/' + (this.safeModeOn ? 'lock' : 'unlock') + '_icon.png');
+        img.src = browser.runtime.getURL('/images/' + (this.safeModeOn ? 'lock' : 'unlock') + '_icon.png');
         const display = document.getElementById("calc-plus-display");
         display.innerHTML = this.getInnerHTML(); //refresh display
         this.saveSession(); //save session data
@@ -5400,7 +5400,7 @@ class DamageCalculator {
         // }
         button.title = `Luck display is ${this.displaySlider ? 'On' : 'Off'}. Click to toggle.`;
         const img = button.querySelector("img");
-        img.src = chrome.runtime.getURL('/images/' + (this.displaySlider ? 'showing_luck' : 'hiding_luck') + '_icon.png');
+        img.src = browser.runtime.getURL('/images/' + (this.displaySlider ? 'showing_luck' : 'hiding_luck') + '_icon.png');
         const display = document.getElementById("calc-plus-display");
 
         // update calcs if any exist
@@ -5502,10 +5502,10 @@ class DamageCalculator {
         //add and copy button
         html += `<div class="calc-plus-ctrls-tray">
                     <div class="calc-plus-ctrls calc-plus-ctrls-new" title="New Calc">
-                        <img src="${chrome.runtime.getURL('/images/new_calc_icon_20x20.png')}">
+                        <img src="${browser.runtime.getURL('/images/new_calc_icon_20x20.png')}">
                     </div>
                     <div class="calc-plus-ctrls calc-plus-ctrls-copy" title="Copy From AWBW Damage Calculator">
-                        <img src="${chrome.runtime.getURL('/images/copy_calc_icon_20x20.png')}">
+                        <img src="${browser.runtime.getURL('/images/copy_calc_icon_20x20.png')}">
                     </div>
                 </div>`;
         return html;
@@ -5827,11 +5827,11 @@ class DamageCalculator {
                                 See you on the Global League. Good luck, have fun!!
                             </div>
                         </div>
-                        <div title="Luck display is ${this.displaySlider ? 'On' : 'Off'}. Click to toggle." id="calc-plus-slider-toggle" style="display: none; margin-top: 4px; margin-right: 9px; height: 16px;"><img src="${chrome.runtime.getURL('/images/' + (this.displaySlider ? 'showing_luck' : 'hiding_luck') + '_icon.png')}"></div>
-                        <div title="Safe Mode is ${this.safeModeOn ? 'On' : 'Off'}. Click to toggle." id="calc-plus-safe" style="display: none; margin-top: 4px; margin-right: 9px; height: 16px;"><img src="${chrome.runtime.getURL('/images/' + (this.safeModeOn ? 'lock' : 'unlock') + '_icon.png')}"></div>
-                        <div title="Clear Session Data" id="calc-plus-clear" style="display: none; margin-top: 4px; margin-right: 9px; height: 16px;"><img src="${chrome.runtime.getURL('/images/clear_session_icon.png')}"></div>                        
-                        <div title="Shrink" id="calc-plus-shrink" style="margin-top: 4px; margin-right: 9px; height: 16px;"><img src="${chrome.runtime.getURL('/images/shrink_icon.png')}"></div>
-                        <div title="Expand" id="calc-plus-grow" style="margin-top: 4px; margin-right: 9px; height: 16px;"><img src="${chrome.runtime.getURL('/images/grow_icon.png')}"></div>
+                        <div title="Luck display is ${this.displaySlider ? 'On' : 'Off'}. Click to toggle." id="calc-plus-slider-toggle" style="display: none; margin-top: 4px; margin-right: 9px; height: 16px;"><img src="${browser.runtime.getURL('/images/' + (this.displaySlider ? 'showing_luck' : 'hiding_luck') + '_icon.png')}"></div>
+                        <div title="Safe Mode is ${this.safeModeOn ? 'On' : 'Off'}. Click to toggle." id="calc-plus-safe" style="display: none; margin-top: 4px; margin-right: 9px; height: 16px;"><img src="${browser.runtime.getURL('/images/' + (this.safeModeOn ? 'lock' : 'unlock') + '_icon.png')}"></div>
+                        <div title="Clear Session Data" id="calc-plus-clear" style="display: none; margin-top: 4px; margin-right: 9px; height: 16px;"><img src="${browser.runtime.getURL('/images/clear_session_icon.png')}"></div>                        
+                        <div title="Shrink" id="calc-plus-shrink" style="margin-top: 4px; margin-right: 9px; height: 16px;"><img src="${browser.runtime.getURL('/images/shrink_icon.png')}"></div>
+                        <div title="Expand" id="calc-plus-grow" style="margin-top: 4px; margin-right: 9px; height: 16px;"><img src="${browser.runtime.getURL('/images/grow_icon.png')}"></div>
                         <div title="Hide" class="close-calc-plus">&#10005;</div>
                     </span>
                 </header>
@@ -6468,7 +6468,7 @@ class DamageCalculator {
 const link = document.createElement('link');
 link.rel = 'stylesheet';
 link.type = 'text/css';
-link.href = chrome.runtime.getURL('/scripts/calc_plus.css');
+link.href = browser.runtime.getURL('/scripts/calc_plus.css');
 document.head.appendChild(link);
 
 //Set Z_INDEX
@@ -6482,7 +6482,7 @@ if (old_dc_button) {
     const new_dc_button = `
     <div class="calculator-plus-toggle game-tools-btn" style="border-right: none;">
         <div class="game-tools-bg">
-            <img src="` + chrome.runtime.getURL('/images/new_calc.png') + `" style="display: block;">
+            <img src="` + browser.runtime.getURL('/images/new_calc.png') + `" style="display: block;">
         </div>
         <span class="game-tools-btn-text small_text">Damage Calculator +</span>
     </div>
