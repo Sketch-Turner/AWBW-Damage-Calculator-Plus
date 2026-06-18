@@ -13,6 +13,7 @@ Functionality and availability of the original Damage Calculator is unchanged.
 
 ## Installation
 [Chrome Extension](https://chromewebstore.google.com/detail/awbw-damage-calculator-+/gddlojgohoodggfkimeooapmfmfkgjpb)
+
 [Firefox Add-On](https://addons.mozilla.org/en-US/firefox/addon/awbw-damage-calculator/)
 
 ## Usage
