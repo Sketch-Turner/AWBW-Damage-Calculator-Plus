@@ -3,6 +3,5 @@ Bugs
         funds sometimes wrong too
     Select unit after changing army color doesn't work until refresh
 Todos
-    Safari/Firefox/Edge port?
     Rework extra calcs in genNextNode
     
