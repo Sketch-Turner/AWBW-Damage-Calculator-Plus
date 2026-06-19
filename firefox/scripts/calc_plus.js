@@ -4555,7 +4555,7 @@ class CalcNode {
                 <div class="misc-options" id="calc-plus-options" style="width: 98px;">
                     <div class="city-options" id="calc-plus-city-options">
                         <img src="terrain/capt.gif"> 
-                        <input type="number" max="99" min="0" style="width: 30px;" value="${this.attacker['cities']}" class="text-input city-input">
+                        <input type="number" max="99" min="0" style="width: 33px;" value="${this.attacker['cities']}" class="text-input city-input">
                     </div> 
                     <div class="tower-options" id="calc-plus-tower-options">
                         <img src="terrain/aw2/commtowericon.gif"> 
@@ -4618,7 +4618,7 @@ class CalcNode {
                 <div class="misc-options" id="calc-plus-options" style="width: 98px;">
                     <div class="city-options" id="calc-plus-city-options">
                         <img src="terrain/capt.gif"> 
-                        <input type="number" max="${this.defenderMaxCities}" min="0" style="width: 30px;" value="${this.defender['cities']}" class="text-input city-input">
+                        <input type="number" max="${this.defenderMaxCities}" min="0" style="width: 33px;" value="${this.defender['cities']}" class="text-input city-input">
                     </div> 
                     <div class="tower-options" id="calc-plus-tower-options">
                         <img src="terrain/aw2/commtowericon.gif"> 
