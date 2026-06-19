@@ -5788,7 +5788,7 @@ class DamageCalculator {
                     "power": power,
                     "terrain": TERRAIN_DATA[terrain],
                     "towers": towers,
-                    "unit": UNIT_LIST[unit]
+                    "unit": JSON.parse(JSON.stringify(UNIT_LIST[unit]))
                 };
 
                 data[k]["unit"]["units_ammo"] = ammo;
