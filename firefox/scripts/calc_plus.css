@@ -38,8 +38,8 @@
 
 .calc-plus-node-ctrls {
     position: absolute;
-    bottom: 0;
-    left: 0;
+    bottom: -1px;
+    left: 1px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -178,7 +178,7 @@ input.calc-plus-damage-slider {
     left: 0;
     width: 100px;
     height: 100px;
-    overflow: hidden;
+    overflow: visible;
 }
 
 .calc-plus-node-headers {
@@ -203,6 +203,7 @@ input.calc-plus-damage-slider {
     stroke-width: 1px;
     shape-rendering: crispEdges;
     z-index: 1;
+    overflow: visible;
 }
 .calc-plus-node-header-poly.calc-plus-focused {
     fill: var(--calc-plus-focused-header-bg);
@@ -355,4 +356,26 @@ input.calc-plus-damage-slider {
 #calc-plus-ammo-options {
     margin-top: 4px;
     margin-bottom: 0px;
+}
+
+.fund-options input,
+.tower-options input,
+.city-options input,
+.hp-options input {
+    -moz-appearance: textfield !important;
+    appearance: textfield !important;
+    padding-right: 0px;
+}
+
+.fund-options input:hover,
+.fund-options input:focus,
+.tower-options input:hover,
+.tower-options input:focus,
+.city-options input:hover,
+.city-options input:focus,
+.hp-options input:hover,
+.hp-options input:focus {
+    -moz-appearance: number-input !important;
+    appearance: auto !important;
+    padding-right: 0px;
 }
