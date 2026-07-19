@@ -12,9 +12,24 @@ AWBW Damage Calculator Plus is a web extension that expands the functionality of
 Functionality and availability of the original Damage Calculator is unchanged.
 
 ## Installation
+
+### Google Chrome
+Install the extension from the **Chrome Web Store**:
+
 [Chrome Extension](https://chromewebstore.google.com/detail/awbw-damage-calculator-+/gddlojgohoodggfkimeooapmfmfkgjpb)
 
+### Mozilla Firefox
+Install the add-on from **Mozilla Add-ons**:
+
 [Firefox Add-On](https://addons.mozilla.org/en-US/firefox/addon/awbw-damage-calculator/)
+
+### Microsoft Edge
+1. Open `edge://extensions/`.
+2. Enable **Allow extensions from other stores** (bottom left).
+3. Click **Allow** if prompted.
+4. Install the extension from the **Chrome Web Store**.
+
+![Allow extensions from other stores](images/tutorial/edge_install.png)
 
 ## Usage
 The icon can be found next to the original Damage Calculator.
