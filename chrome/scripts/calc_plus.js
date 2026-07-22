@@ -5192,32 +5192,56 @@ class CalcNode {
         }
     }
 
-    genNextNode(id, displayLuckSlider) { //returns node post attack
-        const nextDefender = JSON.parse(JSON.stringify(this.defender));
-        const nextAttacker = JSON.parse(JSON.stringify(DEFAULT_ATTACKER));
-        // Get damage the attack will do. If luck mode is on, use slider value; else use min value
+    // returns defender next state post attack
+    computeNextState(displayLuckSlider) {
+        const nextDefender = structuredClone(this.defender);
+
         let attackerDamage;
         let maxHP;
+
         if (this.doCounterBreakSwap()) {
-            // use min counter
-            attackerDamage = (displayLuckSlider) ? this.sliderDamage : Math.max(0, this.calcResults['minCounterDamageMin']);
+            attackerDamage = displayLuckSlider
+                ? this.sliderDamage
+                : Math.max(0, this.calcResults.minCounterDamageMin);
+
             maxHP = Math.max(0, this.attackerDisplayHP - attackerDamage);
         } else {
-            // no swap
-            attackerDamage = (displayLuckSlider) ? this.sliderDamage : Math.max(0, this.calcResults['attackDamageMin']);
+            attackerDamage = displayLuckSlider
+                ? this.sliderDamage
+                : Math.max(0, this.calcResults.attackDamageMin);
+
             maxHP = Math.max(0, this.defenderDisplayHP - attackerDamage);
         }
 
-        nextDefender['hp'] = maxHP;
+        nextDefender.hp = maxHP;
+
+        return {
+            defender: nextDefender,
+            defenderMaxHP: maxHP,
+            defenderDisplayHP: maxHP,
+            defenderMaxCities: this.defender.cities,
+            defenderMaxTowers: this.defender.towers
+        };
+    }
+
+    // builds next node
+    genNextNode(id, displayLuckSlider) {
+        const state = this.computeNextState(displayLuckSlider);
+
+        const nextAttacker = structuredClone(DEFAULT_ATTACKER);
         nextAttacker.country = this.attacker.country;
 
-        const newNode = new CalcNode(nextAttacker, nextDefender, id, this.builtinCalc, displayLuckSlider);
-        newNode.defenderMaxHP = maxHP;
-        newNode.defenderDisplayHP = maxHP;
+        const node = new CalcNode(
+            nextAttacker,
+            state.defender,
+            id,
+            this.builtinCalc,
+            displayLuckSlider
+        );
 
-        newNode.defenderMaxCities = this.defender['cities'];
-        newNode.defenderMaxTowers = this.defender['towers'];
-        return newNode;
+        Object.assign(node, state);
+
+        return node;
     }
 
     // sets this.calcResults
@@ -5233,43 +5257,50 @@ class CalcNode {
         this.defender.unit.units_ammo = defender_ammo;
     }
 
+    // updates slider attributes based on current luck value
+    updateSlider(luck, displayLuckSlider) {
+        this.sliderLuck = luck;
+        this.sliderProbability = this.calcLuckRollProbability(this.attacker, luck);
+
+        this.updateCalcResults(displayLuckSlider);
+
+        this.sliderDamage = Math.max(0, this.calcResults.attackDamageMin);
+        this.sliderFunds = this.calcResults.attackFundsMin;
+    }
+
+    // cascading update for this node and all children
     refactor(displayLuckSlider) {
         if (!this.isValid) {
             this.removeFocus();
         }
-        this.updateCalcResults(displayLuckSlider);
-        const newChild = this.genNextNode(-1, displayLuckSlider);//this is discarded so id doesnt matter???
+
+        if (displayLuckSlider) {
+            this.updateSlider(this.sliderLuck, displayLuckSlider)
+        } else {
+            this.updateCalcResults(displayLuckSlider);
+        }
+
+        const state = this.computeNextState(displayLuckSlider);
+
         for (const child of this.children) {
-            const oldDefender = JSON.parse(JSON.stringify(child.defender))
-            child.defender = JSON.parse(JSON.stringify(newChild.defender));
-            //if luck mode, use slider val
-            child.defenderMaxHP = newChild.defenderMaxHP;
-            child.defenderDisplayHP = newChild.defenderDisplayHP;
-            //TODO?????
-            
-            child.defenderMaxCities = newChild.defenderMaxCities;
-            child.defenderMaxTowers = newChild.defenderMaxTowers;
+            const oldDefender = structuredClone(child.defender);
+
+            child.defender = structuredClone(state.defender);
+            child.defenderMaxHP = state.defenderMaxHP;
+            child.defenderDisplayHP = state.defenderDisplayHP;
+            child.defenderMaxCities = state.defenderMaxCities;
+            child.defenderMaxTowers = state.defenderMaxTowers;
             child.defenderNoAmmoToggled = this.defenderNoAmmoToggled;
 
+            child.attacker.towers = this.attacker.towers;
+            child.attacker.cities = this.attacker.cities;
+            child.attacker.funds = this.attacker.funds;
+            child.attacker.power = this.attacker.power;
+            child.attacker.co = this.attacker.co;
 
-            // for (const key in valueChanges) {
-            //     const k = key.replace('a_', '').replace('d_', '');
-            //     if (valueChanges[key]) {
-            //         child.attacker[k] = this.attacker[k];
-            //     } else if (key.startsWith('d_')) {
-            //         child.defender[k] = oldDefender[k];
-            //     }
-            // }
-            child.attacker['towers'] = this.attacker['towers'];
-            child.attacker['cities'] = this.attacker['cities'];
-            child.attacker['funds'] = this.attacker['funds'];
-            child.attacker['power'] = this.attacker['power'];
-            child.attacker['co'] = this.attacker['co'];
-            child.defender['towers'] = oldDefender['towers'];
-            child.defender['cities'] = oldDefender['cities'];
+            child.defender.towers = oldDefender.towers;
+            child.defender.cities = oldDefender.cities;
 
-            // TODO: Add other info that carries over here
-            
             child.isValid = (child.defenderDisplayHP > 0) && this.isValid;
             child.refactor(displayLuckSlider);
         }
@@ -6807,24 +6838,18 @@ class DamageCalculator {
                 if (node) {
                     //update current node values
                     if (event.target.classList.contains('calc-plus-damage-slider')) {
-                        const luck = parseInt(event.target.value);
-                        const probability = node.calcLuckRollProbability(node.attacker, luck);
-                        node.sliderLuck = luck;
-                        node.sliderProbability = probability;
-                        node.updateCalcResults(this.displaySlider);
-                        const damage = node.calcResults.attackDamageMin;
-                        const funds = node.calcResults.attackFundsMin;
-                        node.sliderDamage = damage;
-                        node.sliderFunds = funds;
-                        // update html
+                        node.updateSlider(parseInt(event.target.value), this.displaySlider);
+
                         const parentElement = event.target.closest('.attacker-damage');
                         if (parentElement) {
-                            const valueSpan = parentElement.querySelector('.calc-plus-slider-value');
-                            valueSpan.innerHTML = ` <b>≥</b> ${luck} (${probability.toFixed(2)}%)`;
-                            const damageSpan = parentElement.querySelector('.calc-plus-slider-damage');
-                            damageSpan.textContent = `${damage}%`;
-                            const fundsSpan = parentElement.querySelector('.calc-plus-slider-funds');
-                            fundsSpan.textContent = funds;
+                            parentElement.querySelector('.calc-plus-slider-value').innerHTML =
+                                ` <b>≥</b> ${node.sliderLuck} (${node.sliderProbability.toFixed(2)}%)`;
+
+                            parentElement.querySelector('.calc-plus-slider-damage').textContent =
+                                `${node.sliderDamage}%`;
+
+                            parentElement.querySelector('.calc-plus-slider-funds').textContent =
+                                node.sliderFunds;
                         }
                     }
                 }
