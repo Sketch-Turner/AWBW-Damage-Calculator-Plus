@@ -24,7 +24,7 @@ Install the add-on from **Mozilla Add-ons**:
 [Firefox Add-On](https://addons.mozilla.org/en-US/firefox/addon/awbw-damage-calculator/)
 
 ### Microsoft Edge
-1. Open `edge://extensions/`.
+1. Open [edge://extensions/](edge://extensions/).
 2. Enable **Allow extensions from other stores** (bottom left).
 3. Click **Allow** if prompted.
 4. Install the extension from the **Chrome Web Store**.
