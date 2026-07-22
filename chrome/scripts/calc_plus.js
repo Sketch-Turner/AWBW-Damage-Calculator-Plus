@@ -4807,9 +4807,9 @@ class CalcNode {
         const colorNum = n => `<span style="color:${n < 0 ? 'red' : 'inherit'}">${n}%</span>`;
         let attackerDamageHtml = '';
         if (this.isFocused) {
-            const sliderMin = -this.builtinCalc.lookupGlobal(this.attacker, "bad_luck");
-            const sliderMax = this.builtinCalc.lookupGlobal(this.attacker, "good_luck");
             if (displayLuckSlider) {
+                const sliderMin = -this.builtinCalc.lookupGlobal(this.attacker, "bad_luck");
+                const sliderMax = this.builtinCalc.lookupGlobal(this.attacker, "good_luck");
                 attackerDamageHtml = `
                 <div class="attacker-damage">
                     <div class="calc-plus-slider-display">
@@ -5282,7 +5282,7 @@ class CalcNode {
 class CalcTree {
     constructor(id, builtinCalc, displayLuckSlider) {
         this.builtinCalc = builtinCalc;
-        this.root = new CalcNode(JSON.parse(JSON.stringify(DEFAULT_ATTACKER)), JSON.parse(JSON.stringify(DEFAULT_DEFENDER)), id, builtinCalc, displayLuckSlider);
+        this.root = new CalcNode(structuredClone(DEFAULT_ATTACKER), structuredClone(DEFAULT_DEFENDER), id, builtinCalc, displayLuckSlider);
         this.root.isRoot = true;
         this.activeNode = this.root;
         this.root.orient(0,0);
@@ -5336,7 +5336,7 @@ class BuiltinCalculator {
             'attackDamageMax': 0,
             'attackFundsMin': 0,
             'attackFundsMax': 0,
-            'attackProbability': luck,
+            'attackLuckRoll': luck,
 
             'minCounterDamageMin': 0,
             'minCounterDamageMax': 0,
@@ -5356,7 +5356,6 @@ class BuiltinCalculator {
         result.attackDamageMax = attack.max;
         result.attackFundsMin = this.getDamageCost(defender, attack.min);
         result.attackFundsMax = this.getDamageCost(defender, attack.max);
-        result.attackProbability = attack.probability;
 
         let counter = {"max":0, "min":0};
         const attack_min = Math.max(attack.max, 0);
@@ -5788,7 +5787,7 @@ class DamageCalculator {
                     "power": power,
                     "terrain": TERRAIN_DATA[terrain],
                     "towers": towers,
-                    "unit": JSON.parse(JSON.stringify(UNIT_LIST[unit]))
+                    "unit": structuredClone(UNIT_LIST[unit])
                 };
 
                 data[k]["unit"]["units_ammo"] = ammo;
@@ -6434,14 +6433,14 @@ class DamageCalculator {
                 // console.log("Clicked:", this.clickedUnit);
                 if (this.clickedUnit) {
                     if (this.clickSelectMode === 'A') {
-                        this.currentNode.attacker = JSON.parse(JSON.stringify(this.clickedUnit));
+                        this.currentNode.attacker = structuredClone(this.clickedUnit);
                         this.currentNode.attackerAmmo = this.currentNode.attacker.unit.units_ammo;
                         this.currentNode.attackerDisplayHP = this.currentNode.attacker.hp;
                         this.currentNode.selectingAttacker = false;
                         this.currentNode.attackerNoAmmoToggled = (this.clickedUnit.unit.units_ammo === 0);
                     }
                     else if (this.clickSelectMode === 'D') {
-                        this.currentNode.defender = JSON.parse(JSON.stringify(this.clickedUnit));
+                        this.currentNode.defender = structuredClone(this.clickedUnit);
                         this.currentNode.defenderAmmo = this.currentNode.defender.unit.units_ammo;
                         this.currentNode.defenderDisplayHP = this.currentNode.defender.hp;
                         this.currentNode.selectingDefender = false;
@@ -6914,10 +6913,10 @@ class DamageCalculator {
             const node = this.currentNode;
             //detect attacker/defender and set node
             if (selectUnitMenu.getAttribute('player-id') === 'attack') {
-                node.attacker['unit'] = JSON.parse(JSON.stringify(UNIT_LIST[unit]));
+                node.attacker['unit'] = structuredClone(UNIT_LIST[unit]);
                 node.attackerAmmo = node.attacker.unit.units_ammo;
             } else {
-                node.defender['unit'] = JSON.parse(JSON.stringify(UNIT_LIST[unit]));
+                node.defender['unit'] = structuredClone(UNIT_LIST[unit]);
                 node.defenderAmmo = node.defender.unit.units_ammo;
             }
             this.closeMenu('select-unit');
