@@ -4453,6 +4453,13 @@ class CalcNode {
         this.safeModeOn = safeModeOn;
         this.luckModeOn = luckModeOn;
         this.lookupModeOn = lookupModeOn;
+        if (luckModeOn) {
+            this.updateLuckSlider(this.sliderLuck)
+        } else if (lookupModeOn) {
+            //TODO lookup
+        } else {
+            this.updateCalcResults();
+        }
         for (const child of this.children) {
             child.updateModes(safeModeOn, luckModeOn, lookupModeOn);
         }
@@ -6055,49 +6062,55 @@ class DamageCalculator {
         this.saveSession(); //save session data
     }
 
-    toggleLuckMode() {
-        this.luckModeOn = !this.luckModeOn;
-        const button = document.getElementById("calc-plus-luck-mode-toggle");
-        button.title = `Luck Mode is ${this.luckModeOn ? 'On' : 'Off'}. Click to toggle.`;
-        const img = button.querySelector("img");
-        img.src = chrome.runtime.getURL('/images/' + (this.luckModeOn ? 'showing_luck' : 'hiding_luck') + '_icon.png');
+    setMode(mode) {
+        this.luckModeOn = mode === "luck";
+        this.lookupModeOn = mode === "lookup";
+
+        this.updateModeButtons();
+
         const display = document.getElementById("calc-plus-display");
-
-        // update calcs if any exist
-        if (this.activeCalcTree) {
-            this.refactor(); //update calcs
-            this.orient(0, 0); //orient nodes
-        }
-
         this.updateModes();
-        display.innerHTML = this.getInnerHTML(); //refresh display
-        this.saveSession(); //save session data
+        display.innerHTML = this.getInnerHTML();
+        this.saveSession();
     }
 
-    // Toggles lookup mode on/off
-    toggleLookupMode() {
-        this.lookupModeOn = !this.lookupModeOn;
-        const button = document.getElementById("calc-plus-lookup-mode-toggle");
-        button.title = `Lookup Mode is ${this.lookupModeOn ? 'On' : 'Off'}. Click to toggle.`;
-        const img = button.querySelector("img");
-        img.src = chrome.runtime.getURL('/images/' + (this.lookupModeOn ? 'showing_lookup' : 'hiding_lookup') + '_icon.png');
-        const display = document.getElementById("calc-plus-display");
+    updateModeButtons() {
+        const modes = [
+            {
+                id: "luck",
+                enabled: this.luckModeOn,
+                button: "calc-plus-luck-mode-toggle",
+                icon: "luck"
+            },
+            {
+                id: "lookup",
+                enabled: this.lookupModeOn,
+                button: "calc-plus-lookup-mode-toggle",
+                icon: "lookup"
+            }
+        ];
 
-        // update calcs if any exist
-        if (this.activeCalcTree) {
-            this.refactor(); //update calcs
-            this.orient(0, 0); //orient nodes
+        for (const mode of modes) {
+            const button = document.getElementById(mode.button);
+            button.title = `${mode.id[0].toUpperCase() + mode.id.slice(1)} Mode is ${mode.enabled ? "On" : "Off"}. Click to toggle.`;
+            button.querySelector("img").src = chrome.runtime.getURL(
+                `/images/${mode.enabled ? "showing" : "hiding"}_${mode.icon}_icon.png`
+            );
         }
+    }
 
-        this.updateModes();
-        display.innerHTML = this.getInnerHTML(); //refresh display
-        this.saveSession(); //save session data
+    toggleLuckMode() {
+        this.setMode(this.luckModeOn ? null : "luck");
+    }
+
+    toggleLookupMode() {
+        this.setMode(this.lookupModeOn ? null : "lookup");
     }
 
     // show/hide dev options
     toggleDevOptions() {
         this.displayDevOptions = !this.displayDevOptions;
-        for (const id of ["calc-plus-safe", "calc-plus-clear", "calc-plus-luck-mode-toggle"]) {
+        for (const id of ["calc-plus-safe", "calc-plus-clear", "calc-plus-luck-mode-toggle", "calc-plus-lookup-mode-toggle"]) {
             const button = document.getElementById(id);
             button.style.display = this.displayDevOptions ? "block" : "none";
         }
@@ -6177,7 +6190,7 @@ class DamageCalculator {
         let html = "";
         let y = 0;
         for(let i = 0; i < this.calcTreeList.length; i++) {
-            html += `<div class="calc-plus-tree" style="width: ${this.calcTreeList[i].getWidth()}px; height: ${this.calcTreeList[i].getHeight()}px; top: ${y}px;">${this.calcTreeList[i].getHTML(this.safeModeOn, this.luckModeOn, this.lookupModeOn)}</div>`;
+            html += `<div class="calc-plus-tree" style="width: ${this.calcTreeList[i].getWidth()}px; height: ${this.calcTreeList[i].getHeight()}px; top: ${y}px;">${this.calcTreeList[i].getHTML()}</div>`;
             y += this.calcTreeList[i].getHeight() + TREE_OFFSET;
         }
         //add and copy button
@@ -6561,8 +6574,11 @@ class DamageCalculator {
         });
 
         // luck slider
-        const calculatorSlider = document.getElementById("calc-plus-luck-mode-toggle");
-        calculatorSlider.addEventListener("click", () => this.toggleLuckMode());
+        const luckSlider = document.getElementById("calc-plus-luck-mode-toggle");
+        luckSlider.addEventListener("click", () => this.toggleLuckMode());
+
+        const lookupSlider = document.getElementById("calc-plus-lookup-mode-toggle");
+        lookupSlider.addEventListener("click", () => this.toggleLookupMode());
 
         const grabHeader = document.getElementById("calc-plus-header");
         const calcPlus = document.getElementById("calc-plus");
