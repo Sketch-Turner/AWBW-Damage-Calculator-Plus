@@ -7039,6 +7039,7 @@ class DamageCalculator {
                     //update current node values
                     if (event.target.classList.contains('calc-plus-luck-slider')) {
                         node.updateLuckSlider(parseInt(event.target.value));
+
                         const parentElement = event.target.closest('.attacker-damage');
                         if (parentElement) {
                             parentElement.querySelector('.calc-plus-slider-value').innerHTML =
@@ -7069,6 +7070,7 @@ class DamageCalculator {
 
             // Trigger input event so slider input is handled
             slider.dispatchEvent(new Event("input", { bubbles: true }));
+            slider.dispatchEvent(new Event("change", { bubbles: true }));
         }, { passive: false });
 
         // Attach a input change event listener
@@ -7086,7 +7088,7 @@ class DamageCalculator {
                     //update current node values
                     //this.currentNode = selectedNode;
                     this.updateInputs(node, element);
-                    node.refactor(this.luckModeOn); //get new calc with updated values (cascading)
+                    node.refactor(); //get new calc with updated values (cascading)
                     this.orient(); //position all nodes correctly
                     calcDisplay.innerHTML = this.getInnerHTML(); // Update the display
                     this.saveSession(); //save session data
