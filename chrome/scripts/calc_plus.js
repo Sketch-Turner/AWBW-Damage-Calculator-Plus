@@ -5255,6 +5255,25 @@ class CalcNode {
                                                        this.builtinCalc.calculate(this.attacker, this.defender, displayLuckSlider ? this.sliderLuck : null);
         this.attacker.unit.units_ammo = attacker_ammo;
         this.defender.unit.units_ammo = defender_ammo;
+
+        console.log(this.calcResultProbability(0));
+    }
+
+    // calc result probability
+    calcResultProbability(result) {
+        let probability = null;
+        if (this.children.length == 0) {
+            let node = this;
+            const attackers = [];
+            let defender;
+            while (node != null) {
+                attackers.unshift(node.attacker);
+                defender = node.defender;
+                node = node.parent;
+            }
+            probability = this.builtinCalc.calcResultProbability(attackers, defender, result);
+        }
+        return probability;
     }
 
     // updates slider attributes based on current luck value
@@ -5358,7 +5377,9 @@ class CalcTree {
 // BuiltinCalculator                               //
 /////////////////////////////////////////////////////
 class BuiltinCalculator {
-    constructor() {}
+    constructor() {
+        this.damageCache = new Map(); // damage result cache for cumulative probability calcs
+    }
     
     // return dict containing min/max attack and counter damage
     calculate(attacker, defender, luck=null) {
@@ -5646,8 +5667,104 @@ class BuiltinCalculator {
         }
     }
 
-    // returns true if unit has ammo
+    // build mapping of luck value -> (good, bad) combinations
+    getLuckDistribution(goodLuck, badLuck) {
+        const counts = [];
 
+        for (let lg = 0; lg <= goodLuck; lg++) {
+            for (let lb = 0; lb <= badLuck; lb++) {
+                const luck = lg - lb;
+
+                let entry = counts.find(e => e.luck === luck);
+                if (entry)
+                    entry.count++;
+                else
+                    counts.push({ luck, count: 1 });
+            }
+        }
+
+        return counts;
+    }
+
+    // convert attacker/defender pair to key for self.damageCache
+    getDamageCacheKey(attacker, defender) {
+        return JSON.stringify([attacker, defender]);
+    }
+
+    // build map of attack damage -> count
+    getDamageDistribution(attacker, defender) {
+        const key = this.getDamageCacheKey(attacker, defender);
+
+        if (this.damageCache.has(key))
+            return this.damageCache.get(key);
+
+        const bad = this.lookupGlobal(attacker, "bad_luck");
+        const good = this.lookupGlobal(attacker, "good_luck");
+
+        const damageCounts = new Map();
+
+        for (const {luck, count} of this.getLuckDistribution(good, bad)) {
+
+            const damage = Math.max(0, this.calc(attacker, defender, false, luck).min);
+
+            damageCounts.set(damage, (damageCounts.get(damage) || 0) + count);
+        }
+
+        const result = [...damageCounts].map(([damage, count]) => ({
+            damage,
+            count
+        }));
+
+        this.damageCache.set(key, result);
+
+        return result;
+    }
+
+    // Calc the cumulative probability of an outcome
+    calcResultProbability(attackers, defender, resultHP) {
+        let totalCount = 1;
+
+        for (const attacker of attackers) {
+            const bad = this.lookupGlobal(attacker, "bad_luck");
+            const good = this.lookupGlobal(attacker, "good_luck");
+
+            totalCount *= (bad + 1) * (good + 1);
+        }
+
+        let resultCount = 0;
+
+        const recurse = (index, hp, count) => {
+
+            // all attackers finished
+            if (index === attackers.length) {
+                if (hp === resultHP)
+                    resultCount += count;
+                return;
+            }
+
+            const attacker = attackers[index];
+
+            const damageDist = this.getDamageDistribution(
+                attacker,
+                { ...defender, hp }
+            );
+
+            damageDist.forEach(({ damage, count: damageCount }) => {
+
+                const nextHP = Math.max(0, hp - damage);
+
+                recurse(
+                    index + 1,
+                    nextHP,
+                    count * damageCount
+                );
+            });
+        };
+
+        recurse(0, defender.hp, 1);
+
+        return resultCount / totalCount;
+    }
 }
 
 /////////////////////////////////////////////////////
