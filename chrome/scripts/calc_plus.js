@@ -6856,6 +6856,22 @@ class DamageCalculator {
             }
         });
 
+        // Attach listener for scroll wheel
+        calcDisplay.addEventListener("wheel", (event) => {
+            if (!event.target.classList.contains("calc-plus-damage-slider")) return;
+            const slider = event.target;
+            if (!slider) return;
+
+            event.preventDefault();
+
+            const delta = event.deltaY < 0 ? 1 : -1;
+
+            slider.value = Math.min(Number(slider.max), Math.max(Number(slider.min), Number(slider.value) + delta));
+
+            // Trigger input event so slider input is handled
+            slider.dispatchEvent(new Event("input", { bubbles: true }));
+        }, { passive: false });
+
         // Attach a input change event listener
         calcDisplay.addEventListener("change", (event) => {
             const element = event.target.closest('.calc-plus-node');
