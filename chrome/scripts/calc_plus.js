@@ -4440,11 +4440,14 @@ class CalcNode {
         this.isValid = true;
         this.selectingAttacker = false;
         this.selectingDefender = false;
-        this.sliderLookup = 0;
-        this.sliderLuck = 0;
-        this.sliderDamage = 0;
-        this.sliderFunds = 0;
-        this.sliderProbability = 0;
+
+        this.lookupValue = 0;
+        this.lookupProbability = 0;
+        this.luckValue = 0;
+        this.luckDamage = 0;
+        this.luckFunds = 0;
+        this.luckProbability = 0;
+
         this.updateCalcResults();
     }
 
@@ -4454,7 +4457,7 @@ class CalcNode {
         this.luckModeOn = luckModeOn;
         this.lookupModeOn = lookupModeOn;
         if (luckModeOn) {
-            this.updateLuckSlider(this.sliderLuck)
+            this.updateLuckSlider(this.luckValue)
         } else if (lookupModeOn) {
             //TODO lookup
         } else {
@@ -4529,11 +4532,11 @@ class CalcNode {
             this.width = data.width;
             this.y = data.y;
             this.x = data.x;
-            this.sliderLuck = data.sliderLuck;
-            this.sliderLookup = data.sliderLookup;
-            this.sliderDamage = data.sliderDamage;
-            this.sliderFunds = data.sliderFunds;
-            this.sliderProbability = data.sliderProbability;
+            this.luckValue = data.luckValue;
+            this.lookupValue = data.lookupValue;
+            this.luckDamage = data.luckDamage;
+            this.luckFunds = data.luckFunds;
+            this.luckProbability = data.luckProbability;
 
             for (const child of data.children) {
                 const next = this.genNextNode(child.id)
@@ -4563,11 +4566,11 @@ class CalcNode {
         data.id = this.id;
         data.depth = this.depth;
         data.isValid = this.isValid;
-        data.sliderLuck = this.sliderLuck;
-        data.sliderLookup = this.sliderLookup;
-        data.sliderDamage = this.sliderDamage;
-        data.sliderFunds = this.sliderFunds;
-        data.sliderProbability = this.sliderProbability;
+        data.luckValue = this.luckValue;
+        data.lookupValue = this.lookupValue;
+        data.luckDamage = this.luckDamage;
+        data.luckFunds = this.luckFunds;
+        data.luckProbability = this.luckProbability;
 
         data.attackerNoAmmoToggled = this.attackerNoAmmoToggled;
         data.defenderNoAmmoToggled = this.defenderNoAmmoToggled;
@@ -4845,20 +4848,20 @@ class CalcNode {
                 <div class="attacker-damage">
                     <div class="calc-plus-slider-display">
                         ${sliderMin}
-                        <input type="range" class="calc-plus-luck-slider" min="${sliderMin}" max="${sliderMax}" value="${this.sliderLuck}">
+                        <input type="range" class="calc-plus-luck-slider" min="${sliderMin}" max="${sliderMax}" value="${this.luckValue}">
                         ${sliderMax}
                     </div>
                     <span>
                         <img src="${chrome.runtime.getURL('/images/luck_icon.png')}">
-                        <span class="calc-plus-slider-value"> <b>≥</b> ${this.sliderLuck} (${this.sliderProbability.toFixed(2)}%)</span>
+                        <span class="calc-plus-slider-value"> <b>≥</b> ${this.luckValue} (${this.luckProbability.toFixed(2)}%)</span>
                     </span>
                     <span>
                         <img src="terrain/fire.gif" class="fire">
-                        <span class="calc-plus-slider-damage">${this.sliderDamage}%</span>
+                        <span class="calc-plus-slider-damage">${this.luckDamage}%</span>
                     </span>
                     <span>
                         <img src="terrain/coin.gif" class="gold-coin">
-                        <span class="calc-plus-slider-funds">${this.sliderFunds}</span>
+                        <span class="calc-plus-slider-funds">${this.luckFunds}</span>
                     </span>
                 </div>
                 `
@@ -5233,13 +5236,13 @@ class CalcNode {
 
         if (this.doCounterBreakSwap()) {
             attackerDamage = this.luckModeOn
-                ? this.sliderDamage
+                ? this.luckDamage
                 : Math.max(0, this.calcResults.minCounterDamageMin);
 
             maxHP = Math.max(0, this.attackerDisplayHP - attackerDamage);
         } else {
             attackerDamage = this.luckModeOn
-                ? this.sliderDamage
+                ? this.luckDamage
                 : Math.max(0, this.calcResults.attackDamageMin);
 
             maxHP = Math.max(0, this.defenderDisplayHP - attackerDamage);
@@ -5285,8 +5288,8 @@ class CalcNode {
         this.attacker.unit.units_ammo = (this.attackerNoAmmoToggled) ? 0 : 1;
         this.defender.unit.units_ammo = (this.defenderNoAmmoToggled) ? 0 : 1;
         // check if counter break, swap attacker / defender
-        this.calcResults = this.doCounterBreakSwap() ? this.builtinCalc.calculate(this.defender, this.attacker, this.luckModeOn ? this.sliderLuck : null) :
-                                                       this.builtinCalc.calculate(this.attacker, this.defender, this.luckModeOn ? this.sliderLuck : null);
+        this.calcResults = this.doCounterBreakSwap() ? this.builtinCalc.calculate(this.defender, this.attacker, this.luckModeOn ? this.luckValue : null) :
+                                                       this.builtinCalc.calculate(this.attacker, this.defender, this.luckModeOn ? this.luckValue : null);
         this.attacker.unit.units_ammo = attacker_ammo;
         this.defender.unit.units_ammo = defender_ammo;
 
@@ -5313,18 +5316,18 @@ class CalcNode {
 
     // updates slider attributes based on current luck value
     updateLuckSlider(luck) {
-        this.sliderLuck = luck;
-        this.sliderProbability = this.calcLuckRollProbability(this.attacker, luck);
+        this.luckValue = luck;
+        this.luckProbability = this.calcLuckRollProbability(this.attacker, luck);
 
         this.updateCalcResults();
 
-        this.sliderDamage = Math.max(0, this.calcResults.attackDamageMin);
-        this.sliderFunds = this.calcResults.attackFundsMin;
+        this.luckDamage = Math.max(0, this.calcResults.attackDamageMin);
+        this.luckFunds = this.calcResults.attackFundsMin;
     }
 
     // updates slider attributes based on current lookup value
     updateLookupSlider(hp) {
-        this.sliderLookup = hp;
+        this.lookupValue = hp;
 
         this.updateCalcResults();
         //TODO ???
@@ -5337,7 +5340,7 @@ class CalcNode {
         }
 
         if (this.luckModeOn) {
-            this.updateLuckSlider(this.sliderLuck)
+            this.updateLuckSlider(this.luckValue)
         } else {
             this.updateCalcResults();
         }
@@ -6286,12 +6289,12 @@ class DamageCalculator {
             //luck
             if (this.luckModeOn) {
                 const slider = element.querySelector('.calc-plus-luck-slider');
-                node.sliderLuck = parseInt(slider.value);
+                node.luckValue = parseInt(slider.value);
             }
             //lookup
             if (this.lookupModeOn) {
                 const slider = element.querySelector('.calc-plus-lookup-slider');
-                node.sliderLookup = parseInt(slider.value);
+                node.lookupValue = parseInt(slider.value);
             }
 
         }
@@ -7045,13 +7048,13 @@ class DamageCalculator {
                         const parentElement = event.target.closest('.attacker-damage');
                         if (parentElement) {
                             parentElement.querySelector('.calc-plus-slider-value').innerHTML =
-                                ` <b>≥</b> ${node.sliderLuck} (${node.sliderProbability.toFixed(2)}%)`;
+                                ` <b>≥</b> ${node.luckValue} (${node.luckProbability.toFixed(2)}%)`;
 
                             parentElement.querySelector('.calc-plus-slider-damage').textContent =
-                                `${node.sliderDamage}%`;
+                                `${node.luckDamage}%`;
 
                             parentElement.querySelector('.calc-plus-slider-funds').textContent =
-                                node.sliderFunds;
+                                node.luckFunds;
                         }
                     }
                 }
