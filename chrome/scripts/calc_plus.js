@@ -5359,8 +5359,8 @@ class CalcNode {
             child.attacker.power = this.attacker.power;
             child.attacker.co = this.attacker.co;
 
-            child.defender.towers = oldDefender.towers;
-            child.defender.cities = oldDefender.cities;
+            // child.defender.towers = oldDefender.towers;
+            // child.defender.cities = oldDefender.cities;
 
             child.isValid = (child.defenderDisplayHP > 0) && this.isValid;
             child.refactor();
@@ -7014,7 +7014,7 @@ class DamageCalculator {
                     //update new node values
                     //valueChanges = this.updateInputs(selectedNode, svgNode, valueChanges);
                     if (updateCalc) {
-                        this.currentNode.refactor(this.luckModeOn);//cascading update of current calc to all children
+                        this.currentNode.refactor();//cascading update of current calc to all children
                     }
                     if (updateDisplay) {
                         this.orient(); //position and size node and all children correctly
