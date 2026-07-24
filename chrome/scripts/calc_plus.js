@@ -5268,6 +5268,7 @@ class CalcNode {
             state.defender,
             id,
             this.builtinCalc,
+            this.safeModeOn,
             this.luckModeOn,
             this.lookupModeOn
         );
@@ -6207,7 +6208,7 @@ class DamageCalculator {
     }
 
     addNewTree() {
-        this.calcTreeList.push(new CalcTree(this.getNextID(), this.builtinCalc, this.luckModeOn, this.lookupModeOn));
+        this.calcTreeList.push(new CalcTree(this.getNextID(), this.builtinCalc, this.safeModeOn, this.luckModeOn, this.lookupModeOn));
         this.activeCalcTree = this.calcTreeList[this.calcTreeList.length-1];
         this.activeNode = this.activeCalcTree.root;
     }
