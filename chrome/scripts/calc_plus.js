@@ -5767,7 +5767,7 @@ class BuiltinCalculator {
         return result;
     }
 
-    // Calc the cumulative probability of an outcome
+    // Calc the cumulative probability of defender.hp <= resultHP
     calcResultProbability(attackers, defender, resultHP) {
         let totalCount = 1;
 
@@ -5784,7 +5784,7 @@ class BuiltinCalculator {
 
             // all attackers finished
             if (index === attackers.length) {
-                if (hp === resultHP)
+                if (hp <= resultHP)
                     resultCount += count;
                 return;
             }
@@ -5810,6 +5810,7 @@ class BuiltinCalculator {
 
         recurse(0, defender.hp, 1);
 
+        // console.log("result: ", resultCount, "total: ", totalCount);
         return resultCount / totalCount;
     }
 }
