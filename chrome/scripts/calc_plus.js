@@ -4437,6 +4437,7 @@ class CalcNode {
         this.defenderMaxHP = 100;
         this.defenderMaxCities = 99;
         this.defenderMaxTowers = 99;
+        this.defenderMaxFunds = 999999999;
         this.isValid = true;
         this.selectingAttacker = false;
         this.selectingDefender = false;
@@ -4457,9 +4458,9 @@ class CalcNode {
         this.luckModeOn = luckModeOn;
         this.lookupModeOn = lookupModeOn;
         if (luckModeOn) {
-            this.updateLuckSlider(this.luckValue)
+            this.updateLuckSlider(this.luckValue);
         } else if (lookupModeOn) {
-            //TODO lookup
+            this.updateLookupSlider(this.lookupValue);
         } else {
             this.updateCalcResults();
         }
@@ -4523,6 +4524,7 @@ class CalcNode {
             this.defenderMaxCities = data.defenderMaxCities;
             this.defenderMaxHP = data.defenderMaxHP;
             this.defenderMaxTowers = data.defenderMaxTowers;
+            this.defenderMaxFunds = data.defenderMaxFunds;
             this.defenderNoAmmoToggled = data.defenderNoAmmoToggled;
             this.depth = data.depth;
             this.height = data.height;
@@ -4581,6 +4583,7 @@ class CalcNode {
         data.defenderMaxHP = this.defenderMaxHP;
         data.defenderMaxCities = this.defenderMaxCities;
         data.defenderMaxTowers = this.defenderMaxTowers;
+        this.defenderMaxFunds = data.defenderMaxFunds;
 
         data.safeModeOn = this.safeModeOn;
         data.luckModeOn = this.luckModeOn;
@@ -5059,7 +5062,7 @@ class CalcNode {
                     </div> 
                     <div class="fund-options" id="calc-plus-fund-options">
                         <img src="terrain/coin.gif" class="coin"> 
-                        <input type="number" min="0" step="1000" value="${this.defender['funds']}" class="text-input funds-input">
+                        <input type="number" max="${this.defenderMaxFunds}" min="0" step="1000" value="${this.defender['funds']}" class="text-input funds-input">
                     </div>
                 </div>
             </div>
@@ -5255,7 +5258,8 @@ class CalcNode {
             defenderMaxHP: maxHP,
             defenderDisplayHP: maxHP,
             defenderMaxCities: this.defender.cities,
-            defenderMaxTowers: this.defender.towers
+            defenderMaxTowers: this.defender.towers,
+            defenderMaxFunds: this.defender.funds
         };
     }
 
@@ -5355,6 +5359,7 @@ class CalcNode {
             child.defenderDisplayHP = state.defenderDisplayHP;
             child.defenderMaxCities = state.defenderMaxCities;
             child.defenderMaxTowers = state.defenderMaxTowers;
+            child.defenderMaxFunds = state.defenderMaxFunds;
             child.defenderNoAmmoToggled = this.defenderNoAmmoToggled;
 
             child.attacker.towers = this.attacker.towers;
