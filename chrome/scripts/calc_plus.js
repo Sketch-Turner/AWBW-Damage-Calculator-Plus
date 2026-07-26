@@ -7193,8 +7193,10 @@ document.head.appendChild(link);
 
 //Set Z_INDEX
 const old_dc = document.getElementById('calculator');
-const computedStyle = window.getComputedStyle(old_dc);
-Z_INDEX = parseInt(computedStyle.zIndex) - 1;
+if (old_dc) {
+    const computedStyle = window.getComputedStyle(old_dc);
+    Z_INDEX = parseInt(computedStyle.zIndex) - 1;
+}
 
 //Add calc plus button
 const old_dc_button = document.querySelector('.calculator-toggle.game-tools-btn') || document.querySelector('.calculator-toggle.planner-calc-toggle');
