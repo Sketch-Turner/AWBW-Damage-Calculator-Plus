@@ -6138,7 +6138,7 @@ class DamageCalculator {
     // show/hide dev options
     toggleDevOptions() {
         this.displayDevOptions = !this.displayDevOptions;
-        for (const id of ["calc-plus-safe", "calc-plus-clear", "calc-plus-luck-mode-toggle", "calc-plus-lookup-mode-toggle"]) {
+        for (const id of ["calc-plus-safe", "calc-plus-clear"]) {
             const button = document.getElementById(id);
             button.style.display = this.displayDevOptions ? "block" : "none";
         }
@@ -6546,11 +6546,10 @@ class DamageCalculator {
                                 See you on the Global League. Good luck, have fun!!
                             </div>
                         </div>
-                        <div title="Luck Mode is ${this.luckModeOn ? 'On' : 'Off'}. Click to toggle." id="calc-plus-luck-mode-toggle" style="display: none; margin-top: 4px; margin-right: 9px; height: 16px;"><img src="${chrome.runtime.getURL('/images/' + (this.luckModeOn ? 'showing_luck' : 'hiding_luck') + '_icon.png')}"></div>
-                        <div title="Lookup Mode is ${this.lookupModeOn ? 'On' : 'Off'}. Click to toggle." id="calc-plus-lookup-mode-toggle" style="display: none; margin-top: 4px; margin-right: 9px; height: 16px;"><img src="${chrome.runtime.getURL('/images/' + (this.lookupModeOn ? 'showing_lookup' : 'hiding_lookup') + '_icon.png')}"></div>
                         <div title="Safe Mode is ${this.safeModeOn ? 'On' : 'Off'}. Click to toggle." id="calc-plus-safe" style="display: none; margin-top: 4px; margin-right: 9px; height: 16px;"><img src="${chrome.runtime.getURL('/images/' + (this.safeModeOn ? 'lock' : 'unlock') + '_icon.png')}"></div>
                         <div title="Clear Session Data" id="calc-plus-clear" style="display: none; margin-top: 4px; margin-right: 9px; height: 16px;"><img src="${chrome.runtime.getURL('/images/clear_session_icon.png')}"></div>                        
-                        <div title="Shrink" id="calc-plus-shrink" style="margin-top: 4px; margin-right: 9px; height: 16px;"><img src="${chrome.runtime.getURL('/images/shrink_icon.png')}"></div>
+                        <div title="Luck Mode is ${this.luckModeOn ? 'On' : 'Off'}. Click to toggle." id="calc-plus-luck-mode-toggle" style=" margin-top: 4px; margin-right: 9px; height: 16px;"><img src="${chrome.runtime.getURL('/images/' + (this.luckModeOn ? 'showing_luck' : 'hiding_luck') + '_icon.png')}"></div>
+                        <div title="Lookup Mode is ${this.lookupModeOn ? 'On' : 'Off'}. Click to toggle." id="calc-plus-lookup-mode-toggle" style="margin-top: 4px; margin-right: 9px; height: 16px;"><img src="${chrome.runtime.getURL('/images/' + (this.lookupModeOn ? 'showing_lookup' : 'hiding_lookup') + '_icon.png')}"></div>                        <div title="Shrink" id="calc-plus-shrink" style="margin-top: 4px; margin-right: 9px; height: 16px;"><img src="${chrome.runtime.getURL('/images/shrink_icon.png')}"></div>
                         <div title="Expand" id="calc-plus-grow" style="margin-top: 4px; margin-right: 9px; height: 16px;"><img src="${chrome.runtime.getURL('/images/grow_icon.png')}"></div>
                         <div title="Hide" class="close-calc-plus">&#10005;</div>
                     </span>
