@@ -5344,7 +5344,10 @@ class CalcNode {
         }
 
         if (this.luckModeOn) {
-            this.updateLuckSlider(this.luckValue)
+            this.updateLuckSlider(this.luckValue);
+        } else if (this.lookupModeOn) {
+            this.updateLookupSlider(this.lookupValue);
+            this.updateCalcResults();
         } else {
             this.updateCalcResults();
         }
@@ -5819,8 +5822,8 @@ class BuiltinCalculator {
 
         recurse(0, defender.hp, 1);
 
-        // console.log("result: ", resultCount, "total: ", totalCount);
-        return resultCount / totalCount;
+        // console.log("probability: ", 100 * resultCount / totalCount, "cache size: ", this.damageCache.size);
+        return 100 * resultCount / totalCount;
     }
 }
 
