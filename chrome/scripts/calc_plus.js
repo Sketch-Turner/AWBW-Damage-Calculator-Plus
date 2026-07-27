@@ -5837,7 +5837,7 @@ class BuiltinCalculator {
 
         recurse(0, defender.hp, 1);
 
-        // console.log("probability: ", 100 * resultCount / totalCount, "cache size: ", this.damageCache.size);
+        // console.log("Probability: ", 100 * resultCount / totalCount, "Cache Size: ", this.damageCache.size);
         return 100 * resultCount / totalCount;
     }
 }
@@ -6286,26 +6286,18 @@ class DamageCalculator {
             //cities
             const cities = element.getElementsByClassName('city-input');
             if (cities.length === 2) {
-                //valueChanges['a_cities'] = valueChanges['a_cities'] ? true : node.attacker['cities'] !== ((isNaN(parseInt(cities[0].value))) ? 0 : Math.max(0, parseInt(cities[0].value)));
-                //valueChanges['d_cities'] = valueChanges['d_cities'] ? true : node.defender['cities'] !== ((isNaN(parseInt(cities[1].value))) ? 0 : Math.max(0, Math.min(parseInt(cities[1].value), node.defenderMaxCities)));
-                
                 node.attacker['cities'] = (isNaN(parseInt(cities[0].value))) ? 0 : Math.max(0, parseInt(cities[0].value));
                 node.defender['cities'] = (isNaN(parseInt(cities[1].value))) ? 0 : Math.max(0, parseInt(cities[1].value));
             }
             //towers
             const towers = element.getElementsByClassName('tower-input');
             if (towers.length === 2) {
-                //valueChanges['a_towers'] = valueChanges['a_towers'] ? true : node.attacker['towers'] !== ((isNaN(parseInt(towers[0].value))) ? 0 : Math.max(0, parseInt(towers[0].value)));
-                //valueChanges['d_towers'] = valueChanges['d_towers'] ? true : node.defender['towers'] !== ((isNaN(parseInt(towers[1].value))) ? 0 : Math.max(0, Math.min(parseInt(towers[1].value), node.defenderMaxTowers)));
-
                 node.attacker['towers'] = (isNaN(parseInt(towers[0].value))) ? 0 : Math.max(0, parseInt(towers[0].value));
                 node.defender['towers'] = (isNaN(parseInt(towers[1].value))) ? 0 : Math.max(0, parseInt(towers[1].value));
             }
             //funds
             const funds = element.getElementsByClassName('funds-input');
             if (funds.length === 2) {
-                //valueChanges['funds'] = valueChanges['funds'] ? true : node.attacker['funds'] !== ((isNaN(parseInt(funds[0].value))) ? 0 : Math.max(0, parseInt(funds[0].value)));
-                
                 node.attacker['funds'] = (isNaN(parseInt(funds[0].value))) ? 0 : Math.max(0, parseInt(funds[0].value));
                 node.defender['funds'] = (isNaN(parseInt(funds[1].value))) ? 0 : Math.max(0, parseInt(funds[1].value));
             }
@@ -6321,7 +6313,6 @@ class DamageCalculator {
             }
 
         }
-        //return valueChanges;
     }
 
     dragMenus(deltaX, deltaY) {
@@ -6764,7 +6755,6 @@ class DamageCalculator {
                 calcDisplay.innerHTML = this.getInnerHTML();//update display
                 this.saveSession(); //save session data
             } else if (svgNode) {
-                //valueChanges = this.updateInputs(this.currentNode, this.currentElement, valueChanges);
                 this.currentElement = svgNode;
 
                 const id = parseInt(svgNode.getAttribute('data-id'));
@@ -6790,7 +6780,6 @@ class DamageCalculator {
                         for (const key in this.isMenuOpen) {
                             this.closeMenu(key);//close all menus
                         }
-                        //valueChanges = {'a_towers': true, 'a_cities': true, 'funds': true, 'power': true, 'co': true, 'd_towers': false, 'd_cities': false};
                         selectedNode.add(selectedNode.genNextNode(this.getNextID()));
                         updateCalc = true;
                         updateDisplay = true;
@@ -6826,14 +6815,12 @@ class DamageCalculator {
                             //changes to root are always allowed
                             if (toggleCOP.parentNode.parentNode.parentNode.parentNode.classList[0].replace('calculator-', '') === 'attack') {
                                 selectedNode.attacker['power'] = (selectedNode.attacker['power'] !== 'Y') ? 'Y' : 'N';
-                                //valueChanges['power'] = true;
                             } else {
                                 selectedNode.defender['power'] = (selectedNode.defender['power'] !== 'Y') ? 'Y' : 'N';
                             }
                         } else if (selectedNode.parent.attacker['power'] === 'N' && toggleCOP.parentNode.parentNode.parentNode.parentNode.classList[0].replace('calculator-', '') === 'attack') {
                             //if parent power is not active, attacker can toggle    
                             selectedNode.attacker['power'] = (selectedNode.attacker['power'] !== 'Y') ? 'Y' : 'N';
-                            //valueChanges['power'] = true;
                         }
                     } else if (toggleSCOP && selectedNode.isValid) {
                         updateCalc = true;
@@ -6846,14 +6833,12 @@ class DamageCalculator {
                             //changes to root are always allowed
                             if (toggleSCOP.parentNode.parentNode.parentNode.parentNode.classList[0].replace('calculator-', '') === 'attack') {
                                 selectedNode.attacker['power'] = (selectedNode.attacker['power'] !== 'S') ? 'S' : 'N';
-                                //valueChanges['power'] = true;
                             } else {
                                 selectedNode.defender['power'] = (selectedNode.defender['power'] !== 'S') ? 'S' : 'N';
                             }
                         } else if (selectedNode.parent.attacker['power'] === 'N' && toggleSCOP.parentNode.parentNode.parentNode.parentNode.classList[0].replace('calculator-', '') === 'attack') {
                             //if parent power is not active, attacker can toggle    
                             selectedNode.attacker['power'] = (selectedNode.attacker['power'] !== 'S') ? 'S' : 'N';
-                            //valueChanges['power'] = true;
                         }
                     } else if (toggleAmmo && selectedNode.isValid) {
                         updateCalc = true;
@@ -7041,7 +7026,6 @@ class DamageCalculator {
 
                     }
                     //update new node values
-                    //valueChanges = this.updateInputs(selectedNode, svgNode, valueChanges);
                     if (updateCalc) {
                         this.currentNode.refactor();//cascading update of current calc to all children
                     }
@@ -7138,7 +7122,6 @@ class DamageCalculator {
             //detect attacker/defender and set node
             if (selectCOMenu.getAttribute('player-id') === 'attack') {
                 node.attacker['co'] = CO_LIST[co];
-                //valueChanges['co'] = true;
             } else {
                 node.defender['co'] = CO_LIST[co];
             }
