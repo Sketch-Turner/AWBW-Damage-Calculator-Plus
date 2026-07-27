@@ -140,7 +140,7 @@ Most COs have a luck range of **0 to 9**, meaning each luck value is equally lik
 
 ![Andy Luck Roll](images/tutorial/luck_mode_andy.png)
 
-Sonja, for example, has both positive luck (**0 to 9**) and bad luck (**0 to -9**). Because both components are rolled independently, the maximum possible luck roll occurs only when the positive roll is **9** and the bad luck roll is **0**, giving it a probability of just **1%**.
+Sonja, for example, has both good luck (**0 to 9**) and bad luck (**0 to -9**). Because both components are rolled independently, the maximum possible luck roll occurs only when the good luck roll is **9** and the bad luck roll is **0**, giving it a probability of just **1%**.
 
 ![Sonja Luck Roll](images/tutorial/luck_mode_sonja.png)
 
