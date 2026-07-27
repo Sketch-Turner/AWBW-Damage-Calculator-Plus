@@ -1,7 +1,7 @@
 Bugs
-    luck slider - unfocused hp incorrect 
-        funds sometimes wrong too
     Select unit after changing army color doesn't work until refresh
-Todos
-    Rework extra calcs in genNextNode
-    
+    Select unit after acting may have wrong stats until refresh
+
+Todo
+    extra Andy-Andy calc???
+    prune undefined tree?

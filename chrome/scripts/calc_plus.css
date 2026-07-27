@@ -108,10 +108,11 @@
 
 .calculator-damage .calc-plus-slider-display {
     display: inline-block;
-    width: 100%
+    width: 100%;
 }
 
-input.calc-plus-damage-slider {
+.calc-plus-luck-slider,
+.calc-plus-lookup-slider{
     width: 50%; 
 }
 

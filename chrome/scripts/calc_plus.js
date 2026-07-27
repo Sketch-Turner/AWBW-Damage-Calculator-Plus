@@ -9,7 +9,7 @@ let Z_INDEX; //assigned in main
 const TILE_SIZE = 16;
 const SIG_PIXELS = [15, 18, 71, 78, 220]; // image signature pixel index
 const SESSION_DATA_KEY = "calc-plus-data";
-const CURRENT_VERSION = "1.2.7";
+const CURRENT_VERSION = "1.3.0";
 
 //TODO better data import solution
 const TERRAIN_SIGNATURES = {

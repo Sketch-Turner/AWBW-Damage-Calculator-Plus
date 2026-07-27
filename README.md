@@ -4,8 +4,9 @@
 1. [Introduction](#introduction)
 2. [Installation](#installation)
 3. [Usage](#usage)
-4. [Dev Settings](#dev-settings)
-5. [Bugs](#bugs)
+4. [Special Modes](#special-modes)
+5. [Dev Settings](#dev-settings)
+6. [Bugs](#bugs)
 
 ## Introduction
 AWBW Damage Calculator Plus is a web extension that expands the functionality of the regular damage calculator by allowing calculation of sequential attacks and side-by-side comparison of different attacks. 
@@ -32,83 +33,130 @@ Install the add-on from **Mozilla Add-ons**:
 ![Allow extensions from other stores](images/tutorial/edge_install.png)
 
 ## Usage
-The icon can be found next to the original Damage Calculator.
+
+The Damage Calculator Plus icon can be found next to the original Damage Calculator.
 
 ![Location](images/tutorial/toggle_location.png)
 
-Once the calculator is open, it functions the same as the original with a few key differences.
+Once opened, Damage Calculator Plus functions much like the original calculator, with several additional features.
 
 ### HP
-Unit HP is displayed as a value from 1-100. Changes to the HP effect the number displayed at the bottom right corner of the unit. 
-The value displayed is the unit's HP divided by 10 and rounded up. A unit with 1-10 HP will display 1, 11-20 will display 2, ect.
-The display value effects the unit's attack power, luck rolls, and defense bonuses from terrain. 
+
+Unit HP is displayed as a value from **1–100**. Changing the HP updates the number displayed in the bottom-right corner of the unit.
+
+The displayed value is the unit's HP divided by 10 and rounded up. For example, a unit with **1–10 HP** displays **1**, **11–20 HP** displays **2**, and so on.
+
+This displayed HP value affects the unit's attack power, luck rolls, and terrain defense bonuses.
 
 ![HP](images/tutorial/hp_display.png)
 
 ### Damage Values
-COs with negative luck modifiers can roll damage values below zero. While it isn't possible to deal negative damage, these negative rolls still impact the average outcome of the attack. 
 
-In the example below, it appears that Flak will deal (0 + 90) / 2 = 45% damage on average. This is a bit misleading since negative damage rolls are hidden by the old Damage Calculator.
+COs with negative luck modifiers can roll damage values below zero. While attacks can never deal negative damage, these negative rolls still affect the average damage dealt.
+
+In the example below, it appears that Flak deals an average of **(0 + 90) / 2 = 45%** damage. This is misleading because the original Damage Calculator hides negative damage rolls.
 
 ![Negative Luck Hidden](images/tutorial/negative_luck_hidden.png)
 
-Damage Calculator Plus shows negative damage rolls in red. Below you can see that the actual value is (-37 + 90) / 2 = 26.5% damage on average. 
+Damage Calculator Plus displays negative damage rolls in red. Here, the true average is **(-37 + 90) / 2 = 26.5%** damage.
 
 ![Negative Luck Shown](images/tutorial/negative_luck_shown.png)
 
 ### Add Button
+
 ![Add Button](images/add_icon.png)
 
-The Add Button will appear in the bottom right corner if the defender has a chance to survive after the attacker fires.
-When a new calculation is added, the defender of the current calculation will be carried over. By default the defender is assumed to have taken the minimum damage possible from the attacker.
+The Add Button appears in the bottom-right corner whenever the defender has a chance to survive the attack.
+
+When a follow-up calculation is added, the defender from the current calculation is carried over automatically. By default, the defender is assumed to have taken the minimum possible damage from the previous attack.
 
 ![Defender HP](images/tutorial/defender_hp.png)
 
-Multiple future outcomes can be examined at once. Each click of the Add Button adds a follow-up attack.
-In this example, tank + mech garuntees a kill whereas tank + infantry doesn't.
+Multiple future outcomes can be examined simultaneously. Each click of the Add Button adds another follow-up attack.
+
+In the example below, **Tank → Mech** guarantees a kill, while **Tank → Infantry** does not.
 
 ![Follow-Up Attack Comparison](images/tutorial/multiple_paths.png)
 
 ### Delete Button
+
 ![Delete Button](images/delete_icon.png)
 
-The Delete Button is located in the bottom left corner. Pressing this button will delete the calculation and any follow-up attacks that occur after.
+The Delete Button is located in the bottom-left corner. Pressing it deletes the selected calculation and all of its follow-up attacks.
 
 ### New Calc Button
+
 ![New Calc Button](images/new_calc_icon_20x20.png)
 
-The New Calc Button is located in the bottom left and allows the comparison of different attack orders. 
-In the example below, Max has his SCOP ready and an anti-air 8 spaces from the bomber. 
+The New Calc Button is located in the bottom-left corner and allows you to compare different attack sequences.
+
+In the example below, Max has his SCOP ready and an Anti-Air eight spaces away from the Bomber.
 
 ![Move Order Example](images/tutorial/calc_comparison_game.png)
 
-With a sacrifice of the 4 HP tank, it's possible to take out the enemy tank! While your instinct might be to pop the SCOP and charge in, notice that with the SCOP active, the enemy tank has a chance not to kill the 4 HP tank. If Max sacrifices the 4 HP tank and then uses the SCOP, the kill is garunteed.
+By sacrificing the 4 HP Tank, it's possible to destroy the enemy Tank. While it may seem natural to activate the SCOP immediately, notice that with the SCOP active, the enemy Tank has a chance to **fail** to destroy the 4 HP Tank. If Max sacrifices the 4 HP Tank first and then activates the SCOP, the kill is guaranteed.
 
 ![Move Order Calcs](images/tutorial/calc_comparison.png)
 
 ### Copy Calc Button
+
 ![Copy Calc Button](images/copy_calc_icon_20x20.png)
 
-The Copy Calc Button allows you to copy the calculation currently displayed in the old Damage Calculator into Damage Calculator Plus.
+The Copy Calc Button copies the calculation currently displayed in the original Damage Calculator into Damage Calculator Plus.
 
 ### Focusing
-Clicking on the top of a calculation will minimize it and all follow-up attacks from that calculation. The minimized calc will show a summary that takes up less space.
-Minimized calculations will update if a previous calculation is changed. Clicking a minimized calculation will return it to full size.
+
+Clicking the header of a calculation minimizes it along with all of its follow-up attacks. The minimized calculation displays a compact summary that takes up less space.
+
+Minimized calculations continue to update if an earlier calculation changes. Clicking a minimized calculation restores it to full size.
 
 ![Focusing](images/tutorial/focus.png)
 
 ### Invalid Calculations
-Sometimes, a change to one calculation will make future ones invalid. 
 
-Initially, the follow-up attack is valid because the Defender will always survive.
+Sometimes, changing one calculation can make later calculations impossible.
+
+Initially, the follow-up attack is valid because the defender always survives the first attack.
 
 ![Valid](images/tutorial/valid.png)
 
-After changing the unit used in the first attack to an Anti-Air, the follow-up attack becomes invalid since the Defender will always be killed.
+After changing the first attacker to an Anti-Air, the follow-up attack becomes invalid because the defender is always destroyed.
 
 ![Invalid](images/tutorial/invalid.png)
 
-Invalid calculations can be deleted to save space or left alone.
+Invalid calculations can either be deleted to save space or left in place.
+
+## Special Modes
+
+Only one Special Mode can be enabled at a time. Both are disabled by default.
+
+### Luck Mode
+
+Luck Mode displays a slider that lets you select the luck roll for an attack. Below the slider are the probability of rolling that value, the resulting attack damage, and the displayed damage percentage.
+
+To enable Luck Mode, click the toggle in the header. The slider is visible when Luck Mode is enabled ( ![Luck Mode On](images/showing_luck_icon.png) ) and hidden when it is disabled ( ![Luck Mode Off](images/hiding_luck_icon.png) ).
+
+Most COs have a luck range of **0 to 9**, meaning each luck value is equally likely. As a result, the maximum luck roll occurs **10%** of the time.
+
+![Andy Luck Roll](images/tutorial/luck_mode_andy.png)
+
+Sonja, for example, has both positive luck (**0 to 9**) and bad luck (**0 to -9**). Because both components are rolled independently, the maximum possible luck roll occurs only when the positive roll is **9** and the bad luck roll is **0**, giving it a probability of just **1%**.
+
+![Sonja Luck Roll](images/tutorial/luck_mode_sonja.png)
+
+### Lookup Mode
+
+Lookup Mode displays a slider that lets you select the defender's remaining HP after a sequence of attacks. Below the slider is the probability that the defender ends with that amount of HP after all attacks have been resolved.
+
+To enable Lookup Mode, click the toggle in the header. The slider is visible when Lookup Mode is enabled ( ![Lookup Mode On](images/showing_lookup_icon.png) ) and hidden when it is disabled ( ![Lookup Mode Off](images/hiding_lookup_icon.png) ).
+
+With one Com Tower, two Infantry have a **31%** chance of defeating an Infantry on a city.
+
+![One Tower Lookup](images/tutorial/lookup_mode_1_tower.png)
+
+With two Com Towers, the KO is **100%** guaranteed.
+
+![Two Tower Lookup](images/tutorial/lookup_mode_2_tower.png)
 
 ## Dev Settings
 Dev settings and experimental features can be accessed by using the Dev Settings shortcut. Use <img src="images/tutorial/keyboard_shortcut.png" width="128px" height="32px"/> to access the Dev Settings. Toggle buttons for the experimental features will appear at the top of the calculator.
@@ -140,10 +188,6 @@ Damage Calculator Plus uses session storage to save the calculator state. Anytim
 If you would like to clear data without closing the browser, use the Dev Settings shortcut to access the Clear Session Data button ( ![Clear Session Data Button](images/clear_session_icon.png) ).
 
 Refreshing the page after clearing session data will revert to the default calc.
-
-### Luck Mode
-This feature is currently under development. 
-Set the damage value for each attack, then see the probability of getting that roll. Allows precise calculation of luck roll odds.
 
 ## Bugs
 Please feel free to report bugs and/or suggest improvements or new features!
