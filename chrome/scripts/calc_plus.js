@@ -4904,17 +4904,39 @@ class CalcNode {
         }
         let defenderDamageHtml = '';
         if (this.isFocused) {
-            defenderDamageHtml = `
-            <div class="defender-damage">
-                <img src="terrain/fire.gif" class="fire">
-                <span><span class="bold">@${minHP}HP: </span>${this.calcResults['minCounterDamageMin'] === this.calcResults['minCounterDamageMax'] ? 
-                colorNum(this.calcResults['minCounterDamageMin']) : colorNum(this.calcResults['minCounterDamageMin']) + ' - ' + this.calcResults['minCounterDamageMax'] + '%'}</span>
-                ${ (minHP === maxHP) ? '' : '<span><span class="bold">@' + maxHP + 'HP: </span>' + ((this.calcResults['maxCounterDamageMin'] === this.calcResults['maxCounterDamageMax']) ? 
-                    colorNum(this.calcResults['maxCounterDamageMin']) : colorNum(this.calcResults['maxCounterDamageMin']) + ' - ' + this.calcResults['maxCounterDamageMax'] + '%') + '</span>'}
-                <img src="terrain/coin.gif" class="gold-coin">
-                <span class="funds-damage-display">${this.calcResults['minCounterFundsMin'] === this.calcResults['maxCounterFundsMax'] ? this.calcResults['minCounterFundsMin'] : this.calcResults['minCounterFundsMin'] + ' - ' + this.calcResults['maxCounterFundsMax']}</span>
-            </div>
-            `;
+            if (this.lookupModeOn && this.children.length === 0) {
+                const sliderMin = 0;
+                const sliderMax = this.defender.hp;
+                defenderDamageHtml = `
+                <div class="defender-damage">
+                    <div class="calc-plus-slider-display">
+                        ${sliderMin}
+                        <input type="range" class="calc-plus-lookup-slider" min="${sliderMin}" max="${sliderMax}" value="${this.lookupValue}">
+                        ${sliderMax}
+                    </div>
+                    <span class="hp-options">
+                        <img src="terrain/hp.gif" title="Defender HP after all attacks are completed.">
+                        <span class="calc-plus-lookup-value"> <b>≤</b> ${this.lookupValue}</span>
+                    </span>
+                    <span>
+                        <img src="${chrome.runtime.getURL('/images/luck_icon.png')}">
+                        <span class="calc-plus-lookup-probability"> ${this.lookupProbability.toFixed(2)}%</span>
+                    </span>
+                </div>
+                `;
+            } else {
+                defenderDamageHtml = `
+                <div class="defender-damage">
+                    <img src="terrain/fire.gif" class="fire">
+                    <span><span class="bold">@${minHP}HP: </span>${this.calcResults['minCounterDamageMin'] === this.calcResults['minCounterDamageMax'] ? 
+                    colorNum(this.calcResults['minCounterDamageMin']) : colorNum(this.calcResults['minCounterDamageMin']) + ' - ' + this.calcResults['minCounterDamageMax'] + '%'}</span>
+                    ${ (minHP === maxHP) ? '' : '<span><span class="bold">@' + maxHP + 'HP: </span>' + ((this.calcResults['maxCounterDamageMin'] === this.calcResults['maxCounterDamageMax']) ? 
+                        colorNum(this.calcResults['maxCounterDamageMin']) : colorNum(this.calcResults['maxCounterDamageMin']) + ' - ' + this.calcResults['maxCounterDamageMax'] + '%') + '</span>'}
+                    <img src="terrain/coin.gif" class="gold-coin">
+                    <span class="funds-damage-display">${this.calcResults['minCounterFundsMin'] === this.calcResults['maxCounterFundsMax'] ? this.calcResults['minCounterFundsMin'] : this.calcResults['minCounterFundsMin'] + ' - ' + this.calcResults['maxCounterFundsMax']}</span>
+                </div>
+                `;
+            }
         } else {
             defenderDamageHtml = `
             <div class="defender-damage">
@@ -4925,8 +4947,6 @@ class CalcNode {
             </div>
             `;
         }
-
-        // TODO lookupMOde
         return defenderDamageHtml;
     }
 
@@ -5025,7 +5045,7 @@ class CalcNode {
                     </div>
                     <div class="hp-options" id="calc-plus-options">
                         <img src="terrain/hp.gif" title="True HP value from 1-100. Atk and Def modifiers are calculated using the Display HP of the unit.\nThe damage a unit takes is subtracted from the True HP.">
-                        <input type="number" max="${this.defenderMaxHP}" min="1" style="width: 40px;" value="${this.defenderDisplayHP}" class="text-input hp-input">
+                        <input type="number" max="${this.defenderMaxHP}" min="1" style="width: 40px;" value="${this.defenderDisplayHP}" class="text-input hp-input ${this.lookupModeOn && !atRoot ? 'calc-plus-locked' : ''}">
                     </div>
                 </div>
                 <div class="terrain-options" id="calc-plus-options">
@@ -5296,15 +5316,12 @@ class CalcNode {
                                                        this.builtinCalc.calculate(this.attacker, this.defender, this.luckModeOn ? this.luckValue : null);
         this.attacker.unit.units_ammo = attacker_ammo;
         this.defender.unit.units_ammo = defender_ammo;
-
-        //TODO lookupmode
-        // console.log(this.calcResultProbability(0));
     }
 
     // calc result probability
     calcResultProbability(result) {
         let probability = null;
-        if (this.children.length == 0) {
+        if (this.children.length === 0) {
             let node = this;
             const attackers = [];
             let defender;
@@ -5332,9 +5349,7 @@ class CalcNode {
     // updates slider attributes based on current lookup value
     updateLookupSlider(hp) {
         this.lookupValue = hp;
-
-        this.updateCalcResults();
-        //TODO ???
+        this.lookupProbability = this.calcResultProbability(hp);
     }
 
     // cascading update for this node and all children
@@ -6300,7 +6315,7 @@ class DamageCalculator {
                 node.luckValue = parseInt(slider.value);
             }
             //lookup
-            if (this.lookupModeOn) {
+            if (this.lookupModeOn && node.children.length === 0) {
                 const slider = element.querySelector('.calc-plus-lookup-slider');
                 node.lookupValue = parseInt(slider.value);
             }
@@ -7052,17 +7067,18 @@ class DamageCalculator {
                     //update current node values
                     if (event.target.classList.contains('calc-plus-luck-slider')) {
                         node.updateLuckSlider(parseInt(event.target.value));
-
                         const parentElement = event.target.closest('.attacker-damage');
                         if (parentElement) {
-                            parentElement.querySelector('.calc-plus-slider-value').innerHTML =
-                                ` <b>≥</b> ${node.luckValue} (${node.luckProbability.toFixed(2)}%)`;
-
-                            parentElement.querySelector('.calc-plus-slider-damage').textContent =
-                                `${node.luckDamage}%`;
-
-                            parentElement.querySelector('.calc-plus-slider-funds').textContent =
-                                node.luckFunds;
+                            parentElement.querySelector('.calc-plus-slider-value').innerHTML = ` <b>≥</b> ${node.luckValue} (${node.luckProbability.toFixed(2)}%)`;
+                            parentElement.querySelector('.calc-plus-slider-damage').textContent = `${node.luckDamage}%`;
+                            parentElement.querySelector('.calc-plus-slider-funds').textContent = node.luckFunds;
+                        }
+                    } else if (event.target.classList.contains('calc-plus-lookup-slider')) {
+                        node.updateLookupSlider(parseInt(event.target.value));
+                        const parentElement = event.target.closest('.defender-damage');
+                        if (parentElement) {
+                            parentElement.querySelector('.calc-plus-lookup-value').innerHTML = ` <b>≤</b> ${node.lookupValue}`;
+                            parentElement.querySelector('.calc-plus-lookup-probability').textContent = `${node.lookupProbability.toFixed(2)}%`;
                         }
                     }
                 }
@@ -7071,7 +7087,7 @@ class DamageCalculator {
 
         // Attach listener for scroll wheel
         calcDisplay.addEventListener("wheel", (event) => {
-            if (!event.target.classList.contains("calc-plus-luck-slider")) return;
+            if (!event.target.classList.contains("calc-plus-luck-slider") && !event.target.classList.contains("calc-plus-lookup-slider")) return;
             const slider = event.target;
             if (!slider) return;
 
