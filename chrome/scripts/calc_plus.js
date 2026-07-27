@@ -5361,8 +5361,8 @@ class CalcNode {
         if (this.luckModeOn) {
             this.updateLuckSlider(this.luckValue);
         } else if (this.lookupModeOn) {
-            this.updateLookupSlider(this.lookupValue);
             this.updateCalcResults();
+            this.updateLookupSlider(this.lookupValue);
         } else {
             this.updateCalcResults();
         }
@@ -6707,7 +6707,7 @@ class DamageCalculator {
                     }
                     this.clickSelectMode = 'N';
                     this.setOverlayHook(false);
-                    this.currentNode.refactor(this.luckModeOn); //if current node calc has changed, need to update all children
+                    this.currentNode.refactor(); //if current node calc has changed, need to update all children
                     this.orient();
                     calcDisplay.innerHTML = this.getInnerHTML(); // Update the display
                     this.saveSession(); //save session data
@@ -6758,7 +6758,7 @@ class DamageCalculator {
                         this.deleteNode(this.currentNode.id);
                     }
                 }
-                this.currentNode.refactor(this.luckModeOn); //update calc
+                this.currentNode.refactor(); //update calc
                 //this.orient();
                 this.updateWindowSize(); //resize window
                 calcDisplay.innerHTML = this.getInnerHTML();//update display
@@ -6779,8 +6779,10 @@ class DamageCalculator {
                         for (const key in this.isMenuOpen) {
                             this.closeMenu(key);//close all menus
                         }
-                        //selectedNode.delete();
+                        //set new current node
+                        if (this.currentNode.parent) this.currentNode = this.currentNode.parent;
                         this.deleteNode(id);
+                        updateCalc = true;
                         updateDisplay = true;
                         updateWindow = true;
                     } else if (addButton && selectedNode.isValid) {
@@ -7141,7 +7143,7 @@ class DamageCalculator {
                 node.defender['co'] = CO_LIST[co];
             }
             this.closeMenu('select-co');
-            this.currentNode.refactor(this.luckModeOn);
+            this.currentNode.refactor();
             this.orient();
             calcDisplay.innerHTML = this.getInnerHTML(); // Update the display\
             this.saveSession(); //save session data
@@ -7168,7 +7170,7 @@ class DamageCalculator {
                 node.defender['terrain'] = TERRAIN_MENU_LIST[terrain];
             }
             this.closeMenu('select-terrain');
-            this.currentNode.refactor(this.luckModeOn);
+            this.currentNode.refactor();
             this.orient();
             calcDisplay.innerHTML = this.getInnerHTML(); // Update the display
             this.saveSession(); //save session data
@@ -7191,7 +7193,7 @@ class DamageCalculator {
                 node.defenderAmmo = node.defender.unit.units_ammo;
             }
             this.closeMenu('select-unit');
-            this.currentNode.refactor(this.luckModeOn);
+            this.currentNode.refactor();
             this.orient();
             calcDisplay.innerHTML = this.getInnerHTML(); // Update the display
             this.saveSession(); //save session data
