@@ -4856,7 +4856,7 @@ class CalcNode {
                     </div>
                     <span>
                         <img src="${chrome.runtime.getURL('/images/luck_icon.png')}">
-                        <span class="calc-plus-slider-value"> <b>≥</b> ${this.luckValue} (${this.luckProbability.toFixed(2)}%)</span>
+                        <span class="calc-plus-slider-value"> <b>≥</b> ${this.luckValue} (${(Math.trunc(this.luckProbability * 100) / 100).toFixed(2)}%)</span>
                     </span>
                     <span>
                         <img src="terrain/fire.gif" class="fire">
@@ -4920,7 +4920,7 @@ class CalcNode {
                     </span>
                     <span>
                         <img src="${chrome.runtime.getURL('/images/luck_icon.png')}">
-                        <span class="calc-plus-lookup-probability"> ${this.lookupProbability.toFixed(2)}%</span>
+                        <span class="calc-plus-lookup-probability"> ${(Math.trunc(this.lookupProbability * 100) / 100).toFixed(2)}%</span>
                     </span>
                 </div>
                 `;
@@ -7055,7 +7055,7 @@ class DamageCalculator {
                         node.updateLuckSlider(parseInt(event.target.value));
                         const parentElement = event.target.closest('.attacker-damage');
                         if (parentElement) {
-                            parentElement.querySelector('.calc-plus-slider-value').innerHTML = ` <b>≥</b> ${node.luckValue} (${node.luckProbability.toFixed(2)}%)`;
+                            parentElement.querySelector('.calc-plus-slider-value').innerHTML = ` <b>≥</b> ${node.luckValue} (${(Math.trunc(node.luckProbability * 100) / 100).toFixed(2)}%)`;
                             parentElement.querySelector('.calc-plus-slider-damage').textContent = `${node.luckDamage}%`;
                             parentElement.querySelector('.calc-plus-slider-funds').textContent = node.luckFunds;
                         }
@@ -7064,7 +7064,7 @@ class DamageCalculator {
                         const parentElement = event.target.closest('.defender-damage');
                         if (parentElement) {
                             parentElement.querySelector('.calc-plus-lookup-value').innerHTML = ` <b>≤</b> ${node.lookupValue}`;
-                            parentElement.querySelector('.calc-plus-lookup-probability').textContent = `${node.lookupProbability.toFixed(2)}%`;
+                            parentElement.querySelector('.calc-plus-lookup-probability').textContent = `${(Math.trunc(node.lookupProbability * 100) / 100).toFixed(2)}%`;
                         }
                     }
                 }
