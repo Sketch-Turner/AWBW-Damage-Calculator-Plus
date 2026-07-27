@@ -9,7 +9,7 @@ let Z_INDEX; //assigned in main
 const TILE_SIZE = 16;
 const SIG_PIXELS = [15, 18, 71, 78, 220]; // image signature pixel index
 const SESSION_DATA_KEY = "calc-plus-data";
-const CURRENT_VERSION = "1.2.7";
+const CURRENT_VERSION = "1.3.0";
 
 //TODO better data import solution
 const TERRAIN_SIGNATURES = {
@@ -4410,7 +4410,11 @@ const DEFAULT_DEFENDER = {
 // CalcNode                                        // 
 /////////////////////////////////////////////////////
 class CalcNode {
-    constructor(attacker, defender, id, builtinCalc, displayLuckSlider) {
+    constructor(attacker, defender, id, builtinCalc, safeModeOn, luckModeOn, lookupModeOn) {
+        this.safeModeOn = safeModeOn;
+        this.luckModeOn = luckModeOn;
+        this.lookupModeOn = lookupModeOn;
+
         this.attacker = attacker;
         this.defender = defender;
         this.children = [];
@@ -4433,14 +4437,36 @@ class CalcNode {
         this.defenderMaxHP = 100;
         this.defenderMaxCities = 99;
         this.defenderMaxTowers = 99;
+        this.defenderMaxFunds = 999999999;
         this.isValid = true;
         this.selectingAttacker = false;
         this.selectingDefender = false;
-        this.sliderLuck = 0;
-        this.sliderDamage = 0;
-        this.sliderFunds = 0;
-        this.sliderProbability = 0;
-        this.updateCalcResults(displayLuckSlider);
+
+        this.lookupValue = 0;
+        this.lookupProbability = 0;
+        this.luckValue = 0;
+        this.luckDamage = 0;
+        this.luckFunds = 0;
+        this.luckProbability = 0;
+
+        this.updateCalcResults();
+    }
+
+    // cascading mode update
+    updateModes(safeModeOn, luckModeOn, lookupModeOn) {
+        this.safeModeOn = safeModeOn;
+        this.luckModeOn = luckModeOn;
+        this.lookupModeOn = lookupModeOn;
+        if (luckModeOn) {
+            this.updateLuckSlider(this.luckValue);
+        } else if (lookupModeOn) {
+            this.updateLookupSlider(this.lookupValue);
+        } else {
+            this.updateCalcResults();
+        }
+        for (const child of this.children) {
+            child.updateModes(safeModeOn, luckModeOn, lookupModeOn);
+        }
     }
 
     // get probability of getting >= luck roll (approximation)
@@ -4483,8 +4509,11 @@ class CalcNode {
     }
 
     // load node from data
-    load(data, displayLuckSlider) {
+    load(data) {
         if (data) {
+            this.safeModeOn = data.safeModeOn;
+            this.luckModeOn = data.luckModeOn;
+            this.lookupModeOn = data.lookupModeOn;
             this.attacker = data.attacker;
             this.defender = data.defender;
             this.attackerAmmo = data.attackerAmmo;
@@ -4495,6 +4524,7 @@ class CalcNode {
             this.defenderMaxCities = data.defenderMaxCities;
             this.defenderMaxHP = data.defenderMaxHP;
             this.defenderMaxTowers = data.defenderMaxTowers;
+            this.defenderMaxFunds = data.defenderMaxFunds;
             this.defenderNoAmmoToggled = data.defenderNoAmmoToggled;
             this.depth = data.depth;
             this.height = data.height;
@@ -4504,13 +4534,14 @@ class CalcNode {
             this.width = data.width;
             this.y = data.y;
             this.x = data.x;
-            this.sliderLuck = data.sliderLuck;
-            this.sliderDamage = data.sliderDamage;
-            this.sliderFunds = data.sliderFunds;
-            this.sliderProbability = data.sliderProbability;
+            this.luckValue = data.luckValue;
+            this.lookupValue = data.lookupValue;
+            this.luckDamage = data.luckDamage;
+            this.luckFunds = data.luckFunds;
+            this.luckProbability = data.luckProbability;
 
             for (const child of data.children) {
-                const next = this.genNextNode(child.id, displayLuckSlider)
+                const next = this.genNextNode(child.id)
                 next.load(child);
                 this.add(next);
             }
@@ -4537,10 +4568,11 @@ class CalcNode {
         data.id = this.id;
         data.depth = this.depth;
         data.isValid = this.isValid;
-        data.sliderLuck = this.sliderLuck;
-        data.sliderDamage = this.sliderDamage;
-        data.sliderFunds = this.sliderFunds;
-        data.sliderProbability = this.sliderProbability;
+        data.luckValue = this.luckValue;
+        data.lookupValue = this.lookupValue;
+        data.luckDamage = this.luckDamage;
+        data.luckFunds = this.luckFunds;
+        data.luckProbability = this.luckProbability;
 
         data.attackerNoAmmoToggled = this.attackerNoAmmoToggled;
         data.defenderNoAmmoToggled = this.defenderNoAmmoToggled;
@@ -4551,6 +4583,11 @@ class CalcNode {
         data.defenderMaxHP = this.defenderMaxHP;
         data.defenderMaxCities = this.defenderMaxCities;
         data.defenderMaxTowers = this.defenderMaxTowers;
+        this.defenderMaxFunds = data.defenderMaxFunds;
+
+        data.safeModeOn = this.safeModeOn;
+        data.luckModeOn = this.luckModeOn;
+        data.lookupModeOn = this.lookupModeOn;
 
         return data;
     }
@@ -4760,7 +4797,7 @@ class CalcNode {
         return poly;
     }
    
-    generateHTML(safeModeOn, displayLuckSlider) {
+    generateHTML() {
         const variableStyle = (!this.isValid) ? 'calc-plus-invalid' : (this.isFocused) ? 'calc-plus-focused' : 'calc-plus-unfocused'; 
         let attackerCountry = '';
         if (this.attacker['terrain']['terrain_name'].includes('?')) {
@@ -4784,9 +4821,9 @@ class CalcNode {
                 <div class="calc-plus-node-content">
                     ${this.generateHeaderHTML(variableStyle, atRoot)}
                     <div class="calc-plus-main-display"> 
-                        ${this.generateDisplayHTML(safeModeOn, variableStyle, atRoot, attackerHP, attackerCountry, attackerNoSecondary, defenderHP, defenderCountry, defenderNoSecondary)}
+                        ${this.generateDisplayHTML(variableStyle, atRoot, attackerHP, attackerCountry, attackerNoSecondary, defenderHP, defenderCountry, defenderNoSecondary)}
                     </div>
-                    ${this.generateResultsHTML(displayLuckSlider)}
+                    ${this.generateResultsHTML()}
                 </div>
                 ${this.generateOptionsHTML(variableStyle)}
             </foreignObject>
@@ -4803,31 +4840,31 @@ class CalcNode {
         `;
     }
 
-    generateAttackerDamageHTML(displayLuckSlider) {
+    generateAttackerDamageHTML() {
         const colorNum = n => `<span style="color:${n < 0 ? 'red' : 'inherit'}">${n}%</span>`;
         let attackerDamageHtml = '';
         if (this.isFocused) {
-            const sliderMin = -this.builtinCalc.lookupGlobal(this.attacker, "bad_luck");
-            const sliderMax = this.builtinCalc.lookupGlobal(this.attacker, "good_luck");
-            if (displayLuckSlider) {
+            if (this.luckModeOn) {
+                const sliderMin = -this.builtinCalc.lookupGlobal(this.attacker, "bad_luck");
+                const sliderMax = this.builtinCalc.lookupGlobal(this.attacker, "good_luck");
                 attackerDamageHtml = `
                 <div class="attacker-damage">
                     <div class="calc-plus-slider-display">
                         ${sliderMin}
-                        <input type="range" class="calc-plus-damage-slider" min="${sliderMin}" max="${sliderMax}" value="${this.sliderLuck}">
+                        <input type="range" class="calc-plus-luck-slider" min="${sliderMin}" max="${sliderMax}" value="${this.luckValue}">
                         ${sliderMax}
                     </div>
                     <span>
                         <img src="${browser.runtime.getURL('/images/luck_icon.png')}">
-                        <span class="calc-plus-slider-value"> <b>≥</b> ${this.sliderLuck} (${this.sliderProbability.toFixed(2)}%)</span>
+                        <span class="calc-plus-slider-value"> <b>≥</b> ${this.luckValue} (${(Math.trunc(this.luckProbability * 100) / 100).toFixed(2)}%)</span>
                     </span>
                     <span>
                         <img src="terrain/fire.gif" class="fire">
-                        <span class="calc-plus-slider-damage">${this.sliderDamage}%</span>
+                        <span class="calc-plus-slider-damage">${this.luckDamage}%</span>
                     </span>
                     <span>
                         <img src="terrain/coin.gif" class="gold-coin">
-                        <span class="calc-plus-slider-funds">${this.sliderFunds}</span>
+                        <span class="calc-plus-slider-funds">${this.luckFunds}</span>
                     </span>
                 </div>
                 `
@@ -4867,17 +4904,39 @@ class CalcNode {
         }
         let defenderDamageHtml = '';
         if (this.isFocused) {
-            defenderDamageHtml = `
-            <div class="defender-damage">
-                <img src="terrain/fire.gif" class="fire">
-                <span><span class="bold">@${minHP}HP: </span>${this.calcResults['minCounterDamageMin'] === this.calcResults['minCounterDamageMax'] ? 
-                colorNum(this.calcResults['minCounterDamageMin']) : colorNum(this.calcResults['minCounterDamageMin']) + ' - ' + this.calcResults['minCounterDamageMax'] + '%'}</span>
-                ${ (minHP === maxHP) ? '' : '<span><span class="bold">@' + maxHP + 'HP: </span>' + ((this.calcResults['maxCounterDamageMin'] === this.calcResults['maxCounterDamageMax']) ? 
-                    colorNum(this.calcResults['maxCounterDamageMin']) : colorNum(this.calcResults['maxCounterDamageMin']) + ' - ' + this.calcResults['maxCounterDamageMax'] + '%') + '</span>'}
-                <img src="terrain/coin.gif" class="gold-coin">
-                <span class="funds-damage-display">${this.calcResults['minCounterFundsMin'] === this.calcResults['maxCounterFundsMax'] ? this.calcResults['minCounterFundsMin'] : this.calcResults['minCounterFundsMin'] + ' - ' + this.calcResults['maxCounterFundsMax']}</span>
-            </div>
-            `;
+            if (this.lookupModeOn && this.children.length === 0) {
+                const sliderMin = 0;
+                const sliderMax = this.defender.hp;
+                defenderDamageHtml = `
+                <div class="defender-damage">
+                    <div class="calc-plus-slider-display">
+                        ${sliderMin}
+                        <input type="range" class="calc-plus-lookup-slider" min="${sliderMin}" max="${sliderMax}" value="${this.lookupValue}">
+                        ${sliderMax}
+                    </div>
+                    <span class="hp-options">
+                        <img src="terrain/hp.gif" title="Defender HP after all attacks are completed.">
+                        <span class="calc-plus-lookup-value"> <b>≤</b> ${this.lookupValue}</span>
+                    </span>
+                    <span>
+                        <img src="${browser.runtime.getURL('/images/luck_icon.png')}">
+                        <span class="calc-plus-lookup-probability"> ${(Math.trunc(this.lookupProbability * 100) / 100).toFixed(2)}%</span>
+                    </span>
+                </div>
+                `;
+            } else {
+                defenderDamageHtml = `
+                <div class="defender-damage">
+                    <img src="terrain/fire.gif" class="fire">
+                    <span><span class="bold">@${minHP}HP: </span>${this.calcResults['minCounterDamageMin'] === this.calcResults['minCounterDamageMax'] ? 
+                    colorNum(this.calcResults['minCounterDamageMin']) : colorNum(this.calcResults['minCounterDamageMin']) + ' - ' + this.calcResults['minCounterDamageMax'] + '%'}</span>
+                    ${ (minHP === maxHP) ? '' : '<span><span class="bold">@' + maxHP + 'HP: </span>' + ((this.calcResults['maxCounterDamageMin'] === this.calcResults['maxCounterDamageMax']) ? 
+                        colorNum(this.calcResults['maxCounterDamageMin']) : colorNum(this.calcResults['maxCounterDamageMin']) + ' - ' + this.calcResults['maxCounterDamageMax'] + '%') + '</span>'}
+                    <img src="terrain/coin.gif" class="gold-coin">
+                    <span class="funds-damage-display">${this.calcResults['minCounterFundsMin'] === this.calcResults['maxCounterFundsMax'] ? this.calcResults['minCounterFundsMin'] : this.calcResults['minCounterFundsMin'] + ' - ' + this.calcResults['maxCounterFundsMax']}</span>
+                </div>
+                `;
+            }
         } else {
             defenderDamageHtml = `
             <div class="defender-damage">
@@ -4888,12 +4947,11 @@ class CalcNode {
             </div>
             `;
         }
-
         return defenderDamageHtml;
     }
 
-    generateResultsHTML(displayLuckSlider) {
-        const attackerDamageHtml = this.generateAttackerDamageHTML(displayLuckSlider);
+    generateResultsHTML() {
+        const attackerDamageHtml = this.generateAttackerDamageHTML();
         const defenderDamageHtml = this.generateDefenderDamageHTML();
         // check if counter break, swap attacker / defender
         return `
@@ -4905,12 +4963,12 @@ class CalcNode {
         `;
     }
 
-    generateAttackerHTML(safeModeOn, atRoot, attackerHP, attackerCountry, attackerNoSecondary) {
+    generateAttackerHTML(atRoot, attackerHP, attackerCountry, attackerNoSecondary) {
         return `
             <div class="calculator-attack" style="justify-content: flex-start; align-content: flex-start; width: ${this.width/2-3}px;">
                 <div class="co-options" id="calc-plus-options">
                     <div class="co option">
-                        <div class="selected-co ${safeModeOn && !atRoot ? 'calc-plus-locked' : ''}">
+                        <div class="selected-co ${this.safeModeOn && !atRoot ? 'calc-plus-locked' : ''}">
                             <img src="terrain/aw2/ds${this.attacker['co']['co_name'].toLowerCase().replace(' ', '')}.png?v=1" class="border co_portrait">
                         </div>
                     </div>
@@ -4937,7 +4995,7 @@ class CalcNode {
                     </div>
                 </div> 
                 <div>
-                    <div class="power-options ${safeModeOn && !atRoot && this.parent.attacker['power'] !== 'N' ? 'calc-plus-locked' : ''}" id="calc-plus-options" style="flex-direction: column; width: 57px">
+                    <div class="power-options ${this.safeModeOn && !atRoot && this.parent.attacker['power'] !== 'N' ? 'calc-plus-locked' : ''}" id="calc-plus-options" style="flex-direction: column; width: 57px">
                         <div class="option" style="margin: 0px 0px;">
                             <img src="terrain/aw2/redstar.gif" ${((this.attacker['power'] === 'Y') ? 'id="calc-plus-blue-border"' : '') + 'class="toggle-cop"'}> 
                             <img src="terrain/aw2/bluestar.gif" ${((this.attacker['power'] === 'S') ? 'id="calc-plus-blue-border"' : '') + 'class="toggle-scop"'}>
@@ -4968,30 +5026,30 @@ class CalcNode {
         `;
     }
 
-    generateDefenderHTML(safeModeOn, atRoot, defenderHP, defenderCountry, defenderNoSecondary) {
+    generateDefenderHTML(atRoot, defenderHP, defenderCountry, defenderNoSecondary) {
         return `
             <div class="calculator-defend" style="justify-content: flex-start; align-content: flex-start; width: ${this.width/2-3}px;">
                 <div class="co-options" id="calc-plus-options">
                     <div class="co option">
-                        <div class="selected-co ${safeModeOn && !atRoot ? 'calc-plus-locked' : ''}">
+                        <div class="selected-co ${this.safeModeOn && !atRoot ? 'calc-plus-locked' : ''}">
                             <img src="terrain/aw2/ds${this.defender['co']['co_name'].toLowerCase().replace(' ', '')}.png?v=1" class="border co_portrait">
                         </div>
                     </div>
                 </div>
                 <div class="unit-options" id="calc-plus-options">
                     <div class="unit option">
-                        <div class="selected-unit border ${safeModeOn && !atRoot ? 'calc-plus-locked' : ''}">
+                        <div class="selected-unit border ${this.safeModeOn && !atRoot ? 'calc-plus-locked' : ''}">
                             <img src="terrain/ani/${this.defender['country']['code']}${this.defender['unit']['units_name'].toLowerCase()}.gif">
                             ${(defenderHP > 9) ? '' : '<img src="terrain/aw2/' + defenderHP + '.gif" class="hp-display">'}
                         </div>
                     </div>
                     <div class="hp-options" id="calc-plus-options">
                         <img src="terrain/hp.gif" title="True HP value from 1-100. Atk and Def modifiers are calculated using the Display HP of the unit.\nThe damage a unit takes is subtracted from the True HP.">
-                        <input type="number" max="${this.defenderMaxHP}" min="1" style="width: 40px;" value="${this.defenderDisplayHP}" class="text-input hp-input">
+                        <input type="number" max="${this.defenderMaxHP}" min="1" style="width: 40px;" value="${this.defenderDisplayHP}" class="text-input hp-input ${this.lookupModeOn && !atRoot ? 'calc-plus-locked' : ''}">
                     </div>
                 </div>
                 <div class="terrain-options" id="calc-plus-options">
-                    <div class="terrain option ${safeModeOn && !atRoot ? 'calc-plus-locked' : ''}">
+                    <div class="terrain option ${this.safeModeOn && !atRoot ? 'calc-plus-locked' : ''}">
                         <img src="terrain/aw2/${defenderCountry+this.defender['terrain']['terrain_name'].toLowerCase().replaceAll(' ', '').replaceAll('?', '')}.gif" class="selected-terrain">
                         <div class="terrain-stars">
                             <img src="terrain/terrainstar.gif">
@@ -5000,16 +5058,16 @@ class CalcNode {
                     </div>
                 </div> 
                 <div>
-                    <div class="power-options ${safeModeOn && !atRoot ? 'calc-plus-locked' : ''}" id="calc-plus-options" style="flex-direction: column; width: 57px">
+                    <div class="power-options ${this.safeModeOn && !atRoot ? 'calc-plus-locked' : ''}" id="calc-plus-options" style="flex-direction: column; width: 57px">
                         <div class="option" style="margin: 0px 0px;">
                             <img src="terrain/aw2/redstar.gif" ${((this.defender['power'] === 'Y') ? 'id="calc-plus-blue-border"' : '') + 'class="toggle-cop"'}> 
                             <img src="terrain/aw2/bluestar.gif" ${((this.defender['power'] === 'S') ? 'id="calc-plus-blue-border"' : '') + 'class="toggle-scop"'}>
                         </div>
                     </div> 
                     <div class="ammo-options" id="calc-plus-ammo-options"${defenderNoSecondary ? 'style="visibility: hidden;"' : ''}>
-                        <div class="option ${(safeModeOn && !atRoot && this.parent.defenderNoAmmoToggled) ? 'calc-plus-locked' : ''}">
-                            <span class="red-border-strikethru ${(safeModeOn && !atRoot && this.parent.defenderNoAmmoToggled) ? 'calc-plus-locked' : ''}" ${this.defenderNoAmmoToggled ? '' : 'style="display: none;"'}></span>
-                            <img src="terrain/ammo_button.gif" ${this.defenderNoAmmoToggled ? 'class="red-border ' + ((safeModeOn && !atRoot && this.parent.defenderNoAmmoToggled) ? 'calc-plus-locked' : '') + '"' : ''}>
+                        <div class="option ${(this.safeModeOn && !atRoot && this.parent.defenderNoAmmoToggled) ? 'calc-plus-locked' : ''}">
+                            <span class="red-border-strikethru ${(this.safeModeOn && !atRoot && this.parent.defenderNoAmmoToggled) ? 'calc-plus-locked' : ''}" ${this.defenderNoAmmoToggled ? '' : 'style="display: none;"'}></span>
+                            <img src="terrain/ammo_button.gif" ${this.defenderNoAmmoToggled ? 'class="red-border ' + ((this.safeModeOn && !atRoot && this.parent.defenderNoAmmoToggled) ? 'calc-plus-locked' : '') + '"' : ''}>
                         </div>
                     </div>
                 </div>
@@ -5024,19 +5082,19 @@ class CalcNode {
                     </div> 
                     <div class="fund-options" id="calc-plus-fund-options">
                         <img src="terrain/coin.gif" class="coin"> 
-                        <input type="number" min="0" step="1000" value="${this.defender['funds']}" class="text-input funds-input">
+                        <input type="number" max="${this.defenderMaxFunds}" min="0" step="1000" value="${this.defender['funds']}" class="text-input funds-input">
                     </div>
                 </div>
             </div>
         `;
     }
 
-    generateDisplayHTML(safeModeOn, variableStyle, atRoot, attackerHP, attackerCountry, attackerNoSecondary, defenderHP, defenderCountry, defenderNoSecondary) {
+    generateDisplayHTML(variableStyle, atRoot, attackerHP, attackerCountry, attackerNoSecondary, defenderHP, defenderCountry, defenderNoSecondary) {
         let displayHtml = '';
         if (this.isFocused) {
             displayHtml = `
-            ${this.generateAttackerHTML(safeModeOn, atRoot, attackerHP, attackerCountry, attackerNoSecondary)}
-            ${this.generateDefenderHTML(safeModeOn, atRoot, defenderHP, defenderCountry, defenderNoSecondary)}
+            ${this.generateAttackerHTML(atRoot, attackerHP, attackerCountry, attackerNoSecondary)}
+            ${this.generateDefenderHTML(atRoot, defenderHP, defenderCountry, defenderNoSecondary)}
             `;
         } else {
             displayHtml = `
@@ -5171,17 +5229,17 @@ class CalcNode {
         }
     }
 
-    getHTML(safeModeOn, displayLuckSlider) {
+    getHTML() {
         try {
             let html = "";
-            html += this.generateHTML(safeModeOn, displayLuckSlider);
+            html += this.generateHTML();
             
             let focused = "";
             for (const child of this.children) {
                 if (child.isFocused === false) {
-                    html += child.getHTML(safeModeOn, displayLuckSlider);
+                    html += child.getHTML();
                 } else {
-                    focused += child.getHTML(safeModeOn, displayLuckSlider);
+                    focused += child.getHTML();
                 }
             }
 
@@ -5192,86 +5250,147 @@ class CalcNode {
         }
     }
 
-    genNextNode(id, displayLuckSlider) { //returns node post attack
-        const nextDefender = JSON.parse(JSON.stringify(this.defender));
-        const nextAttacker = JSON.parse(JSON.stringify(DEFAULT_ATTACKER));
-        // Get damage the attack will do. If luck mode is on, use slider value; else use min value
+    // returns defender next state post attack
+    computeNextState() {
+        const nextDefender = structuredClone(this.defender);
+
         let attackerDamage;
         let maxHP;
+
         if (this.doCounterBreakSwap()) {
-            // use min counter
-            attackerDamage = (displayLuckSlider) ? this.sliderDamage : Math.max(0, this.calcResults['minCounterDamageMin']);
+            attackerDamage = this.luckModeOn
+                ? this.luckDamage
+                : Math.max(0, this.calcResults.minCounterDamageMin);
+
             maxHP = Math.max(0, this.attackerDisplayHP - attackerDamage);
         } else {
-            // no swap
-            attackerDamage = (displayLuckSlider) ? this.sliderDamage : Math.max(0, this.calcResults['attackDamageMin']);
+            attackerDamage = this.luckModeOn
+                ? this.luckDamage
+                : Math.max(0, this.calcResults.attackDamageMin);
+
             maxHP = Math.max(0, this.defenderDisplayHP - attackerDamage);
         }
 
-        nextDefender['hp'] = maxHP;
+        nextDefender.hp = maxHP;
+
+        return {
+            defender: nextDefender,
+            defenderMaxHP: maxHP,
+            defenderDisplayHP: maxHP,
+            defenderMaxCities: this.defender.cities,
+            defenderMaxTowers: this.defender.towers,
+            defenderMaxFunds: this.defender.funds
+        };
+    }
+
+    // builds next node
+    genNextNode(id) {
+        const state = this.computeNextState();
+
+        const nextAttacker = structuredClone(DEFAULT_ATTACKER);
         nextAttacker.country = this.attacker.country;
 
-        const newNode = new CalcNode(nextAttacker, nextDefender, id, this.builtinCalc, displayLuckSlider);
-        newNode.defenderMaxHP = maxHP;
-        newNode.defenderDisplayHP = maxHP;
+        const node = new CalcNode(
+            nextAttacker,
+            state.defender,
+            id,
+            this.builtinCalc,
+            this.safeModeOn,
+            this.luckModeOn,
+            this.lookupModeOn
+        );
 
-        newNode.defenderMaxCities = this.defender['cities'];
-        newNode.defenderMaxTowers = this.defender['towers'];
-        return newNode;
+        Object.assign(node, state);
+
+        return node;
     }
 
     // sets this.calcResults
-    updateCalcResults(displayLuckSlider) {
+    updateCalcResults() {
         const attacker_ammo = this.attacker.unit.units_ammo;
         const defender_ammo = this.defender.unit.units_ammo;
         this.attacker.unit.units_ammo = (this.attackerNoAmmoToggled) ? 0 : 1;
         this.defender.unit.units_ammo = (this.defenderNoAmmoToggled) ? 0 : 1;
         // check if counter break, swap attacker / defender
-        this.calcResults = this.doCounterBreakSwap() ? this.builtinCalc.calculate(this.defender, this.attacker, displayLuckSlider ? this.sliderLuck : null) :
-                                                       this.builtinCalc.calculate(this.attacker, this.defender, displayLuckSlider ? this.sliderLuck : null);
+        this.calcResults = this.doCounterBreakSwap() ? this.builtinCalc.calculate(this.defender, this.attacker, this.luckModeOn ? this.luckValue : null) :
+                                                       this.builtinCalc.calculate(this.attacker, this.defender, this.luckModeOn ? this.luckValue : null);
         this.attacker.unit.units_ammo = attacker_ammo;
         this.defender.unit.units_ammo = defender_ammo;
     }
 
-    refactor(displayLuckSlider) {
+    // calc result probability
+    calcResultProbability(result) {
+        let probability = null;
+        if (this.children.length === 0) {
+            let node = this;
+            const attackers = [];
+            let defender;
+            while (node != null) {
+                attackers.unshift(node.attacker);
+                defender = node.defender;
+                node = node.parent;
+            }
+            probability = this.builtinCalc.calcResultProbability(attackers, defender, result);
+        }
+        return probability;
+    }
+
+    // updates slider attributes based on current luck value
+    updateLuckSlider(luck) {
+        this.luckValue = luck;
+        this.luckProbability = this.calcLuckRollProbability(this.attacker, luck);
+
+        this.updateCalcResults();
+
+        this.luckDamage = Math.max(0, this.calcResults.attackDamageMin);
+        this.luckFunds = this.calcResults.attackFundsMin;
+    }
+
+    // updates slider attributes based on current lookup value
+    updateLookupSlider(hp) {
+        this.lookupValue = hp;
+        this.lookupProbability = this.calcResultProbability(hp);
+    }
+
+    // cascading update for this node and all children
+    refactor() {
         if (!this.isValid) {
             this.removeFocus();
         }
-        this.updateCalcResults(displayLuckSlider);
-        const newChild = this.genNextNode(-1, displayLuckSlider);//this is discarded so id doesnt matter???
+
+        if (this.luckModeOn) {
+            this.updateLuckSlider(this.luckValue);
+        } else if (this.lookupModeOn) {
+            this.updateCalcResults();
+            this.updateLookupSlider(this.lookupValue);
+        } else {
+            this.updateCalcResults();
+        }
+
+        const state = this.computeNextState();
+
         for (const child of this.children) {
-            const oldDefender = JSON.parse(JSON.stringify(child.defender))
-            child.defender = JSON.parse(JSON.stringify(newChild.defender));
-            //if luck mode, use slider val
-            child.defenderMaxHP = newChild.defenderMaxHP;
-            child.defenderDisplayHP = newChild.defenderDisplayHP;
-            //TODO?????
-            
-            child.defenderMaxCities = newChild.defenderMaxCities;
-            child.defenderMaxTowers = newChild.defenderMaxTowers;
+            const oldDefender = structuredClone(child.defender);
+
+            child.defender = structuredClone(state.defender);
+            child.defenderMaxHP = state.defenderMaxHP;
+            child.defenderDisplayHP = state.defenderDisplayHP;
+            child.defenderMaxCities = state.defenderMaxCities;
+            child.defenderMaxTowers = state.defenderMaxTowers;
+            child.defenderMaxFunds = state.defenderMaxFunds;
             child.defenderNoAmmoToggled = this.defenderNoAmmoToggled;
 
+            child.attacker.towers = this.attacker.towers;
+            child.attacker.cities = this.attacker.cities;
+            child.attacker.funds = this.attacker.funds;
+            child.attacker.power = this.attacker.power;
+            child.attacker.co = this.attacker.co;
 
-            // for (const key in valueChanges) {
-            //     const k = key.replace('a_', '').replace('d_', '');
-            //     if (valueChanges[key]) {
-            //         child.attacker[k] = this.attacker[k];
-            //     } else if (key.startsWith('d_')) {
-            //         child.defender[k] = oldDefender[k];
-            //     }
-            // }
-            child.attacker['towers'] = this.attacker['towers'];
-            child.attacker['cities'] = this.attacker['cities'];
-            child.attacker['funds'] = this.attacker['funds'];
-            child.attacker['power'] = this.attacker['power'];
-            child.attacker['co'] = this.attacker['co'];
-            child.defender['towers'] = oldDefender['towers'];
-            child.defender['cities'] = oldDefender['cities'];
+            // child.defender.towers = oldDefender.towers;
+            // child.defender.cities = oldDefender.cities;
 
-            // TODO: Add other info that carries over here
-            
             child.isValid = (child.defenderDisplayHP > 0) && this.isValid;
-            child.refactor(displayLuckSlider);
+            child.refactor();
         }
     }
 }
@@ -5280,12 +5399,17 @@ class CalcNode {
 // CalcTree                                        // 
 /////////////////////////////////////////////////////
 class CalcTree {
-    constructor(id, builtinCalc, displayLuckSlider) {
+    constructor(id, builtinCalc, safeModeOn, luckModeOn, lookupModeOn) {
         this.builtinCalc = builtinCalc;
-        this.root = new CalcNode(JSON.parse(JSON.stringify(DEFAULT_ATTACKER)), JSON.parse(JSON.stringify(DEFAULT_DEFENDER)), id, builtinCalc, displayLuckSlider);
+        this.root = new CalcNode(structuredClone(DEFAULT_ATTACKER), structuredClone(DEFAULT_DEFENDER), id, builtinCalc, safeModeOn, luckModeOn, lookupModeOn);
         this.root.isRoot = true;
         this.activeNode = this.root;
         this.root.orient(0,0);
+    }
+
+    // cascading mode update
+    updateModes(safeModeOn, luckModeOn, lookupModeOn) {
+        this.root.updateModes(safeModeOn, luckModeOn, lookupModeOn);
     }
 
     // get dict with tree data
@@ -5294,13 +5418,13 @@ class CalcTree {
     }
 
     //refactor the active node
-    refactor(displayLuckSlider) {
-        this.activeNode.refactor(displayLuckSlider);
+    refactor() {
+        this.activeNode.refactor();
     }
 
     //returns html of each node
-    getHTML(safeModeOn, displayLuckSlider) {
-        return this.root.getHTML(safeModeOn, displayLuckSlider);
+    getHTML() {
+        return this.root.getHTML();
     }
 
     //find node by id, set as active, return node
@@ -5327,7 +5451,9 @@ class CalcTree {
 // BuiltinCalculator                               //
 /////////////////////////////////////////////////////
 class BuiltinCalculator {
-    constructor() {}
+    constructor() {
+        this.damageCache = new Map(); // damage result cache for cumulative probability calcs
+    }
     
     // return dict containing min/max attack and counter damage
     calculate(attacker, defender, luck=null) {
@@ -5336,7 +5462,7 @@ class BuiltinCalculator {
             'attackDamageMax': 0,
             'attackFundsMin': 0,
             'attackFundsMax': 0,
-            'attackProbability': luck,
+            'attackLuckRoll': luck,
 
             'minCounterDamageMin': 0,
             'minCounterDamageMax': 0,
@@ -5356,7 +5482,6 @@ class BuiltinCalculator {
         result.attackDamageMax = attack.max;
         result.attackFundsMin = this.getDamageCost(defender, attack.min);
         result.attackFundsMax = this.getDamageCost(defender, attack.max);
-        result.attackProbability = attack.probability;
 
         let counter = {"max":0, "min":0};
         const attack_min = Math.max(attack.max, 0);
@@ -5616,8 +5741,105 @@ class BuiltinCalculator {
         }
     }
 
-    // returns true if unit has ammo
+    // build mapping of luck value -> (good, bad) combinations
+    getLuckDistribution(goodLuck, badLuck) {
+        const counts = [];
 
+        for (let lg = 0; lg <= goodLuck; lg++) {
+            for (let lb = 0; lb <= badLuck; lb++) {
+                const luck = lg - lb;
+
+                let entry = counts.find(e => e.luck === luck);
+                if (entry)
+                    entry.count++;
+                else
+                    counts.push({ luck, count: 1 });
+            }
+        }
+
+        return counts;
+    }
+
+    // convert attacker/defender pair to key for self.damageCache
+    getDamageCacheKey(attacker, defender) {
+        return JSON.stringify([attacker, defender]);
+    }
+
+    // build map of attack damage -> count
+    getDamageDistribution(attacker, defender) {
+        const key = this.getDamageCacheKey(attacker, defender);
+
+        if (this.damageCache.has(key))
+            return this.damageCache.get(key);
+
+        const bad = this.lookupGlobal(attacker, "bad_luck");
+        const good = this.lookupGlobal(attacker, "good_luck");
+
+        const damageCounts = new Map();
+
+        for (const {luck, count} of this.getLuckDistribution(good, bad)) {
+
+            const damage = Math.max(0, this.calc(attacker, defender, false, luck).min);
+
+            damageCounts.set(damage, (damageCounts.get(damage) || 0) + count);
+        }
+
+        const result = [...damageCounts].map(([damage, count]) => ({
+            damage,
+            count
+        }));
+
+        this.damageCache.set(key, result);
+
+        return result;
+    }
+
+    // Calc the cumulative probability of defender.hp <= resultHP
+    calcResultProbability(attackers, defender, resultHP) {
+        let totalCount = 1;
+
+        for (const attacker of attackers) {
+            const bad = this.lookupGlobal(attacker, "bad_luck");
+            const good = this.lookupGlobal(attacker, "good_luck");
+
+            totalCount *= (bad + 1) * (good + 1);
+        }
+
+        let resultCount = 0;
+
+        const recurse = (index, hp, count) => {
+
+            // all attackers finished
+            if (index === attackers.length) {
+                if (hp <= resultHP)
+                    resultCount += count;
+                return;
+            }
+
+            const attacker = attackers[index];
+
+            const damageDist = this.getDamageDistribution(
+                attacker,
+                { ...defender, hp }
+            );
+
+            damageDist.forEach(({ damage, count: damageCount }) => {
+
+                const nextHP = Math.max(0, hp - damage);
+
+                recurse(
+                    index + 1,
+                    nextHP,
+                    count * damageCount
+                );
+            });
+        };
+
+        recurse(0, defender.hp, 1);
+
+        // console.log("Probability: ", 100 * resultCount / totalCount, "Cache Size: ", this.damageCache.size);
+        return 100 * resultCount / totalCount;
+    }
 }
 
 /////////////////////////////////////////////////////
@@ -5628,7 +5850,8 @@ class DamageCalculator {
         this.nextID = -1;
         this.calcTreeList = [];
         this.safeModeOn = true;
-        this.displaySlider = false;
+        this.luckModeOn = false;
+        this.lookupModeOn = false;
         this.displayDevOptions = false;
         this.overlay = null; // handled by buildCalculator()
         this.tileInfo = null;
@@ -5660,8 +5883,10 @@ class DamageCalculator {
             // dev options
             this.safeModeOn = !data.safeModeOn;
             this.toggleSafeMode();
-            this.displaySlider = !data.displaySlider;
-            this.toggleSlider();
+            this.luckModeOn = !data.luckModeOn;
+            this.toggleLuckMode();
+            this.lookupModeOn = !data.lookupModeOn;
+            this.toggleLookupMode();
             this.displayDevOptions = data.displayDevOptions;
             if (data.displayDevOptions) {
                 this.displayDevOptions = false;
@@ -5675,9 +5900,9 @@ class DamageCalculator {
             // build trees
             for (const tree of data.trees) {
                 this.addNewTree();
-                this.activeNode.load(tree.root, data.displaySlider);
+                this.activeNode.load(tree.root);
                 this.activeCalcTree.length = tree.length;
-                this.activeCalcTree.root.refactor(data.displaySlider);
+                this.activeCalcTree.root.refactor();
                 this.activeCalcTree.root.orient(0,0);
             }
             
@@ -5692,7 +5917,8 @@ class DamageCalculator {
         // calc data
         data.nextID = this.nextID;
         data.safeModeOn = this.safeModeOn;
-        data.displaySlider = this.displaySlider;
+        data.luckModeOn = this.luckModeOn;
+        data.lookupModeOn = this.lookupModeOn;
         data.displayDevOptions = this.displayDevOptions;
         data.zindex = this.zindex;
         // element data
@@ -5788,7 +6014,7 @@ class DamageCalculator {
                     "power": power,
                     "terrain": TERRAIN_DATA[terrain],
                     "towers": towers,
-                    "unit": JSON.parse(JSON.stringify(UNIT_LIST[unit]))
+                    "unit": structuredClone(UNIT_LIST[unit])
                 };
 
                 data[k]["unit"]["units_ammo"] = ammo;
@@ -5842,50 +6068,77 @@ class DamageCalculator {
         }
     }
 
+    // cascading update of modes
+    updateModes() {
+        for (const tree of this.calcTreeList) {
+            tree.updateModes(this.safeModeOn, this.luckModeOn, this.lookupModeOn);
+        }
+    }
+
     // toggle safe mode and swap out icon
     toggleSafeMode() {
         this.safeModeOn = !this.safeModeOn;
         const button = document.getElementById("calc-plus-safe");
-        // if (!this.safeModeToggleVisible) {
-        //     button.style.display = "none";
-        // } else {
-        //     button.style.display = "block";
-        // }
+
         button.title = `Safe Mode is ${this.safeModeOn ? 'On' : 'Off'}. Click to toggle.`;
         const img = button.querySelector("img");
         img.src = browser.runtime.getURL('/images/' + (this.safeModeOn ? 'lock' : 'unlock') + '_icon.png');
         const display = document.getElementById("calc-plus-display");
+
+        this.updateModes();
         display.innerHTML = this.getInnerHTML(); //refresh display
         this.saveSession(); //save session data
     }
 
-    toggleSlider() {
-        this.displaySlider = !this.displaySlider;
-        const button = document.getElementById("calc-plus-slider-toggle");
-        // if (!this.displaySliderToggleVisible) {
-        //     button.style.display = "none";
-        // } else {
-        //     button.style.display = "block";
-        // }
-        button.title = `Luck display is ${this.displaySlider ? 'On' : 'Off'}. Click to toggle.`;
-        const img = button.querySelector("img");
-        img.src = browser.runtime.getURL('/images/' + (this.displaySlider ? 'showing_luck' : 'hiding_luck') + '_icon.png');
+    setMode(mode) {
+        this.luckModeOn = mode === "luck";
+        this.lookupModeOn = mode === "lookup";
+
+        this.updateModeButtons();
+
         const display = document.getElementById("calc-plus-display");
+        this.updateModes();
+        display.innerHTML = this.getInnerHTML();
+        this.saveSession();
+    }
 
-        // update calcs if any exist
-        if (this.activeCalcTree) {
-            this.refactor(); //update calcs
-            this.orient(0, 0); //orient nodes            
+    updateModeButtons() {
+        const modes = [
+            {
+                id: "luck",
+                enabled: this.luckModeOn,
+                button: "calc-plus-luck-mode-toggle",
+                icon: "luck"
+            },
+            {
+                id: "lookup",
+                enabled: this.lookupModeOn,
+                button: "calc-plus-lookup-mode-toggle",
+                icon: "lookup"
+            }
+        ];
+
+        for (const mode of modes) {
+            const button = document.getElementById(mode.button);
+            button.title = `${mode.id[0].toUpperCase() + mode.id.slice(1)} Mode is ${mode.enabled ? "On" : "Off"}. Click to toggle.`;
+            button.querySelector("img").src = browser.runtime.getURL(
+                `/images/${mode.enabled ? "showing" : "hiding"}_${mode.icon}_icon.png`
+            );
         }
+    }
 
-        display.innerHTML = this.getInnerHTML(); //refresh display
-        this.saveSession(); //save session data
+    toggleLuckMode() {
+        this.setMode(this.luckModeOn ? null : "luck");
+    }
+
+    toggleLookupMode() {
+        this.setMode(this.lookupModeOn ? null : "lookup");
     }
 
     // show/hide dev options
     toggleDevOptions() {
         this.displayDevOptions = !this.displayDevOptions;
-        for (const id of ["calc-plus-safe", "calc-plus-clear", "calc-plus-slider-toggle"]) {
+        for (const id of ["calc-plus-safe", "calc-plus-clear"]) {
             const button = document.getElementById(id);
             button.style.display = this.displayDevOptions ? "block" : "none";
         }
@@ -5917,7 +6170,7 @@ class DamageCalculator {
 
     //refactor the active set
     refactor() {
-        this.activeCalcTree.refactor(this.displaySlider);
+        this.activeCalcTree.refactor();
     }
 
     //finds node by id, sets as active and returns node
@@ -5965,7 +6218,7 @@ class DamageCalculator {
         let html = "";
         let y = 0;
         for(let i = 0; i < this.calcTreeList.length; i++) {
-            html += `<div class="calc-plus-tree" style="width: ${this.calcTreeList[i].getWidth()}px; height: ${this.calcTreeList[i].getHeight()}px; top: ${y}px;">${this.calcTreeList[i].getHTML(this.safeModeOn, this.displaySlider)}</div>`;
+            html += `<div class="calc-plus-tree" style="width: ${this.calcTreeList[i].getWidth()}px; height: ${this.calcTreeList[i].getHeight()}px; top: ${y}px;">${this.calcTreeList[i].getHTML()}</div>`;
             y += this.calcTreeList[i].getHeight() + TREE_OFFSET;
         }
         //add and copy button
@@ -5981,7 +6234,7 @@ class DamageCalculator {
     }
 
     addNewTree() {
-        this.calcTreeList.push(new CalcTree(this.getNextID(), this.builtinCalc, this.displaySlider));
+        this.calcTreeList.push(new CalcTree(this.getNextID(), this.builtinCalc, this.safeModeOn, this.luckModeOn, this.lookupModeOn));
         this.activeCalcTree = this.calcTreeList[this.calcTreeList.length-1];
         this.activeNode = this.activeCalcTree.root;
     }
@@ -6033,36 +6286,33 @@ class DamageCalculator {
             //cities
             const cities = element.getElementsByClassName('city-input');
             if (cities.length === 2) {
-                //valueChanges['a_cities'] = valueChanges['a_cities'] ? true : node.attacker['cities'] !== ((isNaN(parseInt(cities[0].value))) ? 0 : Math.max(0, parseInt(cities[0].value)));
-                //valueChanges['d_cities'] = valueChanges['d_cities'] ? true : node.defender['cities'] !== ((isNaN(parseInt(cities[1].value))) ? 0 : Math.max(0, Math.min(parseInt(cities[1].value), node.defenderMaxCities)));
-                
                 node.attacker['cities'] = (isNaN(parseInt(cities[0].value))) ? 0 : Math.max(0, parseInt(cities[0].value));
                 node.defender['cities'] = (isNaN(parseInt(cities[1].value))) ? 0 : Math.max(0, parseInt(cities[1].value));
             }
             //towers
             const towers = element.getElementsByClassName('tower-input');
             if (towers.length === 2) {
-                //valueChanges['a_towers'] = valueChanges['a_towers'] ? true : node.attacker['towers'] !== ((isNaN(parseInt(towers[0].value))) ? 0 : Math.max(0, parseInt(towers[0].value)));
-                //valueChanges['d_towers'] = valueChanges['d_towers'] ? true : node.defender['towers'] !== ((isNaN(parseInt(towers[1].value))) ? 0 : Math.max(0, Math.min(parseInt(towers[1].value), node.defenderMaxTowers)));
-
                 node.attacker['towers'] = (isNaN(parseInt(towers[0].value))) ? 0 : Math.max(0, parseInt(towers[0].value));
                 node.defender['towers'] = (isNaN(parseInt(towers[1].value))) ? 0 : Math.max(0, parseInt(towers[1].value));
             }
             //funds
             const funds = element.getElementsByClassName('funds-input');
             if (funds.length === 2) {
-                //valueChanges['funds'] = valueChanges['funds'] ? true : node.attacker['funds'] !== ((isNaN(parseInt(funds[0].value))) ? 0 : Math.max(0, parseInt(funds[0].value)));
-                
                 node.attacker['funds'] = (isNaN(parseInt(funds[0].value))) ? 0 : Math.max(0, parseInt(funds[0].value));
                 node.defender['funds'] = (isNaN(parseInt(funds[1].value))) ? 0 : Math.max(0, parseInt(funds[1].value));
             }
-            //slider
-            if (this.displaySlider) {
-                const slider = element.querySelector('.calc-plus-damage-slider');
-                node.sliderLuck = parseInt(slider.value);
+            //luck
+            if (this.luckModeOn) {
+                const slider = element.querySelector('.calc-plus-luck-slider');
+                node.luckValue = parseInt(slider.value);
             }
+            //lookup
+            if (this.lookupModeOn && node.children.length === 0) {
+                const slider = element.querySelector('.calc-plus-lookup-slider');
+                node.lookupValue = parseInt(slider.value);
+            }
+
         }
-        //return valueChanges;
     }
 
     dragMenus(deltaX, deltaY) {
@@ -6291,15 +6541,15 @@ class DamageCalculator {
                             <div class="info-box-text" style="right:0px; width:180px;">
                                 Damage Calculator Plus by Sketch_Turner<br>
                                 Version ${CURRENT_VERSION}<br>
-                                <a href="https://github.com/Sketch-Turner/AWBW-Damage-Calculator-Plus#table-of-contents" target="_blank">User Guide</a><br>
+                                <a href="https://github.com/Sketch-Turner/AWBW-Damage-Calculator-Plus#awbw-damage-calculator-plus" target="_blank">User Guide</a><br>
                                 <a href="https://github.com/Sketch-Turner/AWBW-Damage-Calculator-Plus?#bugs" target="_blank">Bug Reporting</a><br>
                                 See you on the Global League. Good luck, have fun!!
                             </div>
                         </div>
-                        <div title="Luck display is ${this.displaySlider ? 'On' : 'Off'}. Click to toggle." id="calc-plus-slider-toggle" style="display: none; margin-top: 4px; margin-right: 9px; height: 16px;"><img src="${browser.runtime.getURL('/images/' + (this.displaySlider ? 'showing_luck' : 'hiding_luck') + '_icon.png')}"></div>
                         <div title="Safe Mode is ${this.safeModeOn ? 'On' : 'Off'}. Click to toggle." id="calc-plus-safe" style="display: none; margin-top: 4px; margin-right: 9px; height: 16px;"><img src="${browser.runtime.getURL('/images/' + (this.safeModeOn ? 'lock' : 'unlock') + '_icon.png')}"></div>
                         <div title="Clear Session Data" id="calc-plus-clear" style="display: none; margin-top: 4px; margin-right: 9px; height: 16px;"><img src="${browser.runtime.getURL('/images/clear_session_icon.png')}"></div>                        
-                        <div title="Shrink" id="calc-plus-shrink" style="margin-top: 4px; margin-right: 9px; height: 16px;"><img src="${browser.runtime.getURL('/images/shrink_icon.png')}"></div>
+                        <div title="Luck Mode is ${this.luckModeOn ? 'On' : 'Off'}. Click to toggle." id="calc-plus-luck-mode-toggle" style=" margin-top: 4px; margin-right: 9px; height: 16px;"><img src="${browser.runtime.getURL('/images/' + (this.luckModeOn ? 'showing_luck' : 'hiding_luck') + '_icon.png')}"></div>
+                        <div title="Lookup Mode is ${this.lookupModeOn ? 'On' : 'Off'}. Click to toggle." id="calc-plus-lookup-mode-toggle" style="margin-top: 4px; margin-right: 9px; height: 16px;"><img src="${browser.runtime.getURL('/images/' + (this.lookupModeOn ? 'showing_lookup' : 'hiding_lookup') + '_icon.png')}"></div>                        <div title="Shrink" id="calc-plus-shrink" style="margin-top: 4px; margin-right: 9px; height: 16px;"><img src="${browser.runtime.getURL('/images/shrink_icon.png')}"></div>
                         <div title="Expand" id="calc-plus-grow" style="margin-top: 4px; margin-right: 9px; height: 16px;"><img src="${browser.runtime.getURL('/images/grow_icon.png')}"></div>
                         <div title="Hide" class="close-calc-plus">&#10005;</div>
                     </span>
@@ -6342,8 +6592,11 @@ class DamageCalculator {
         });
 
         // luck slider
-        const calculatorSlider = document.getElementById("calc-plus-slider-toggle");
-        calculatorSlider.addEventListener("click", () => this.toggleSlider());
+        const luckSlider = document.getElementById("calc-plus-luck-mode-toggle");
+        luckSlider.addEventListener("click", () => this.toggleLuckMode());
+
+        const lookupSlider = document.getElementById("calc-plus-lookup-mode-toggle");
+        lookupSlider.addEventListener("click", () => this.toggleLookupMode());
 
         const grabHeader = document.getElementById("calc-plus-header");
         const calcPlus = document.getElementById("calc-plus");
@@ -6351,11 +6604,6 @@ class DamageCalculator {
         //detect key press to show safe mode unlock
         document.addEventListener("keydown", (event) => {
             if (event.key === "+") {
-                //TODO slider
-                //this.displaySliderToggleVisible = !this.displaySliderToggleVisible;
-                // this.displaySlider = true;
-                //this.toggleSlider();
-
                 // turn safe mode on when dev options are hidden
                 if (this.displayDevOptions) {
                     this.safeModeOn = false; 
@@ -6434,14 +6682,14 @@ class DamageCalculator {
                 // console.log("Clicked:", this.clickedUnit);
                 if (this.clickedUnit) {
                     if (this.clickSelectMode === 'A') {
-                        this.currentNode.attacker = JSON.parse(JSON.stringify(this.clickedUnit));
+                        this.currentNode.attacker = structuredClone(this.clickedUnit);
                         this.currentNode.attackerAmmo = this.currentNode.attacker.unit.units_ammo;
                         this.currentNode.attackerDisplayHP = this.currentNode.attacker.hp;
                         this.currentNode.selectingAttacker = false;
                         this.currentNode.attackerNoAmmoToggled = (this.clickedUnit.unit.units_ammo === 0);
                     }
                     else if (this.clickSelectMode === 'D') {
-                        this.currentNode.defender = JSON.parse(JSON.stringify(this.clickedUnit));
+                        this.currentNode.defender = structuredClone(this.clickedUnit);
                         this.currentNode.defenderAmmo = this.currentNode.defender.unit.units_ammo;
                         this.currentNode.defenderDisplayHP = this.currentNode.defender.hp;
                         this.currentNode.selectingDefender = false;
@@ -6449,7 +6697,7 @@ class DamageCalculator {
                     }
                     this.clickSelectMode = 'N';
                     this.setOverlayHook(false);
-                    this.currentNode.refactor(this.displaySlider); //if current node calc has changed, need to update all children
+                    this.currentNode.refactor(); //if current node calc has changed, need to update all children
                     this.orient();
                     calcDisplay.innerHTML = this.getInnerHTML(); // Update the display
                     this.saveSession(); //save session data
@@ -6479,7 +6727,7 @@ class DamageCalculator {
             const selectUnit = event.target.closest('.selected-unit');
             const toggleClickSelect = event.target.closest('.calc-plus-select-attacker') ? event.target.closest('.calc-plus-select-attacker') : event.target.closest('.calc-plus-select-defender');
             const inputField = event.target.closest('.text-input');
-            const damageSlider = event.target.closest('.calc-plus-damage-slider');
+            const luckSlider = event.target.closest('.calc-plus-luck-slider');
                    
             let updateDisplay = false; //need to reposition nodes
             let updateCalc = false; //need to run calc again
@@ -6500,13 +6748,12 @@ class DamageCalculator {
                         this.deleteNode(this.currentNode.id);
                     }
                 }
-                this.currentNode.refactor(this.displaySlider); //update calc
+                this.currentNode.refactor(); //update calc
                 //this.orient();
                 this.updateWindowSize(); //resize window
                 calcDisplay.innerHTML = this.getInnerHTML();//update display
                 this.saveSession(); //save session data
             } else if (svgNode) {
-                //valueChanges = this.updateInputs(this.currentNode, this.currentElement, valueChanges);
                 this.currentElement = svgNode;
 
                 const id = parseInt(svgNode.getAttribute('data-id'));
@@ -6521,8 +6768,10 @@ class DamageCalculator {
                         for (const key in this.isMenuOpen) {
                             this.closeMenu(key);//close all menus
                         }
-                        //selectedNode.delete();
+                        //set new current node
+                        if (this.currentNode.parent) this.currentNode = this.currentNode.parent;
                         this.deleteNode(id);
+                        updateCalc = true;
                         updateDisplay = true;
                         updateWindow = true;
                     } else if (addButton && selectedNode.isValid) {
@@ -6530,7 +6779,6 @@ class DamageCalculator {
                         for (const key in this.isMenuOpen) {
                             this.closeMenu(key);//close all menus
                         }
-                        //valueChanges = {'a_towers': true, 'a_cities': true, 'funds': true, 'power': true, 'co': true, 'd_towers': false, 'd_cities': false};
                         selectedNode.add(selectedNode.genNextNode(this.getNextID()));
                         updateCalc = true;
                         updateDisplay = true;
@@ -6566,14 +6814,12 @@ class DamageCalculator {
                             //changes to root are always allowed
                             if (toggleCOP.parentNode.parentNode.parentNode.parentNode.classList[0].replace('calculator-', '') === 'attack') {
                                 selectedNode.attacker['power'] = (selectedNode.attacker['power'] !== 'Y') ? 'Y' : 'N';
-                                //valueChanges['power'] = true;
                             } else {
                                 selectedNode.defender['power'] = (selectedNode.defender['power'] !== 'Y') ? 'Y' : 'N';
                             }
                         } else if (selectedNode.parent.attacker['power'] === 'N' && toggleCOP.parentNode.parentNode.parentNode.parentNode.classList[0].replace('calculator-', '') === 'attack') {
                             //if parent power is not active, attacker can toggle    
                             selectedNode.attacker['power'] = (selectedNode.attacker['power'] !== 'Y') ? 'Y' : 'N';
-                            //valueChanges['power'] = true;
                         }
                     } else if (toggleSCOP && selectedNode.isValid) {
                         updateCalc = true;
@@ -6586,14 +6832,12 @@ class DamageCalculator {
                             //changes to root are always allowed
                             if (toggleSCOP.parentNode.parentNode.parentNode.parentNode.classList[0].replace('calculator-', '') === 'attack') {
                                 selectedNode.attacker['power'] = (selectedNode.attacker['power'] !== 'S') ? 'S' : 'N';
-                                //valueChanges['power'] = true;
                             } else {
                                 selectedNode.defender['power'] = (selectedNode.defender['power'] !== 'S') ? 'S' : 'N';
                             }
                         } else if (selectedNode.parent.attacker['power'] === 'N' && toggleSCOP.parentNode.parentNode.parentNode.parentNode.classList[0].replace('calculator-', '') === 'attack') {
                             //if parent power is not active, attacker can toggle    
                             selectedNode.attacker['power'] = (selectedNode.attacker['power'] !== 'S') ? 'S' : 'N';
-                            //valueChanges['power'] = true;
                         }
                     } else if (toggleAmmo && selectedNode.isValid) {
                         updateCalc = true;
@@ -6752,7 +6996,7 @@ class DamageCalculator {
                         
                         // valueChanges = this.updateInputs(this.currentNode, this.currentElement, valueChanges);
 
-                    } else if (damageSlider && selectedNode.isValid) {
+                    } else if (luckSlider && selectedNode.isValid) {
                         updateHTML = true;
                         updateCalc = true;
                         for (const key in this.isMenuOpen) {
@@ -6781,9 +7025,8 @@ class DamageCalculator {
 
                     }
                     //update new node values
-                    //valueChanges = this.updateInputs(selectedNode, svgNode, valueChanges);
                     if (updateCalc) {
-                        this.currentNode.refactor(this.displaySlider);//cascading update of current calc to all children
+                        this.currentNode.refactor();//cascading update of current calc to all children
                     }
                     if (updateDisplay) {
                         this.orient(); //position and size node and all children correctly
@@ -6807,30 +7050,42 @@ class DamageCalculator {
                 const node = this.selectNode(id);
                 if (node) {
                     //update current node values
-                    if (event.target.classList.contains('calc-plus-damage-slider')) {
-                        const luck = parseInt(event.target.value);
-                        const probability = node.calcLuckRollProbability(node.attacker, luck);
-                        node.sliderLuck = luck;
-                        node.sliderProbability = probability;
-                        node.updateCalcResults(this.displaySlider);
-                        const damage = node.calcResults.attackDamageMin;
-                        const funds = node.calcResults.attackFundsMin;
-                        node.sliderDamage = damage;
-                        node.sliderFunds = funds;
-                        // update html
+                    if (event.target.classList.contains('calc-plus-luck-slider')) {
+                        node.updateLuckSlider(parseInt(event.target.value));
                         const parentElement = event.target.closest('.attacker-damage');
                         if (parentElement) {
-                            const valueSpan = parentElement.querySelector('.calc-plus-slider-value');
-                            valueSpan.innerHTML = ` <b>≥</b> ${luck} (${probability.toFixed(2)}%)`;
-                            const damageSpan = parentElement.querySelector('.calc-plus-slider-damage');
-                            damageSpan.textContent = `${damage}%`;
-                            const fundsSpan = parentElement.querySelector('.calc-plus-slider-funds');
-                            fundsSpan.textContent = funds;
+                            parentElement.querySelector('.calc-plus-slider-value').innerHTML = ` <b>≥</b> ${node.luckValue} (${(Math.trunc(node.luckProbability * 100) / 100).toFixed(2)}%)`;
+                            parentElement.querySelector('.calc-plus-slider-damage').textContent = `${node.luckDamage}%`;
+                            parentElement.querySelector('.calc-plus-slider-funds').textContent = node.luckFunds;
+                        }
+                    } else if (event.target.classList.contains('calc-plus-lookup-slider')) {
+                        node.updateLookupSlider(parseInt(event.target.value));
+                        const parentElement = event.target.closest('.defender-damage');
+                        if (parentElement) {
+                            parentElement.querySelector('.calc-plus-lookup-value').innerHTML = ` <b>≤</b> ${node.lookupValue}`;
+                            parentElement.querySelector('.calc-plus-lookup-probability').textContent = `${(Math.trunc(node.lookupProbability * 100) / 100).toFixed(2)}%`;
                         }
                     }
                 }
             }
         });
+
+        // Attach listener for scroll wheel
+        calcDisplay.addEventListener("wheel", (event) => {
+            if (!event.target.classList.contains("calc-plus-luck-slider") && !event.target.classList.contains("calc-plus-lookup-slider")) return;
+            const slider = event.target;
+            if (!slider) return;
+
+            event.preventDefault();
+
+            const delta = event.deltaY < 0 ? 1 : -1;
+
+            slider.value = Math.min(Number(slider.max), Math.max(Number(slider.min), Number(slider.value) + delta));
+
+            // Trigger input event so slider input is handled
+            slider.dispatchEvent(new Event("input", { bubbles: true }));
+            slider.dispatchEvent(new Event("change", { bubbles: true }));
+        }, { passive: false });
 
         // Attach a input change event listener
         calcDisplay.addEventListener("change", (event) => {
@@ -6847,7 +7102,7 @@ class DamageCalculator {
                     //update current node values
                     //this.currentNode = selectedNode;
                     this.updateInputs(node, element);
-                    node.refactor(this.displaySlider); //get new calc with updated values (cascading)
+                    node.refactor(); //get new calc with updated values (cascading)
                     this.orient(); //position all nodes correctly
                     calcDisplay.innerHTML = this.getInnerHTML(); // Update the display
                     this.saveSession(); //save session data
@@ -6866,12 +7121,11 @@ class DamageCalculator {
             //detect attacker/defender and set node
             if (selectCOMenu.getAttribute('player-id') === 'attack') {
                 node.attacker['co'] = CO_LIST[co];
-                //valueChanges['co'] = true;
             } else {
                 node.defender['co'] = CO_LIST[co];
             }
             this.closeMenu('select-co');
-            this.currentNode.refactor(this.displaySlider);
+            this.currentNode.refactor();
             this.orient();
             calcDisplay.innerHTML = this.getInnerHTML(); // Update the display\
             this.saveSession(); //save session data
@@ -6898,7 +7152,7 @@ class DamageCalculator {
                 node.defender['terrain'] = TERRAIN_MENU_LIST[terrain];
             }
             this.closeMenu('select-terrain');
-            this.currentNode.refactor(this.displaySlider);
+            this.currentNode.refactor();
             this.orient();
             calcDisplay.innerHTML = this.getInnerHTML(); // Update the display
             this.saveSession(); //save session data
@@ -6914,14 +7168,14 @@ class DamageCalculator {
             const node = this.currentNode;
             //detect attacker/defender and set node
             if (selectUnitMenu.getAttribute('player-id') === 'attack') {
-                node.attacker['unit'] = JSON.parse(JSON.stringify(UNIT_LIST[unit]));
+                node.attacker['unit'] = structuredClone(UNIT_LIST[unit]);
                 node.attackerAmmo = node.attacker.unit.units_ammo;
             } else {
-                node.defender['unit'] = JSON.parse(JSON.stringify(UNIT_LIST[unit]));
+                node.defender['unit'] = structuredClone(UNIT_LIST[unit]);
                 node.defenderAmmo = node.defender.unit.units_ammo;
             }
             this.closeMenu('select-unit');
-            this.currentNode.refactor(this.displaySlider);
+            this.currentNode.refactor();
             this.orient();
             calcDisplay.innerHTML = this.getInnerHTML(); // Update the display
             this.saveSession(); //save session data
@@ -6942,8 +7196,10 @@ document.head.appendChild(link);
 
 //Set Z_INDEX
 const old_dc = document.getElementById('calculator');
-const computedStyle = window.getComputedStyle(old_dc);
-Z_INDEX = parseInt(computedStyle.zIndex) - 1;
+if (old_dc) {
+    const computedStyle = window.getComputedStyle(old_dc);
+    Z_INDEX = parseInt(computedStyle.zIndex) - 1;
+}
 
 //Add calc plus button
 const old_dc_button = document.querySelector('.calculator-toggle.game-tools-btn') || document.querySelector('.calculator-toggle.planner-calc-toggle');
