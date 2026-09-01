@@ -1,6 +1,6 @@
 Bugs
-    Select unit after changing army color doesn't work until refresh
-    Select unit after acting may have wrong stats until refresh
+    Replay / Move planner -> no unit select
+    select unit with no ammo, swap to unit with ammo, ammo is toggled off
 
 Todo
     extra Andy-Andy calc???

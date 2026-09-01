@@ -8,6 +8,7 @@ const SCROLLBAR_WIDTH = 20;
 let Z_INDEX; //assigned in main
 const TILE_SIZE = 16;
 const SIG_PIXELS = [15, 18, 71, 78, 220]; // image signature pixel index
+const GAME_DATA_ENDPOINT = "https://awbw.amarriner.com/api/game/fetch_game_viewer_data.php"
 const SESSION_DATA_KEY = "calc-plus-data";
 const CURRENT_VERSION = "1.3.0";
 
@@ -5854,7 +5855,6 @@ class DamageCalculator {
         this.lookupModeOn = false;
         this.displayDevOptions = false;
         this.overlay = null; // handled by buildCalculator()
-        this.tileInfo = null;
         this.zindex = Z_INDEX;
         this.builtinCalc = new BuiltinCalculator();
         this.addNewTree();
@@ -6371,78 +6371,72 @@ class DamageCalculator {
         }
     }
 
-    getData(unitElement) {
-        //get game data
-        let regex = /terrainInfo = (.*?);/;
-        let match = regex.exec(document.documentElement.innerHTML);
-        const terrain = JSON.parse(match[1].replace("|| {}", ""));
+    // Returns unit at coords or null
+    async getUnitData(x, y) {
+        let clickedUnit = null;
 
-        regex = /buildingsInfo = (.*?);/;
-        match = regex.exec(document.documentElement.innerHTML);
-        const buildings = JSON.parse(match[1].replace("|| {}", ""));
+        // Get id of current player
+        const players_html = document.getElementsByClassName("player-overview-container");
+        let id = null;
 
-        regex = /playersInfo = (.*?);/;
-        match = regex.exec(document.documentElement.innerHTML);
-        const players = JSON.parse(match[1].replace("|| {}", ""));
+        for (const player_html of players_html) {
+            const current = player_html.getElementsByClassName("current-turn-arrow");
 
-        // get unit position
-        const row = Math.trunc(parseInt(unitElement.style.top)/TILE_SIZE);
-        const col = Math.trunc(parseInt(unitElement.style.left)/TILE_SIZE);
-        // get unit data
-        let country = null;
-        let name = null;
-        let hp = null;
-        let ammo = null;
-        if (this.tileInfo) {
-            // use tile info element
-            const unit_img = this.tileInfo.querySelector(".unit-info-sprite img")?.src?.split("/").pop().split(".gif")[0];
-            country = unit_img.substring(0, 2);
-            name = unit_img.substring(2);
-            hp = parseInt(this.tileInfo.querySelector(".unit-info-hp .amount")?.textContent || "10") || 10;
-            const ammo_str = this.tileInfo.querySelector(".unit-info-ammo .amount")?.textContent;
-            ammo = Number.isNaN(parseInt(ammo_str)) ? 1 : parseInt(ammo_str);
-        } else {
-            // use unit element
-            const img_sources = [...unitElement.innerHTML.matchAll(/\/([^\/]+?)\.gif/g)].map(m => m[1]);
-            for (const src of img_sources) {
-                if (Number(src) || src === '?') {
-                    hp = parseInt(src) || 10;
-                }
-                else if (Object.keys(UNIT_LIST).includes(src.substring(2))) {
-                    country = src.substring(0,2);
-                    name = src.substring(2);
-                }
-                if (name && hp) {
-                    break;
+            if (current.length) {
+                id = player_html.id.replace(/^player/, "");
+                break;
+            }
+        }
+
+        //TODO move planner and replay
+        if (id) {
+            // fetch current game data
+            const response = await (await fetch(GAME_DATA_ENDPOINT, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({"playersID": id})
+            })).text();
+
+            if (response) {
+                // parse game data
+                const data = JSON.parse(response);
+                const players = data.players;
+                const units = data.units;
+                const tiles = data.terrain;
+                const buildings = data.buildings;
+
+                let unit = Object.values(units).find(u => u.units_x === x && u.units_y === y) || null;
+
+                if (unit) {
+                    let tile = Object.values(buildings).flatMap(Object.values).find(t => t.buildings_x === x && t.buildings_y === y)
+                        || Object.values(tiles).flatMap(Object.values).find(t => t.tiles_x === x && t.tiles_y === y)
+                        || null;
+
+                    let player = Object.values(players).find(p => p.players_id === unit.units_players_id) || null;
+
+                    // console.log("Unit: ", unit, "Tile: ", tile, "Player: ", player);
+
+                    // construct unit data
+                    if (unit && tile && player) {
+                        return {
+                            "cities": parseInt(player.numProperties) || 0,
+                            "co": {"co_name": player.co_name, "co_id": player.players_co_id},
+                            "country": {"code": player.countries_code, "name": player.countries_name.replace(' ', '').toLowerCase()},
+                            "funds": parseInt(player.players_funds) || 0,
+                            "hp": parseInt(unit.units_hit_points) * 10 || 100,
+                            "power": player.players_co_power_on,
+                            "terrain": {"terrain_name": tile.terrain_name, "terrain_id": tile.terrain_id, "terrain_defense": tile.terrain_defense},
+                            "towers": parseInt(player.towers) || 0,
+                            "unit": {"units_ammo": unit.units_ammo, "units_name": unit.units_name, "units_id": unit.generic_id}
+                        };
+                    }
                 }
             }
-            // no way to get this, use default ammo value
-            ammo = UNIT_LIST[name].units_ammo;
         }
-        // unit id
-        const units_id = UNIT_LIST[name].units_id;
-        // set ammo to 1 if unit has no ammo
-        ammo = ([1, 5, 6, 14, 17, 28, 968731].includes(units_id)) ? 1 : ammo;
-        // get player
-        const player = Object.values(players).find(v => v.countries_code === country);
-        // get tile
-        const tile = terrain[col][row] || buildings[col][row];
 
-        if (country && name && player && tile) {
-            return {
-                "cities": parseInt(player.numProperties) || 0,
-                "co": {"co_name": player.co_name, "co_id": player.players_co_id},
-                "country": {"code": player.countries_code, "name": player.countries_name.replace(' ', '').toLowerCase()},
-                "funds": parseInt(player.players_funds) || 0,
-                "hp": hp * 10,
-                "power": player.players_co_power_on,
-                "terrain": {"terrain_name": tile.terrain_name, "terrain_id": tile.terrain_id, "terrain_defense": tile.terrain_defense},
-                "towers": parseInt(player.towers) || 0,
-                "unit": {"units_ammo": ammo, "units_name": name, "units_id": units_id}
-            };
-        } else {
-            return null
-        }
+        return clickedUnit;
     }
 
     //add calc
@@ -6667,19 +6661,25 @@ class DamageCalculator {
         overlay.style.background = "transparent";
 
         // Get unit from click
-        const overlayClick = (event) => {
+        const overlayClick = async (event) => {
             // Temporary unhook to get top element
             this.setOverlayHook(false);
-            // get unit element
+
+            // send mouse event
             const underlying = document.elementFromPoint(event.clientX, event.clientY);
-            const clickTarget = underlying.closest('.game-unit') || underlying.closest('span[id^="unit"]'); 
-            // get tile info
             underlying.dispatchEvent(new MouseEvent("mousemove", {bubbles: true, clientX: event.clientX + window.scrollX, clientY: event.clientY + window.scrollY}));
-            this.tileInfo = document.getElementsByClassName("tile-info left-side")[0];
+
+            // get coords relative to game
+            const coords = document.getElementById("coords").textContent.replace(/[()]/g, "");
+            const x = Number(coords.split(",")[0]);
+            const y = Number(coords.split(",")[1]);
+            // console.log(x, y);
+
             this.setOverlayHook(true);
-            if (clickTarget) {
-                this.clickedUnit = this.getData(clickTarget); //set values of this.clickedUnit
-                // console.log("Clicked:", this.clickedUnit);
+            this.clickedUnit = await this.getUnitData(x, y);
+
+            if (this.clickedUnit) {
+                // console.log(this.clickedUnit);
                 if (this.clickedUnit) {
                     if (this.clickSelectMode === 'A') {
                         this.currentNode.attacker = structuredClone(this.clickedUnit);
