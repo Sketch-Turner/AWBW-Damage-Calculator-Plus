@@ -9,6 +9,7 @@ let Z_INDEX; //assigned in main
 const TILE_SIZE = 16;
 const SIG_PIXELS = [15, 18, 71, 78, 220]; // image signature pixel index
 const GAME_DATA_ENDPOINT = "https://awbw.amarriner.com/api/game/fetch_game_viewer_data.php"
+const REPLAY_DATA_ENDPOINT = "https://awbw.amarriner.com/api/game/load_replay.php"
 const SESSION_DATA_KEY = "calc-plus-data";
 const CURRENT_VERSION = "1.3.0";
 
@@ -6371,6 +6372,138 @@ class DamageCalculator {
         }
     }
 
+    // Returns unit at coords or null (move planner)
+    async getUnitDataMovePlanner(x, y) {
+        return null;
+    }
+
+    // Returns unit at coords or null (replay open)
+    async getUnitDataReplay(unit_element, info_element) {
+        if (!unit_element || !info_element) {
+            return null;
+        }
+
+        console.log(unit_element, info_element);
+
+        // get clicked unit id
+        const unit_id = parseInt(unit_element.dataset.unitId);
+        if (!unit_id) {
+            return null;
+        }
+
+        // Get id of current player
+        const players_html = document.getElementsByClassName("player-overview-container");
+        let current_pid = null;
+
+        for (const player_html of players_html) {
+            if (player_html.getElementsByClassName("current-turn-arrow").length) {
+                current_pid = parseInt(player_html.id.replace(/^player/, ""));
+                break;
+            }
+        }
+
+        if (!current_pid) {
+            return null;
+        }
+
+        const params = new URLSearchParams(window.location.search);
+        const gameId = parseInt(params.get("games_id"));
+        const turn = parseInt(params.get("ndx"));
+        const turnDay = parseInt(document.querySelector(".game-header-day").textContent.match(/\d+/)[0]);
+
+        // fetch game state at start of turn
+        const response = await (await fetch(REPLAY_DATA_ENDPOINT, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                "gameId": gameId,
+                "initial": false,
+                "turn": turn,
+                "turnDay": turnDay,
+                "turnPId": current_pid
+            })
+        })).text();
+
+        if (!response) {
+            return null;
+        }
+
+        const data = JSON.parse(response);
+        const players = data.gameState.players;
+        const units = data.gameState.units;
+        const tiles = data.gameState.terrain;
+        const buildings = data.gameState.buildings;
+        const actions = data.actions;
+
+        if (!players || !units || !tiles || !buildings || !actions) {
+            return null;
+        }
+
+        const clicked_unit_player = players[units[unit_id].units_players_id];
+        console.log(clicked_unit_player);
+
+        if (!clicked_unit_player) {
+            return null;
+        }
+
+
+        // captures
+        let clicked_player_prop_diff = 0;
+        let clicked_player_tower_diff = 0;
+        for (const action of Object.values(actions)) {
+            if (action.action === "Capt") {
+                // check if cap completed
+                if (action.buildingInfo.buildings_capture === 20) {
+                    // get current building country
+                    const building_element = [...document.querySelectorAll(".game-building")].find(element => parseInt(element.dataset.buildingId) === action.buildingInfo.buildings_id);
+                    const current_building_name = building_element.querySelector("img").src.match(/\/([^/]+)\.gif/)[1];
+
+                    // check if player lost building
+                    if (buildings[action.buildingInfo.buildings_x][action.buildingInfo.buildings_y].buildings_players_id === clicked_unit_player.players_id) {
+                        // check if cap occured yet
+                        if (action.buildingInfo.terrain_name.toLowerCase().replaceAll(" ", "") === current_building_name) {
+                            console.log("Lost prop: ", current_building_name, action.buildingInfo.buildings_x, action.buildingInfo.buildings_y);
+                            
+                            clicked_player_prop_diff--;
+                            if (current_building_name.includes("tower")) {
+                                clicked_player_tower_diff--;
+                            }
+                        }
+
+                    }
+                    // check if player gained building
+                    else if (data.gameState.currentTurnPId === clicked_unit_player.players_id) {
+                        // check if cap occured yet
+                        if (action.buildingInfo.terrain_name.toLowerCase().replaceAll(" ", "") === current_building_name) {
+                            console.log("Gained prop: ", current_building_name, action.buildingInfo.buildings_x, action.buildingInfo.buildings_y);
+                            
+                            clicked_player_prop_diff++;
+                            if (current_building_name.includes("tower")) {
+                                clicked_player_tower_diff++;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return null;
+        // return {
+            // "cities": parseInt(clicked_unit_player.numProperties) + clicked_player_prop_diff,
+            // "co": {"co_name": player.co_name, "co_id": player.players_co_id},
+            // "country": {"code": player.countries_code, "name": player.countries_name.replace(" ", "").toLowerCase()},
+            // "funds": parseInt(player.players_funds) || 0,
+            // "hp": parseInt(unit.units_hit_points) * 10 || 100,
+            // "power": player.players_co_power_on,
+            // "terrain": {"terrain_name": tile.terrain_name, "terrain_id": tile.terrain_id, "terrain_defense": tile.terrain_defense},
+            // "towers": parseInt(clicked_unit_player.towers) + clicked_player_tower_diff,
+            // "unit": {"units_ammo": unit.units_ammo, "units_name": unit.units_name, "units_id": unit.generic_id}
+        // };
+    }
+
+
     // Returns unit at coords or null
     async getUnitData(x, y) {
         let clickedUnit = null;
@@ -6388,7 +6521,6 @@ class DamageCalculator {
             }
         }
 
-        //TODO move planner and replay
         if (id) {
             // fetch current game data
             const response = await (await fetch(GAME_DATA_ENDPOINT, {
@@ -6408,7 +6540,7 @@ class DamageCalculator {
                 const buildings = data.buildings;
 
                 let unit = Object.values(units).find(u => u.units_x === x && u.units_y === y) || null;
-
+                // console.log("Source: ", unit);
                 if (unit) {
                     let tile = Object.values(buildings).flatMap(Object.values).find(t => t.buildings_x === x && t.buildings_y === y)
                         || Object.values(tiles).flatMap(Object.values).find(t => t.tiles_x === x && t.tiles_y === y)
@@ -6667,16 +6799,28 @@ class DamageCalculator {
 
             // send mouse event
             const underlying = document.elementFromPoint(event.clientX, event.clientY);
-            underlying.dispatchEvent(new MouseEvent("mousemove", {bubbles: true, clientX: event.clientX + window.scrollX, clientY: event.clientY + window.scrollY}));
+            underlying.dispatchEvent(new MouseEvent("mousemove", {bubbles: true, clientX: event.clientX + window.scrollX, clientY: event.clientY + window.scrollY})); // set coords
+            const unit_element = underlying.closest(".game-unit");
 
             // get coords relative to game
             const coords = document.getElementById("coords").textContent.replace(/[()]/g, "");
             const x = Number(coords.split(",")[0]);
             const y = Number(coords.split(",")[1]);
-            // console.log(x, y);
+            // console.log("Clicked: ", x, y);
 
             this.setOverlayHook(true);
-            this.clickedUnit = await this.getUnitData(x, y);
+
+            // check url to determine mode
+            if (window.location.href.includes("&ndx=")) {
+                // get info tile
+                const info_element = document.querySelector(".tile-info");
+
+                this.clickedUnit = await this.getUnitDataReplay(unit_element, info_element);
+            } else if (window.location.href.includes("moveplanner.php?")) {
+                this.clickedUnit = await this.getUnitDataMovePlanner(x, y);
+            } else {
+                this.clickedUnit = await this.getUnitData(x, y);
+            }
 
             if (this.clickedUnit) {
                 // console.log(this.clickedUnit);
