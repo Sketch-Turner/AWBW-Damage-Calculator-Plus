@@ -6537,7 +6537,7 @@ class DamageCalculator {
             "power": clicked_unit_player.players_co_power_on,
             "terrain": {"terrain_name": terrain_name, "terrain_id": terrain_id, "terrain_defense": terrain_defense},
             "towers": towers,
-            "unit": {"units_ammo": 1, "units_name": units_name, "units_id": units_id}
+            "unit": {"units_ammo": 1, "units_name": units_name.replaceAll(" ", ""), "units_id": units_id}
         };
     }
 
@@ -6718,7 +6718,7 @@ class DamageCalculator {
             "power": power,
             "terrain": {"terrain_name": tile.terrain_name, "terrain_id": tile.terrain_id, "terrain_defense": tile.terrain_defense},
             "towers": parseInt(clicked_unit_player.towers) + clicked_player_tower_diff,
-            "unit": {"units_ammo": ammo, "units_name": clicked_unit.units_name, "units_id": clicked_unit.generic_id}
+            "unit": {"units_ammo": ammo, "units_name": clicked_unit.units_name.replaceAll(" ", ""), "units_id": clicked_unit.generic_id}
         };
     }
 
@@ -6790,7 +6790,7 @@ class DamageCalculator {
             "power": player.players_co_power_on,
             "terrain": {"terrain_name": tile.terrain_name, "terrain_id": tile.terrain_id, "terrain_defense": tile.terrain_defense},
             "towers": parseInt(player.towers) || 0,
-            "unit": {"units_ammo": unit.units_ammo, "units_name": unit.units_name, "units_id": unit.generic_id}
+            "unit": {"units_ammo": unit.units_ammo, "units_name": unit.units_name.replaceAll(" ", ""), "units_id": unit.generic_id}
         };
     }
 
