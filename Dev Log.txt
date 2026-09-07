@@ -1,7 +1,5 @@
 Bugs
-    Replay / Move planner -> no unit select
-    select unit with no ammo, swap to unit with ammo, ammo is toggled off
-
+    
 Todo
     extra Andy-Andy calc???
     prune undefined tree?

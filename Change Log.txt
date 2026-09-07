@@ -1,9 +1,17 @@
-1.3.1
+1.3.2
     Fixes
         1. Fixed bug where selecting unit after attack showed outdated unit data.
         2. Fixed bug where selecting unit after changing army displayed wrong color.
+        3. Fixed bug where selected unit image failed to load.
     Notes
         1. Selecting unit now queries AWBW for game state to get unit data.
+
+1.3.1
+    Fixes
+        1. Fixed outdated references to Amber Blaze. 
+        2. Fixed Jake plains bonus on pipe rubble.
+        3. Fixed bug where clicking vehicle after selecting inf causes vehicle to have no ammo.
+        4. Fixed bug where selected unit image doesn't load.
 
 1.3.0
     Features

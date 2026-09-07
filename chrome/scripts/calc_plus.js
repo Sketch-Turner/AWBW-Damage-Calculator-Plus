@@ -12,7 +12,7 @@ const GAME_DATA_ENDPOINT = "https://awbw.amarriner.com/api/game/fetch_game_viewe
 const REPLAY_DATA_ENDPOINT = "https://awbw.amarriner.com/api/game/load_replay.php"
 const GAME_DISPLAY_ENDPOINT = "https://awbw.amarriner.com/game.php";
 const SESSION_DATA_KEY = "calc-plus-data";
-const CURRENT_VERSION = "1.3.0";
+const CURRENT_VERSION = "1.3.2";
 
 //TODO better data import solution
 const TERRAIN_SIGNATURES = {
