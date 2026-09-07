@@ -5373,8 +5373,6 @@ class CalcNode {
         const state = this.computeNextState();
 
         for (const child of this.children) {
-            const oldDefender = structuredClone(child.defender);
-
             child.defender = structuredClone(state.defender);
             child.defenderMaxHP = state.defenderMaxHP;
             child.defenderDisplayHP = state.defenderDisplayHP;
@@ -5388,9 +5386,6 @@ class CalcNode {
             child.attacker.funds = this.attacker.funds;
             child.attacker.power = this.attacker.power;
             child.attacker.co = this.attacker.co;
-
-            // child.defender.towers = oldDefender.towers;
-            // child.defender.cities = oldDefender.cities;
 
             child.isValid = (child.defenderDisplayHP > 0) && this.isValid;
             child.refactor();
@@ -7060,14 +7055,22 @@ class DamageCalculator {
                         this.currentNode.attackerAmmo = this.currentNode.attacker.unit.units_ammo;
                         this.currentNode.attackerDisplayHP = this.currentNode.attacker.hp;
                         this.currentNode.selectingAttacker = false;
-                        this.currentNode.attackerNoAmmoToggled = (this.clickedUnit.unit.units_ammo === 0);
+                        if ([1, 5, 6, 14, 17, 28, 968731].includes(this.clickedUnit.unit.units_id)) { //inf, recon, apc, bboat, lander, tcopter, bbomb
+                            this.currentNode.attackerNoAmmoToggled = false;
+                        } else {
+                            this.currentNode.attackerNoAmmoToggled = (this.clickedUnit.unit.units_ammo === 0);
+                        }
                     }
                     else if (this.clickSelectMode === 'D') {
                         this.currentNode.defender = structuredClone(this.clickedUnit);
                         this.currentNode.defenderAmmo = this.currentNode.defender.unit.units_ammo;
                         this.currentNode.defenderDisplayHP = this.currentNode.defender.hp;
                         this.currentNode.selectingDefender = false;
-                        this.currentNode.defenderNoAmmoToggled = (this.clickedUnit.unit.units_ammo === 0);
+                        if ([1, 5, 6, 14, 17, 28, 968731].includes(this.clickedUnit.unit.units_id)) { //inf, recon, apc, bboat, lander, tcopter, bbomb
+                            this.currentNode.attackerNoAmmoToggled = false;
+                        } else {
+                            this.currentNode.attackerNoAmmoToggled = (this.clickedUnit.unit.units_ammo === 0);
+                        }
                     }
                     this.clickSelectMode = 'N';
                     this.setOverlayHook(false);
