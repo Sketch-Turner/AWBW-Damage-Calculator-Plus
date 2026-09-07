@@ -8,8 +8,11 @@ const SCROLLBAR_WIDTH = 20;
 let Z_INDEX; //assigned in main
 const TILE_SIZE = 16;
 const SIG_PIXELS = [15, 18, 71, 78, 220]; // image signature pixel index
+const GAME_DATA_ENDPOINT = "https://awbw.amarriner.com/api/game/fetch_game_viewer_data.php"
+const REPLAY_DATA_ENDPOINT = "https://awbw.amarriner.com/api/game/load_replay.php"
+const GAME_DISPLAY_ENDPOINT = "https://awbw.amarriner.com/game.php";
 const SESSION_DATA_KEY = "calc-plus-data";
-const CURRENT_VERSION = "1.3.0";
+const CURRENT_VERSION = "1.3.2";
 
 //TODO better data import solution
 const TERRAIN_SIGNATURES = {
@@ -20,13 +23,13 @@ const TERRAIN_SIGNATURES = {
     "{15: [255, 48, 224, 192], 18: [255, 3, 135, 124], 71: [255, 3, 135, 124], 78: [255, 19, 191, 177], 220: [255, 46, 230, 215]}": "acidrainhq",
     "{15: [255, 48, 224, 192], 18: [255, 48, 224, 192], 71: [255, 3, 136, 125], 78: [255, 3, 136, 125], 220: [255, 3, 136, 125]}": "acidrainlab",
     "{15: [255, 48, 224, 192], 18: [255, 3, 136, 125], 71: [255, 19, 191, 177], 78: [255, 3, 136, 125], 220: [255, 32, 232, 216]}": "acidrainport",
-    "{15: [255, 48, 224, 192], 18: [255, 48, 224, 192], 71: [255, 153, 207, 255], 78: [255, 153, 207, 255], 220: [255, 32, 232, 216]}": "amberblazeairport",
-    "{15: [255, 16, 102, 178], 18: [255, 49, 154, 245], 71: [255, 49, 154, 245], 78: [255, 16, 102, 178], 220: [255, 49, 154, 245]}": "amberblazebase",
-    "{15: [255, 17, 103, 178], 18: [255, 153, 207, 255], 71: [255, 49, 154, 245], 78: [255, 17, 103, 178], 220: [255, 153, 207, 255]}": "amberblazecity",
-    "{15: [255, 49, 154, 245], 18: [255, 153, 207, 255], 71: [255, 49, 154, 245], 78: [255, 217, 237, 255], 220: [255, 32, 232, 216]}": "amberblazecomtower",
-    "{15: [255, 49, 154, 245], 18: [255, 49, 154, 245], 71: [255, 153, 207, 255], 78: [255, 153, 207, 255], 220: [255, 49, 154, 245]}": "amberblazehq",
-    "{15: [255, 48, 224, 192], 18: [255, 48, 224, 192], 71: [255, 49, 154, 245], 78: [255, 49, 154, 245], 220: [255, 49, 154, 245]}": "amberblazelab",
-    "{15: [255, 48, 224, 192], 18: [255, 49, 154, 245], 71: [255, 153, 207, 255], 78: [255, 49, 154, 245], 220: [255, 32, 232, 216]}": "amberblazeport",
+    "{15: [255, 48, 224, 192], 18: [255, 48, 224, 192], 71: [255, 153, 207, 255], 78: [255, 153, 207, 255], 220: [255, 32, 232, 216]}": "amberblossomairport",
+    "{15: [255, 16, 102, 178], 18: [255, 49, 154, 245], 71: [255, 49, 154, 245], 78: [255, 16, 102, 178], 220: [255, 49, 154, 245]}": "amberblossombase",
+    "{15: [255, 17, 103, 178], 18: [255, 153, 207, 255], 71: [255, 49, 154, 245], 78: [255, 17, 103, 178], 220: [255, 153, 207, 255]}": "amberblossomcity",
+    "{15: [255, 49, 154, 245], 18: [255, 153, 207, 255], 71: [255, 49, 154, 245], 78: [255, 217, 237, 255], 220: [255, 32, 232, 216]}": "amberblossomcomtower",
+    "{15: [255, 49, 154, 245], 18: [255, 49, 154, 245], 71: [255, 153, 207, 255], 78: [255, 153, 207, 255], 220: [255, 49, 154, 245]}": "amberblossomhq",
+    "{15: [255, 48, 224, 192], 18: [255, 48, 224, 192], 71: [255, 49, 154, 245], 78: [255, 49, 154, 245], 220: [255, 49, 154, 245]}": "amberblossomlab",
+    "{15: [255, 48, 224, 192], 18: [255, 49, 154, 245], 71: [255, 153, 207, 255], 78: [255, 49, 154, 245], 220: [255, 32, 232, 216]}": "amberblossomport",
     "{15: [255, 48, 224, 192], 18: [255, 48, 224, 192], 71: [255, 212, 238, 158], 78: [255, 212, 238, 158], 220: [255, 32, 232, 216]}": "azureasteroidairport",
     "{15: [255, 193, 98, 35], 18: [255, 204, 147, 38], 71: [255, 204, 147, 38], 78: [255, 193, 98, 35], 220: [255, 204, 147, 38]}": "azureasteroidbase",
     "{15: [255, 193, 98, 35], 18: [255, 212, 238, 158], 71: [255, 204, 147, 38], 78: [255, 193, 98, 35], 220: [255, 212, 238, 158]}": "azureasteroidcity",
@@ -4259,11 +4262,11 @@ const TERRAIN_DATA = {
     "vpipeseam": {"terrain_name": "VPipe Seam", "terrain_id": 114, "terrain_defense": 0},
     "hpiperubble": {"terrain_name": "HPipe Rubble", "terrain_id": 115, "terrain_defense": 1},
     "vpiperubble": {"terrain_name": "VPipe Rubble", "terrain_id": 116, "terrain_defense": 1},
-    "amberblazeairport": {"terrain_name": "Amber Blaze Airport", "terrain_id": 117, "terrain_defense": 3},
-    "amberblazebase": {"terrain_name": "Amber Blaze Base", "terrain_id": 118, "terrain_defense": 3},
-    "amberblazecity": {"terrain_name": "Amber Blaze City", "terrain_id": 119, "terrain_defense": 3},
-    "amberblazehq": {"terrain_name": "Amber Blaze HQ", "terrain_id": 120, "terrain_defense": 4},
-    "amberblazeport": {"terrain_name": "Amber Blaze Port", "terrain_id": 121, "terrain_defense": 3},
+    "amberblossomairport": {"terrain_name": "Amber Blossom Airport", "terrain_id": 117, "terrain_defense": 3},
+    "amberblossombase": {"terrain_name": "Amber Blossom Base", "terrain_id": 118, "terrain_defense": 3},
+    "amberblossomcity": {"terrain_name": "Amber Blossom City", "terrain_id": 119, "terrain_defense": 3},
+    "amberblossomhq": {"terrain_name": "Amber Blossom HQ", "terrain_id": 120, "terrain_defense": 4},
+    "amberblossomport": {"terrain_name": "Amber Blossom Port", "terrain_id": 121, "terrain_defense": 3},
     "jadesunairport": {"terrain_name": "Jade Sun Airport", "terrain_id": 122, "terrain_defense": 3},
     "jadesunbase": {"terrain_name": "Jade Sun Base", "terrain_id": 123, "terrain_defense": 3},
     "jadesuncity": {"terrain_name": "Jade Sun City", "terrain_id": 124, "terrain_defense": 3},
@@ -4280,7 +4283,7 @@ const TERRAIN_DATA = {
     "redfirecomtower": {"terrain_name": "Red Fire Com Tower", "terrain_id": 135, "terrain_defense": 3},
     "yellowcometcomtower": {"terrain_name": "Yellow Comet Com Tower", "terrain_id": 136, "terrain_defense": 3},
     "greyskycomtower": {"terrain_name": "Grey Sky Com Tower", "terrain_id": 137, "terrain_defense": 3},
-    "amberblazelab": {"terrain_name": "Amber Blaze Lab", "terrain_id": 138, "terrain_defense": 3},
+    "amberblossomlab": {"terrain_name": "Amber Blossom Lab", "terrain_id": 138, "terrain_defense": 3},
     "blackholelab": {"terrain_name": "Black Hole Lab", "terrain_id": 139, "terrain_defense": 3},
     "bluemoonlab": {"terrain_name": "Blue Moon Lab", "terrain_id": 140, "terrain_defense": 3},
     "browndesertlab": {"terrain_name": "Brown Desert Lab", "terrain_id": 141, "terrain_defense": 3},
@@ -5370,8 +5373,6 @@ class CalcNode {
         const state = this.computeNextState();
 
         for (const child of this.children) {
-            const oldDefender = structuredClone(child.defender);
-
             child.defender = structuredClone(state.defender);
             child.defenderMaxHP = state.defenderMaxHP;
             child.defenderDisplayHP = state.defenderDisplayHP;
@@ -5385,9 +5386,6 @@ class CalcNode {
             child.attacker.funds = this.attacker.funds;
             child.attacker.power = this.attacker.power;
             child.attacker.co = this.attacker.co;
-
-            // child.defender.towers = oldDefender.towers;
-            // child.defender.cities = oldDefender.cities;
 
             child.isValid = (child.defenderDisplayHP > 0) && this.isValid;
             child.refactor();
@@ -5575,7 +5573,7 @@ class BuiltinCalculator {
 
         // Jake plains bonus
         if (attacker.co.co_name === "Jake") {
-            coBonus += ["plain", "hpiperubble", "vpiperubble"].includes(attacker.terrain.terrain_name.toLowerCase()) ? this.lookupGlobal(attacker, "attack_bonus_plain") : 0;
+            coBonus += ["plain", "hpiperubble", "vpiperubble"].includes(attacker.terrain.terrain_name.toLowerCase().replaceAll(" ", "")) ? this.lookupGlobal(attacker, "attack_bonus_plain") : 0;
         } 
         // colin power of money
         else if (attacker.co.co_name === "Colin" && attacker.power === "S") {
@@ -5854,7 +5852,6 @@ class DamageCalculator {
         this.lookupModeOn = false;
         this.displayDevOptions = false;
         this.overlay = null; // handled by buildCalculator()
-        this.tileInfo = null;
         this.zindex = Z_INDEX;
         this.builtinCalc = new BuiltinCalculator();
         this.addNewTree();
@@ -6371,78 +6368,430 @@ class DamageCalculator {
         }
     }
 
-    getData(unitElement) {
-        //get game data
-        let regex = /terrainInfo = (.*?);/;
-        let match = regex.exec(document.documentElement.innerHTML);
-        const terrain = JSON.parse(match[1].replace("|| {}", ""));
+    // Returns unit at coords or null (move planner)
+    async getUnitDataMovePlanner(x, y, unit_element) {
+        if (!unit_element) {
+            return null;
+        }
+        // console.log(unit_element);
 
-        regex = /buildingsInfo = (.*?);/;
-        match = regex.exec(document.documentElement.innerHTML);
-        const buildings = JSON.parse(match[1].replace("|| {}", ""));
-
-        regex = /playersInfo = (.*?);/;
-        match = regex.exec(document.documentElement.innerHTML);
-        const players = JSON.parse(match[1].replace("|| {}", ""));
-
-        // get unit position
-        const row = Math.trunc(parseInt(unitElement.style.top)/TILE_SIZE);
-        const col = Math.trunc(parseInt(unitElement.style.left)/TILE_SIZE);
-        // get unit data
-        let country = null;
-        let name = null;
-        let hp = null;
-        let ammo = null;
-        if (this.tileInfo) {
-            // use tile info element
-            const unit_img = this.tileInfo.querySelector(".unit-info-sprite img")?.src?.split("/").pop().split(".gif")[0];
-            country = unit_img.substring(0, 2);
-            name = unit_img.substring(2);
-            hp = parseInt(this.tileInfo.querySelector(".unit-info-hp .amount")?.textContent || "10") || 10;
-            const ammo_str = this.tileInfo.querySelector(".unit-info-ammo .amount")?.textContent;
-            ammo = Number.isNaN(parseInt(ammo_str)) ? 1 : parseInt(ammo_str);
+        // check if replay is active
+        const params = new URLSearchParams(window.location.search);
+        let url;
+        let replay;
+        let games_id;
+        let ndx;
+        if (window.location.href.includes("replays_id=")) {
+            replay = true;
+            games_id = parseInt(params.get("replays_id"));
+            ndx = parseInt(params.get("ndx"));
+            url = `${GAME_DISPLAY_ENDPOINT}?games_id=${games_id}&ndx=${ndx}`;
         } else {
-            // use unit element
-            const img_sources = [...unitElement.innerHTML.matchAll(/\/([^\/]+?)\.gif/g)].map(m => m[1]);
-            for (const src of img_sources) {
-                if (Number(src) || src === '?') {
-                    hp = parseInt(src) || 10;
-                }
-                else if (Object.keys(UNIT_LIST).includes(src.substring(2))) {
-                    country = src.substring(0,2);
-                    name = src.substring(2);
-                }
-                if (name && hp) {
-                    break;
+            replay = false;
+            games_id = parseInt(params.get("games_id"));
+            url = `${GAME_DISPLAY_ENDPOINT}?games_id=${games_id}`;
+        }
+
+        // fetch game state at start of turn
+        let response = await (await fetch(url)).text();
+
+        if (!response) {
+            return null;
+        }
+
+        // Get id of current player
+        const game_html = new DOMParser().parseFromString(response, "text/html")
+        const players_html = game_html.getElementsByClassName("player-overview-container");
+        let current_pid;
+
+        for (const player_html of players_html) {
+            if (player_html.getElementsByClassName("current-turn-arrow").length) {
+                current_pid = parseInt(player_html.id.replace(/^player/, ""));
+                break;
+            }
+        }
+
+        if (!current_pid) {
+            return null;
+        }
+
+        let players;
+        let tiles;
+        let buildings;
+        if (replay) {
+            const turnDay = parseInt(game_html.querySelector(".game-header-day").textContent.match(/\d+/)[0]);
+
+            // fetch game state at start of turn
+            response = await (await fetch(REPLAY_DATA_ENDPOINT, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    "gameId": games_id,
+                    "initial": false,
+                    "turn": ndx,
+                    "turnDay": turnDay,
+                    "turnPId": current_pid
+                })
+            })).text();
+
+            if (!response) {
+                return null;
+            }
+
+            const data = JSON.parse(response);
+            players = data.gameState.players;
+            tiles = data.gameState.terrain;
+            buildings = data.gameState.buildings;
+        } else {
+            // fetch current game data
+            const response = await (await fetch(GAME_DATA_ENDPOINT, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({"playersID": current_pid})
+            })).text();
+
+            if (!response) {
+                return null;
+            }
+
+            // parse game data
+            const data = JSON.parse(response);
+            players = data.players;
+            tiles = data.terrain;
+            buildings = data.buildings;
+        }
+
+        // console.log(players, tiles, buildings);
+
+        if (!players || !tiles || !buildings) {
+            return null;
+        }
+
+        // extract clicked unit tile
+        const building_id = buildings[x][y]?.buildings_id;
+        let terrain_id;
+        let terrain_name;
+        let terrain_defense;
+        if (building_id) {
+            // extract current building state
+            const building_name = document.getElementById(`building_${building_id}`).querySelector("img").src.match(/\/([^/]+)\.gif/)[1];
+            terrain_id = TERRAIN_DATA[building_name].terrain_id;
+            terrain_name = TERRAIN_DATA[building_name].terrain_name;
+            terrain_defense = TERRAIN_DATA[building_name].terrain_defense;
+
+        } else {
+            // regular tile
+            const tile = tiles[x][y];
+            terrain_id = tile.terrain_id;
+            terrain_name = tile.terrain_name;
+            terrain_defense = tile.terrain_defense;
+        }
+
+        // extract unit data
+        const hp = parseInt(unit_element.querySelector('img[id$="rightIcon"]')?.src.match(/\/([^/]+)\.gif/)?.[1]) * 10 || 100;
+        const unit_img = unit_element.querySelector('img:not([id])')?.src.match(/\/([^/]+)\.gif/)?.[1].replace(/^gs_/, "");
+        const units_name = unit_img.slice(2);
+        const units_id = UNIT_LIST[units_name].units_id;
+        const countries_code = unit_img.slice(0, 2);
+
+        // get player by country
+        let clicked_unit_player;
+        for (const player of Object.values(players)) {
+            if (player.countries_code === countries_code) {
+                clicked_unit_player = player;
+                break;
+            }
+        }
+
+        if (!clicked_unit_player) {
+            return null;
+        }
+
+        // console.log(clicked_unit_player);
+
+        // get tower / prop count
+        let towers = 0;
+        let props = 0;
+        for (const building of Object.values(buildings).flatMap(Object.values)) {
+            const building_name = document.getElementById(`building_${building.buildings_id}`).querySelector("img").src.match(/\/([^/]+)\.gif/)[1];
+            // check if owned by clicked player
+            if (building_name.startsWith(clicked_unit_player.countries_name.toLowerCase().replaceAll(" ", ""))) {
+                props++;
+                // console.log(building.terrain_name);
+                if (building.terrain_name.includes("Tower")) {
+                    towers++;
                 }
             }
-            // no way to get this, use default ammo value
-            ammo = UNIT_LIST[name].units_ammo;
         }
-        // unit id
-        const units_id = UNIT_LIST[name].units_id;
-        // set ammo to 1 if unit has no ammo
-        ammo = ([1, 5, 6, 14, 17, 28, 968731].includes(units_id)) ? 1 : ammo;
-        // get player
-        const player = Object.values(players).find(v => v.countries_code === country);
-        // get tile
-        const tile = terrain[col][row] || buildings[col][row];
 
-        if (country && name && player && tile) {
-            return {
-                "cities": parseInt(player.numProperties) || 0,
-                "co": {"co_name": player.co_name, "co_id": player.players_co_id},
-                "country": {"code": player.countries_code, "name": player.countries_name.replace(' ', '').toLowerCase()},
-                "funds": parseInt(player.players_funds) || 0,
-                "hp": hp * 10,
-                "power": player.players_co_power_on,
-                "terrain": {"terrain_name": tile.terrain_name, "terrain_id": tile.terrain_id, "terrain_defense": tile.terrain_defense},
-                "towers": parseInt(player.towers) || 0,
-                "unit": {"units_ammo": ammo, "units_name": name, "units_id": units_id}
-            };
-        } else {
-            return null
+        return {
+            "cities": props,
+            "co": {"co_name": clicked_unit_player.co_name, "co_id": clicked_unit_player.players_co_id},
+            "country": {"code": clicked_unit_player.countries_code, "name": clicked_unit_player.countries_name.replace(" ", "").toLowerCase()},
+            "funds": clicked_unit_player.players_funds,
+            "hp": hp,
+            "power": clicked_unit_player.players_co_power_on,
+            "terrain": {"terrain_name": terrain_name, "terrain_id": terrain_id, "terrain_defense": terrain_defense},
+            "towers": towers,
+            "unit": {"units_ammo": 1, "units_name": units_name.replaceAll(" ", ""), "units_id": units_id}
+        };
+    }
+
+    // Returns unit at coords or null (replay open)
+    async getUnitDataReplay(x, y, unit_element, info_element) {
+        if (!unit_element || !info_element) {
+            return null;
         }
+
+        // console.log(unit_element, info_element);
+
+        // get clicked unit id
+        const unit_id = parseInt(unit_element.dataset.unitId);
+        if (!unit_id) {
+            return null;
+        }
+
+        // Get id of current player
+        const players_html = document.getElementsByClassName("player-overview-container");
+        let current_pid = null;
+
+        for (const player_html of players_html) {
+            if (player_html.getElementsByClassName("current-turn-arrow").length) {
+                current_pid = parseInt(player_html.id.replace(/^player/, ""));
+                break;
+            }
+        }
+
+        if (!current_pid) {
+            return null;
+        }
+
+        const params = new URLSearchParams(window.location.search);
+        const gameId = parseInt(params.get("games_id"));
+        const turn = parseInt(params.get("ndx"));
+        const turnDay = parseInt(document.querySelector(".game-header-day").textContent.match(/\d+/)[0]);
+
+        // fetch game state at start of turn
+        const response = await (await fetch(REPLAY_DATA_ENDPOINT, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                "gameId": gameId,
+                "initial": false,
+                "turn": turn,
+                "turnDay": turnDay,
+                "turnPId": current_pid
+            })
+        })).text();
+
+        if (!response) {
+            return null;
+        }
+
+        const data = JSON.parse(response);
+        const players = data.gameState.players;
+        const units = data.gameState.units;
+        const tiles = data.gameState.terrain;
+        const buildings = data.gameState.buildings;
+        const actions = data.actions;
+
+        if (!players || !units || !tiles || !buildings || !actions) {
+            return null;
+        }
+
+        let clicked_unit = units[unit_id];
+        if (!clicked_unit) {
+            // check builds
+            for (const action of Object.values(actions)) {
+                if (action.action === "Build") {
+                    if (action.newUnit.units_id === unit_id) {
+                        clicked_unit = action.newUnit;
+                        clicked_unit.generic_id = UNIT_LIST[clicked_unit.units_name.toLowerCase().replace(" ", "")].units_id;
+                        break;
+                    }
+                }
+            }
+        }
+        const clicked_unit_player = players[clicked_unit.units_players_id];
+        // console.log(clicked_unit_player, clicked_unit);
+
+        if (!clicked_unit_player || !clicked_unit) {
+            return null;
+        }
+
+        let clicked_player_prop_diff = 0;
+        let clicked_player_tower_diff = 0;
+
+        // parse actions
+        for (const action of Object.values(actions)) {
+            // captures (cities / towers)
+            if (action.action === "Capt") {
+                // check if cap completed
+                if (action.buildingInfo.buildings_capture === 20) {
+                    // get current building country
+                    const building_element = [...document.querySelectorAll(".game-building")].find(element => parseInt(element.dataset.buildingId) === action.buildingInfo.buildings_id);
+                    const current_building_name = building_element.querySelector("img").src.match(/\/([^/]+)\.gif/)[1];
+
+                    // check if player lost building
+                    if (buildings[action.buildingInfo.buildings_x][action.buildingInfo.buildings_y].buildings_players_id === clicked_unit_player.players_id) {
+                        // check if cap occured yet
+                        if (action.buildingInfo.terrain_name.toLowerCase().replaceAll(" ", "") === current_building_name) {
+                            // console.log("Lost prop: ", current_building_name, action.buildingInfo.buildings_x, action.buildingInfo.buildings_y);
+                            buildings[action.buildingInfo.buildings_x][action.buildingInfo.buildings_y].terrain_name = TERRAIN_DATA[current_building_name].terrain_name;
+                            buildings[action.buildingInfo.buildings_x][action.buildingInfo.buildings_y].terrain_id = TERRAIN_DATA[current_building_name].terrain_id;
+                            
+                            clicked_player_prop_diff--;
+                            if (current_building_name.includes("tower")) {
+                                clicked_player_tower_diff--;
+                            }
+                        }
+
+                    }
+                    // check if player gained building
+                    else if (data.gameState.currentTurnPId === clicked_unit_player.players_id) {
+                        // check if cap occured yet
+                        if (action.buildingInfo.terrain_name.toLowerCase().replaceAll(" ", "") === current_building_name) {
+                            // console.log("Gained prop: ", current_building_name, action.buildingInfo.buildings_x, action.buildingInfo.buildings_y);
+                            buildings[action.buildingInfo.buildings_x][action.buildingInfo.buildings_y].terrain_name = TERRAIN_DATA[current_building_name].terrain_name;
+                            buildings[action.buildingInfo.buildings_x][action.buildingInfo.buildings_y].terrain_id = TERRAIN_DATA[current_building_name].terrain_id;
+
+                            clicked_player_prop_diff++;
+                            if (current_building_name.includes("tower")) {
+                                clicked_player_tower_diff++;
+                            }
+                        }
+                    }
+                }
+            }
+            // pipe seam
+            else if (action.action === "AttackSeam") {
+                // check if clicked unit occupies rubble tile
+                if (action.seamX === x && action.seamY === y) {
+                    // check if seam is destroyed
+                    if (action.seamHp <= 0) {
+                        // check if attack has happened
+                        const pipe_element = [...document.querySelectorAll(".game-building")].find(element => parseInt(element.dataset.x) === action.seamX && parseInt(element.dataset.y) === action.seamY);
+                        const current_pipe_name = pipe_element.querySelector("img").src.match(/\/([^/]+)\.gif/)[1];
+
+                        if (current_pipe_name.includes("rubble")) {
+                            // console.log("Pipe Seam Destroyed: ", x, y);
+
+                            // set to rubble
+                            buildings[x][y].terrain_id = parseInt(buildings[x][y].terrain_id) + 2;
+                            buildings[x][y].terrain_name = buildings[x][y].terrain_name.replace("Seam", "Rubble");
+                            buildings[x][y].terrain_defense = 1;
+                        }
+                    }
+                }
+            }
+        }
+
+        // funds
+        const player_data_element = document.getElementById(`player${clicked_unit_player.players_id}`);
+        const funds = parseInt(player_data_element.querySelector(".player-funds")?.textContent) || 0;
+
+        // power
+        const cop_element = player_data_element.querySelector(".cop-on-text");
+        const power = cop_element?.style.visibility === "visible" ? (cop_element.textContent === "SUPER" ? "S" : "Y") : "N";
+
+        // hp
+        const hp = parseInt(info_element.querySelector(".unit-info-hp .amount")?.textContent) * 10 || 100;
+
+        // ammo
+        const ammo = Math.max(0, parseInt(info_element.querySelector(".unit-info-ammo .amount")?.textContent));
+
+        // terrain
+        const tile = buildings[x][y] || tiles[x][y];
+
+        return {
+            "cities": parseInt(clicked_unit_player.numProperties) + clicked_player_prop_diff,
+            "co": {"co_name": clicked_unit_player.co_name, "co_id": clicked_unit_player.players_co_id},
+            "country": {"code": clicked_unit_player.countries_code, "name": clicked_unit_player.countries_name.replace(" ", "").toLowerCase()},
+            "funds": funds,
+            "hp": hp,
+            "power": power,
+            "terrain": {"terrain_name": tile.terrain_name, "terrain_id": tile.terrain_id, "terrain_defense": tile.terrain_defense},
+            "towers": parseInt(clicked_unit_player.towers) + clicked_player_tower_diff,
+            "unit": {"units_ammo": ammo, "units_name": clicked_unit.units_name.replaceAll(" ", ""), "units_id": clicked_unit.generic_id}
+        };
+    }
+
+    // Returns unit at coords or null
+    async getUnitData(x, y) {
+        // Get id of current player
+        const players_html = document.getElementsByClassName("player-overview-container");
+        let id = null;
+
+        for (const player_html of players_html) {
+            const current = player_html.getElementsByClassName("current-turn-arrow");
+
+            if (current.length) {
+                id = player_html.id.replace(/^player/, "");
+                break;
+            }
+        }
+
+        if (!id) {
+            return null;
+        }
+
+        // fetch current game data
+        const response = await (await fetch(GAME_DATA_ENDPOINT, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({"playersID": id})
+        })).text();
+
+        if (!response) {
+            return null;
+        }
+
+        // parse game data
+        const data = JSON.parse(response);
+        const players = data.players;
+        const units = data.units;
+        const tiles = data.terrain;
+        const buildings = data.buildings;
+
+        const unit = Object.values(units).find(u => u.units_x === x && u.units_y === y) || null;
+
+        // console.log("Source: ", unit);
+        if (!unit) {
+            return null;
+        }
+
+        const tile = Object.values(buildings).flatMap(Object.values).find(t => t.buildings_x === x && t.buildings_y === y)
+            || Object.values(tiles).flatMap(Object.values).find(t => t.tiles_x === x && t.tiles_y === y)
+            || null;
+
+        const player = Object.values(players).find(p => p.players_id === unit.units_players_id) || null;
+
+        // console.log("Unit: ", unit, "Tile: ", tile, "Player: ", player);
+
+        // construct unit data
+        if (!tile || !player) {
+            return null;
+        }
+
+        return {
+            "cities": parseInt(player.numProperties) || 0,
+            "co": {"co_name": player.co_name, "co_id": player.players_co_id},
+            "country": {"code": player.countries_code, "name": player.countries_name.replace(" ", "").toLowerCase()},
+            "funds": parseInt(player.players_funds) || 0,
+            "hp": parseInt(unit.units_hit_points) * 10 || 100,
+            "power": player.players_co_power_on,
+            "terrain": {"terrain_name": tile.terrain_name, "terrain_id": tile.terrain_id, "terrain_defense": tile.terrain_defense},
+            "towers": parseInt(player.towers) || 0,
+            "unit": {"units_ammo": unit.units_ammo, "units_name": unit.units_name.replaceAll(" ", ""), "units_id": unit.generic_id}
+        };
     }
 
     //add calc
@@ -6667,33 +7016,61 @@ class DamageCalculator {
         overlay.style.background = "transparent";
 
         // Get unit from click
-        const overlayClick = (event) => {
+        const overlayClick = async (event) => {
             // Temporary unhook to get top element
             this.setOverlayHook(false);
-            // get unit element
+
+            // send mouse event
             const underlying = document.elementFromPoint(event.clientX, event.clientY);
-            const clickTarget = underlying.closest('.game-unit') || underlying.closest('span[id^="unit"]'); 
-            // get tile info
-            underlying.dispatchEvent(new MouseEvent("mousemove", {bubbles: true, clientX: event.clientX + window.scrollX, clientY: event.clientY + window.scrollY}));
-            this.tileInfo = document.getElementsByClassName("tile-info left-side")[0];
+            underlying.dispatchEvent(new MouseEvent("mousemove", {bubbles: true, clientX: event.clientX + window.scrollX, clientY: event.clientY + window.scrollY})); // set coords
+
+            // get coords relative to game
+            const coords = document.getElementById("coords").textContent.replace(/[()]/g, "");
+            const x = Number(coords.split(",")[0]);
+            const y = Number(coords.split(",")[1]);
+            // console.log("Clicked: ", x, y);
+
             this.setOverlayHook(true);
-            if (clickTarget) {
-                this.clickedUnit = this.getData(clickTarget); //set values of this.clickedUnit
-                // console.log("Clicked:", this.clickedUnit);
+
+            // check url to determine mode
+            if (window.location.href.includes("moveplanner.php?")) {
+                const unit_element = underlying.closest('span[id^="unit_"]');
+
+                this.clickedUnit = await this.getUnitDataMovePlanner(x, y, unit_element);
+            } else if (window.location.href.includes("&ndx=")) {
+                // get info / unit elements
+                const info_element = document.querySelector(".tile-info");
+                const unit_element = underlying.closest(".game-unit");
+
+                this.clickedUnit = await this.getUnitDataReplay(x, y, unit_element, info_element);
+            } else {
+                this.clickedUnit = await this.getUnitData(x, y);
+            }
+
+            if (this.clickedUnit) {
+                // console.log(this.clickedUnit);
                 if (this.clickedUnit) {
                     if (this.clickSelectMode === 'A') {
                         this.currentNode.attacker = structuredClone(this.clickedUnit);
                         this.currentNode.attackerAmmo = this.currentNode.attacker.unit.units_ammo;
                         this.currentNode.attackerDisplayHP = this.currentNode.attacker.hp;
                         this.currentNode.selectingAttacker = false;
-                        this.currentNode.attackerNoAmmoToggled = (this.clickedUnit.unit.units_ammo === 0);
+                        if ([1, 5, 6, 14, 17, 28, 968731].includes(this.clickedUnit.unit.units_id)) { //inf, recon, apc, bboat, lander, tcopter, bbomb
+                            this.currentNode.attackerNoAmmoToggled = false;
+                        } else {
+                            this.currentNode.attackerNoAmmoToggled = (this.clickedUnit.unit.units_ammo === 0);
+                        }
                     }
                     else if (this.clickSelectMode === 'D') {
                         this.currentNode.defender = structuredClone(this.clickedUnit);
                         this.currentNode.defenderAmmo = this.currentNode.defender.unit.units_ammo;
                         this.currentNode.defenderDisplayHP = this.currentNode.defender.hp;
                         this.currentNode.selectingDefender = false;
-                        this.currentNode.defenderNoAmmoToggled = (this.clickedUnit.unit.units_ammo === 0);
+                        if ([1, 5, 6, 14, 17, 28, 968731].includes(this.clickedUnit.unit.units_id)) { //inf, recon, apc, bboat, lander, tcopter, bbomb
+                            this.currentNode.attackerNoAmmoToggled = false;
+                        } else {
+                            this.currentNode.attackerNoAmmoToggled = (this.clickedUnit.unit.units_ammo === 0);
+                        }
                     }
                     this.clickSelectMode = 'N';
                     this.setOverlayHook(false);
