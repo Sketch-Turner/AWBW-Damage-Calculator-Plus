@@ -10,6 +10,7 @@ const TILE_SIZE = 16;
 const SIG_PIXELS = [15, 18, 71, 78, 220]; // image signature pixel index
 const GAME_DATA_ENDPOINT = "https://awbw.amarriner.com/api/game/fetch_game_viewer_data.php"
 const REPLAY_DATA_ENDPOINT = "https://awbw.amarriner.com/api/game/load_replay.php"
+const GAME_DISPLAY_ENDPOINT = "https://awbw.amarriner.com/game.php";
 const SESSION_DATA_KEY = "calc-plus-data";
 const CURRENT_VERSION = "1.3.0";
 
@@ -6373,8 +6374,176 @@ class DamageCalculator {
     }
 
     // Returns unit at coords or null (move planner)
-    async getUnitDataMovePlanner(x, y) {
-        return null;
+    async getUnitDataMovePlanner(x, y, unit_element) {
+        if (!unit_element) {
+            return null;
+        }
+        // console.log(unit_element);
+
+        // check if replay is active
+        const params = new URLSearchParams(window.location.search);
+        let url;
+        let replay;
+        let games_id;
+        let ndx;
+        if (window.location.href.includes("replays_id=")) {
+            replay = true;
+            games_id = parseInt(params.get("replays_id"));
+            ndx = parseInt(params.get("ndx"));
+            url = `${GAME_DISPLAY_ENDPOINT}?games_id=${games_id}&ndx=${ndx}`;
+        } else {
+            replay = false;
+            games_id = parseInt(params.get("games_id"));
+            url = `${GAME_DISPLAY_ENDPOINT}?games_id=${games_id}`;
+        }
+
+        // fetch game state at start of turn
+        let response = await (await fetch(url)).text();
+
+        if (!response) {
+            return null;
+        }
+
+        // Get id of current player
+        const game_html = new DOMParser().parseFromString(response, "text/html")
+        const players_html = game_html.getElementsByClassName("player-overview-container");
+        let current_pid;
+
+        for (const player_html of players_html) {
+            if (player_html.getElementsByClassName("current-turn-arrow").length) {
+                current_pid = parseInt(player_html.id.replace(/^player/, ""));
+                break;
+            }
+        }
+
+        if (!current_pid) {
+            return null;
+        }
+
+        let players;
+        let tiles;
+        let buildings;
+        if (replay) {
+            const turnDay = parseInt(game_html.querySelector(".game-header-day").textContent.match(/\d+/)[0]);
+
+            // fetch game state at start of turn
+            response = await (await fetch(REPLAY_DATA_ENDPOINT, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    "gameId": games_id,
+                    "initial": false,
+                    "turn": ndx,
+                    "turnDay": turnDay,
+                    "turnPId": current_pid
+                })
+            })).text();
+
+            if (!response) {
+                return null;
+            }
+
+            const data = JSON.parse(response);
+            players = data.gameState.players;
+            tiles = data.gameState.terrain;
+            buildings = data.gameState.buildings;
+        } else {
+            // fetch current game data
+            const response = await (await fetch(GAME_DATA_ENDPOINT, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({"playersID": current_pid})
+            })).text();
+
+            if (!response) {
+                return null;
+            }
+
+            // parse game data
+            const data = JSON.parse(response);
+            players = data.players;
+            tiles = data.terrain;
+            buildings = data.buildings;
+        }
+
+        // console.log(players, tiles, buildings);
+
+        if (!players || !tiles || !buildings) {
+            return null;
+        }
+
+        // extract clicked unit tile
+        const building_id = buildings[x][y]?.buildings_id;
+        let terrain_id;
+        let terrain_name;
+        let terrain_defense;
+        if (building_id) {
+            // extract current building state
+            const building_name = document.getElementById(`building_${building_id}`).querySelector("img").src.match(/\/([^/]+)\.gif/)[1];
+            terrain_id = TERRAIN_DATA[building_name].terrain_id;
+            terrain_name = TERRAIN_DATA[building_name].terrain_name;
+            terrain_defense = TERRAIN_DATA[building_name].terrain_defense;
+
+        } else {
+            // regular tile
+            const tile = tiles[x][y];
+            terrain_id = tile.terrain_id;
+            terrain_name = tile.terrain_name;
+            terrain_defense = tile.terrain_defense;
+        }
+
+        // extract unit data
+        const hp = parseInt(unit_element.querySelector('img[id$="rightIcon"]')?.src.match(/\/([^/]+)\.gif/)?.[1]) * 10 || 100;
+        const unit_img = unit_element.querySelector('img:not([id])')?.src.match(/\/([^/]+)\.gif/)?.[1].replace(/^gs_/, "");
+        const units_name = unit_img.slice(2);
+        const units_id = UNIT_LIST[units_name].units_id;
+        const countries_code = unit_img.slice(0, 2);
+
+        // get player by country
+        let clicked_unit_player;
+        for (const player of Object.values(players)) {
+            if (player.countries_code === countries_code) {
+                clicked_unit_player = player;
+                break;
+            }
+        }
+
+        if (!clicked_unit_player) {
+            return null;
+        }
+
+        // console.log(clicked_unit_player);
+
+        // get tower / prop count
+        let towers = 0;
+        let props = 0;
+        for (const building of Object.values(buildings).flatMap(Object.values)) {
+            const building_name = document.getElementById(`building_${building.buildings_id}`).querySelector("img").src.match(/\/([^/]+)\.gif/)[1];
+            // check if owned by clicked player
+            if (building_name.startsWith(clicked_unit_player.countries_name.toLowerCase().replace(" ", ""))) {
+                props++;
+                // console.log(building.terrain_name);
+                if (building.terrain_name.includes("Tower")) {
+                    towers++;
+                }
+            }
+        }
+
+        return {
+            "cities": props,
+            "co": {"co_name": clicked_unit_player.co_name, "co_id": clicked_unit_player.players_co_id},
+            "country": {"code": clicked_unit_player.countries_code, "name": clicked_unit_player.countries_name.replace(" ", "").toLowerCase()},
+            "funds": clicked_unit_player.players_funds,
+            "hp": hp,
+            "power": clicked_unit_player.players_co_power_on,
+            "terrain": {"terrain_name": terrain_name, "terrain_id": terrain_id, "terrain_defense": terrain_defense},
+            "towers": towers,
+            "unit": {"units_ammo": 1, "units_name": units_name, "units_id": units_id}
+        };
     }
 
     // Returns unit at coords or null (replay open)
@@ -6540,7 +6709,7 @@ class DamageCalculator {
         const hp = parseInt(info_element.querySelector(".unit-info-hp .amount")?.textContent) * 10 || 100;
 
         // ammo
-        const ammo = parseInt(info_element.querySelector(".unit-info-ammo .amount")?.textContent);
+        const ammo = Math.max(0, parseInt(info_element.querySelector(".unit-info-ammo .amount")?.textContent));
 
         // terrain
         const tile = buildings[x][y] || tiles[x][y];
@@ -6558,11 +6727,8 @@ class DamageCalculator {
         };
     }
 
-
     // Returns unit at coords or null
     async getUnitData(x, y) {
-        let clickedUnit = null;
-
         // Get id of current player
         const players_html = document.getElementsByClassName("player-overview-container");
         let id = null;
@@ -6576,54 +6742,61 @@ class DamageCalculator {
             }
         }
 
-        if (id) {
-            // fetch current game data
-            const response = await (await fetch(GAME_DATA_ENDPOINT, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({"playersID": id})
-            })).text();
-
-            if (response) {
-                // parse game data
-                const data = JSON.parse(response);
-                const players = data.players;
-                const units = data.units;
-                const tiles = data.terrain;
-                const buildings = data.buildings;
-
-                let unit = Object.values(units).find(u => u.units_x === x && u.units_y === y) || null;
-                // console.log("Source: ", unit);
-                if (unit) {
-                    let tile = Object.values(buildings).flatMap(Object.values).find(t => t.buildings_x === x && t.buildings_y === y)
-                        || Object.values(tiles).flatMap(Object.values).find(t => t.tiles_x === x && t.tiles_y === y)
-                        || null;
-
-                    let player = Object.values(players).find(p => p.players_id === unit.units_players_id) || null;
-
-                    // console.log("Unit: ", unit, "Tile: ", tile, "Player: ", player);
-
-                    // construct unit data
-                    if (unit && tile && player) {
-                        return {
-                            "cities": parseInt(player.numProperties) || 0,
-                            "co": {"co_name": player.co_name, "co_id": player.players_co_id},
-                            "country": {"code": player.countries_code, "name": player.countries_name.replace(' ', '').toLowerCase()},
-                            "funds": parseInt(player.players_funds) || 0,
-                            "hp": parseInt(unit.units_hit_points) * 10 || 100,
-                            "power": player.players_co_power_on,
-                            "terrain": {"terrain_name": tile.terrain_name, "terrain_id": tile.terrain_id, "terrain_defense": tile.terrain_defense},
-                            "towers": parseInt(player.towers) || 0,
-                            "unit": {"units_ammo": unit.units_ammo, "units_name": unit.units_name, "units_id": unit.generic_id}
-                        };
-                    }
-                }
-            }
+        if (!id) {
+            return null;
         }
 
-        return clickedUnit;
+        // fetch current game data
+        const response = await (await fetch(GAME_DATA_ENDPOINT, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({"playersID": id})
+        })).text();
+
+        if (!response) {
+            return null;
+        }
+
+        // parse game data
+        const data = JSON.parse(response);
+        const players = data.players;
+        const units = data.units;
+        const tiles = data.terrain;
+        const buildings = data.buildings;
+
+        const unit = Object.values(units).find(u => u.units_x === x && u.units_y === y) || null;
+
+        // console.log("Source: ", unit);
+        if (!unit) {
+            return null;
+        }
+
+        const tile = Object.values(buildings).flatMap(Object.values).find(t => t.buildings_x === x && t.buildings_y === y)
+            || Object.values(tiles).flatMap(Object.values).find(t => t.tiles_x === x && t.tiles_y === y)
+            || null;
+
+        const player = Object.values(players).find(p => p.players_id === unit.units_players_id) || null;
+
+        // console.log("Unit: ", unit, "Tile: ", tile, "Player: ", player);
+
+        // construct unit data
+        if (!tile || !player) {
+            return null;
+        }
+
+        return {
+            "cities": parseInt(player.numProperties) || 0,
+            "co": {"co_name": player.co_name, "co_id": player.players_co_id},
+            "country": {"code": player.countries_code, "name": player.countries_name.replace(" ", "").toLowerCase()},
+            "funds": parseInt(player.players_funds) || 0,
+            "hp": parseInt(unit.units_hit_points) * 10 || 100,
+            "power": player.players_co_power_on,
+            "terrain": {"terrain_name": tile.terrain_name, "terrain_id": tile.terrain_id, "terrain_defense": tile.terrain_defense},
+            "towers": parseInt(player.towers) || 0,
+            "unit": {"units_ammo": unit.units_ammo, "units_name": unit.units_name, "units_id": unit.generic_id}
+        };
     }
 
     //add calc
@@ -6855,7 +7028,6 @@ class DamageCalculator {
             // send mouse event
             const underlying = document.elementFromPoint(event.clientX, event.clientY);
             underlying.dispatchEvent(new MouseEvent("mousemove", {bubbles: true, clientX: event.clientX + window.scrollX, clientY: event.clientY + window.scrollY})); // set coords
-            const unit_element = underlying.closest(".game-unit");
 
             // get coords relative to game
             const coords = document.getElementById("coords").textContent.replace(/[()]/g, "");
@@ -6866,13 +7038,16 @@ class DamageCalculator {
             this.setOverlayHook(true);
 
             // check url to determine mode
-            if (window.location.href.includes("&ndx=")) {
-                // get info tile
+            if (window.location.href.includes("moveplanner.php?")) {
+                const unit_element = underlying.closest('span[id^="unit_"]');
+
+                this.clickedUnit = await this.getUnitDataMovePlanner(x, y, unit_element);
+            } else if (window.location.href.includes("&ndx=")) {
+                // get info / unit elements
                 const info_element = document.querySelector(".tile-info");
+                const unit_element = underlying.closest(".game-unit");
 
                 this.clickedUnit = await this.getUnitDataReplay(x, y, unit_element, info_element);
-            } else if (window.location.href.includes("moveplanner.php?")) {
-                this.clickedUnit = await this.getUnitDataMovePlanner(x, y);
             } else {
                 this.clickedUnit = await this.getUnitData(x, y);
             }
