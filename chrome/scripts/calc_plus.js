@@ -5578,7 +5578,7 @@ class BuiltinCalculator {
 
         // Jake plains bonus
         if (attacker.co.co_name === "Jake") {
-            coBonus += ["plain", "hpiperubble", "vpiperubble"].includes(attacker.terrain.terrain_name.toLowerCase()) ? this.lookupGlobal(attacker, "attack_bonus_plain") : 0;
+            coBonus += ["plain", "hpiperubble", "vpiperubble"].includes(attacker.terrain.terrain_name.toLowerCase().replaceAll(" ", "")) ? this.lookupGlobal(attacker, "attack_bonus_plain") : 0;
         } 
         // colin power of money
         else if (attacker.co.co_name === "Colin" && attacker.power === "S") {
@@ -6524,7 +6524,7 @@ class DamageCalculator {
         for (const building of Object.values(buildings).flatMap(Object.values)) {
             const building_name = document.getElementById(`building_${building.buildings_id}`).querySelector("img").src.match(/\/([^/]+)\.gif/)[1];
             // check if owned by clicked player
-            if (building_name.startsWith(clicked_unit_player.countries_name.toLowerCase().replace(" ", ""))) {
+            if (building_name.startsWith(clicked_unit_player.countries_name.toLowerCase().replaceAll(" ", ""))) {
                 props++;
                 // console.log(building.terrain_name);
                 if (building.terrain_name.includes("Tower")) {
