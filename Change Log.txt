@@ -2,7 +2,7 @@
     Fixes
         1. Fixed bug where selecting unit after attack showed outdated unit data.
         2. Fixed bug where selecting unit after changing army displayed wrong color.
-        3. Fixed bug where selected unit image failed to load.
+        3. Fixed bugs with unit selection on replay and move planner.
     Notes
         1. Selecting unit now queries AWBW for game state to get unit data.
 
