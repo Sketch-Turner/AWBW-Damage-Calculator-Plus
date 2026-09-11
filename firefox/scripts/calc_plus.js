@@ -12,7 +12,7 @@ const GAME_DATA_ENDPOINT = "https://awbw.amarriner.com/api/game/fetch_game_viewe
 const REPLAY_DATA_ENDPOINT = "https://awbw.amarriner.com/api/game/load_replay.php"
 const GAME_DISPLAY_ENDPOINT = "https://awbw.amarriner.com/game.php";
 const SESSION_DATA_KEY = "calc-plus-data";
-const CURRENT_VERSION = "1.3.2";
+const CURRENT_VERSION = "1.3.3";
 
 //TODO better data import solution
 const TERRAIN_SIGNATURES = {
@@ -6084,7 +6084,6 @@ class DamageCalculator {
 
         this.updateModes();
         display.innerHTML = this.getInnerHTML(); //refresh display
-        this.saveSession(); //save session data
     }
 
     setMode(mode) {
@@ -6096,7 +6095,6 @@ class DamageCalculator {
         const display = document.getElementById("calc-plus-display");
         this.updateModes();
         display.innerHTML = this.getInnerHTML();
-        this.saveSession();
     }
 
     updateModeButtons() {
@@ -6142,7 +6140,6 @@ class DamageCalculator {
 
         const display = document.getElementById("calc-plus-display");
         display.innerHTML = this.getInnerHTML(); //refresh display
-        this.saveSession(); //save session data
     }
 
     //shrink to default size
@@ -6472,7 +6469,7 @@ class DamageCalculator {
         }
 
         // extract clicked unit tile
-        const building_id = buildings[x][y]?.buildings_id;
+        const building_id = buildings[x]?.[y]?.buildings_id;
         let terrain_id;
         let terrain_name;
         let terrain_defense;
@@ -6960,6 +6957,7 @@ class DamageCalculator {
                 }
 
                 this.toggleDevOptions();
+                this.saveSession(); //save session data
             }
         });
 
