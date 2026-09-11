@@ -1,6 +1,7 @@
 1.3.3
     Fixes
         1. Fixed bug with selecting units in move planner.
+        2. Fixed bug where calc data was wiped upon loading page.
 
 1.3.2
     Fixes

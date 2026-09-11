@@ -6084,7 +6084,6 @@ class DamageCalculator {
 
         this.updateModes();
         display.innerHTML = this.getInnerHTML(); //refresh display
-        this.saveSession(); //save session data
     }
 
     setMode(mode) {
@@ -6096,7 +6095,6 @@ class DamageCalculator {
         const display = document.getElementById("calc-plus-display");
         this.updateModes();
         display.innerHTML = this.getInnerHTML();
-        this.saveSession();
     }
 
     updateModeButtons() {
@@ -6142,7 +6140,6 @@ class DamageCalculator {
 
         const display = document.getElementById("calc-plus-display");
         display.innerHTML = this.getInnerHTML(); //refresh display
-        this.saveSession(); //save session data
     }
 
     //shrink to default size
@@ -6960,6 +6957,7 @@ class DamageCalculator {
                 }
 
                 this.toggleDevOptions();
+                this.saveSession(); //save session data
             }
         });
 
