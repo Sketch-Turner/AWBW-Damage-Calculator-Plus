@@ -6472,7 +6472,7 @@ class DamageCalculator {
         }
 
         // extract clicked unit tile
-        const building_id = buildings[x][y]?.buildings_id;
+        const building_id = buildings[x]?.[y]?.buildings_id;
         let terrain_id;
         let terrain_name;
         let terrain_defense;
